@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.user.dao.UserLoginDao">
+    <!--配置表和对象的字段映射 -->
+    <resultMap id="userMap" type="cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView">
+        <result property="userId" column="user_id"/>
+        <result property="deviceCode" column="device_code"/>
+        <result property="deviceName" column="device_name"/>
+        <result property="loginTime" column="login_time"/>
+        <result property="tokenTime" column="token_time"/>
+    </resultMap>
+
+    <!--记录用户登录日志-->
+    <insert id="createUserLoginLog"
+            useGeneratedKeys="true"
+            parameterType="cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserLoginLog">
+        insert into user_login_log
+        (user_id, device_code,
+         device_name, login_time)
+        values (#{userId}, #{deviceCode},
+                #{deviceName}, #{loginTime})
+    </insert>
+
+    <!--查询用户登录日志列表-->
+    <select id="listUserLoginLog" parameterType="map" resultMap="userMap">
+        select *
+        from user_login_log
+        where 1=1
+        <choose>
+            <when test="deviceCode!=null">
+                and device_code = #{deviceCode}
+            </when>
+        </choose>
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+        order by ids desc
+        <choose>
+            <when test="offset!=null">
+                limit #{size} offset #{offset}
+            </when>
+        </choose>
+    </select>
+
+    <!--创建一个用户的登录信息-->
+    <insert id="createUserLogin" parameterType="cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserLogin">
+        insert into user_login
+            (user_id, token, token_time)
+        values (#{userId}, #{token}, #{tokenTime})
+    </insert>
+
+    <!--修改用户登录信息-->
+    <update id="updateUserLogin" parameterType="map">
+        update user_login
+        set token=#{token},
+            token_time=#{tokenTime}
+        where user_id = #{userId}
+    </update>
+
+    <!--查询一个用户的登录信息-->
+    <select id="getUserLogin" parameterType="map" resultMap="userMap">
+        select *
+        from user_login
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and user_id = #{userId}
+            </when>
+        </choose>
+        <choose>
+            <when test="token!=null">
+                and token=#{token}
+            </when>
+        </choose>
+    </select>
+</mapper>

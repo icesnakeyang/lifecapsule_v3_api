@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.user.dao.UserBaseDao">
+    <!--配置表和对象的字段映射 -->
+    <resultMap id="userMap" type="cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserBase">
+        <result property="userId" column="user_id"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <!--创建一个基本用户账户-->
+    <insert id="createUserBase"
+            useGeneratedKeys="true"
+            parameterType="cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserBase">
+        insert into user_base
+            (user_id, create_time)
+        values (#{userId}, #{createTime})
+    </insert>
+
+    <!--查询用户基础信息-->
+    <select id="getUserBase" parameterType="java.lang.String" resultMap="userMap">
+        select *
+        from user_base
+        where user_id = #{userId}
+    </select>
+</mapper>
