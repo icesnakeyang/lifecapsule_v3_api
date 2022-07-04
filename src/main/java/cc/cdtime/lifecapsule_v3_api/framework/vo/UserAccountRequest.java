@@ -6,4 +6,6 @@ import lombok.Data;
 public class UserAccountRequest {
     private String deviceCode;
     private String deviceName;
+    private String loginName;
+    private String password;
 }

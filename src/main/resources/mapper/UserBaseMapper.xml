@@ -2,9 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.user.dao.UserBaseDao">
     <!--配置表和对象的字段映射 -->
-    <resultMap id="userMap" type="cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserBase">
+    <resultMap id="userMap" type="cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView">
         <result property="userId" column="user_id"/>
         <result property="createTime" column="create_time"/>
+        <result property="loginName" column="login_name"/>
     </resultMap>
 
     <!--创建一个基本用户账户-->
@@ -21,5 +22,54 @@
         select *
         from user_base
         where user_id = #{userId}
+    </select>
+
+    <!--泛查询一个用户信息-->
+    <select id="getUser" parameterType="map" resultMap="userMap">
+        select ub.ids,
+        ub.user_id,
+        create_time,
+        token,
+        token_time,
+        login_name,
+        password,
+        phone,
+        email
+        from user_base ub
+        left join user_login ul on ub.user_id = ul.user_id
+        left join user_login_name uln on ul.user_id = uln.user_id
+        left join user_phone up on ub.user_id = up.user_id
+        left join user_email ue on ub.user_id = ue.user_id
+        where 1 = 1
+        <choose>
+            <when test="userId!=null">
+                and ub.user_id = #{userId}
+            </when>
+        </choose>
+        <choose>
+            <when test="token!=null">
+                and token = #{token}
+            </when>
+        </choose>
+        <choose>
+            <when test="loginName!=null">
+                and login_name = #{loginName}
+            </when>
+        </choose>
+        <choose>
+            <when test="password!=null">
+                and password = #{password}
+            </when>
+        </choose>
+        <choose>
+            <when test="phone!=null">
+                and phone=#{phone}
+            </when>
+        </choose>
+        <choose>
+            <when test="email!=null">
+                and email=#{email}
+            </when>
+        </choose>
     </select>
 </mapper>

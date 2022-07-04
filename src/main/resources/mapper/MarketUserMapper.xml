@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.market.dao.MarketUserDao">
+    <!--配置表和对象的字段映射 -->
+    <resultMap id="marketUserMap" type="cc.cdtime.lifecapsule_v3_api.meta.market.entity.MarketUserView">
+        <result property="marketUserId" column="market_user_id"/>
+        <result property="loginName" column="login_name"/>
+        <result property="loginPassword" column="login_password"/>
+        <result property="createTime" column="create_time"/>
+        <result property="roleType" column="role_type"/>
+        <result property="tokenTime" column="token_time"/>
+    </resultMap>
+
+    <!--创建一个市场运营人员-->
+    <insert id="createMarketUser"
+            useGeneratedKeys="true"
+            parameterType="cc.cdtime.lifecapsule_v3_api.meta.market.entity.MarketUser">
+        insert into market_user
+        (market_user_id, login_name, login_password,
+         create_time, role_type, token, token_time)
+        values (#{marketUserId}, #{loginName}, #{loginPassword},
+                #{createTime}, #{roleType}, #{token}, #{tokenTime})
+    </insert>
+
+    <!--查询一个市场运营人员账号-->
+    <select id="getMarketUser" parameterType="map" resultMap="marketUserMap">
+        select * from market_user
+        where 1=1
+        <choose>
+            <when test="marketUserId!=null">
+                and market_user_id=#{marketUserId}
+            </when>
+        </choose>
+        <choose>
+            <when test="token!=null">
+                and token=#{token}
+            </when>
+        </choose>
+        <choose>
+            <when test="loginName!=null">
+                and login_name=#{loginName}
+                and login_password=#{loginPassword}
+            </when>
+        </choose>
+    </select>
+</mapper>

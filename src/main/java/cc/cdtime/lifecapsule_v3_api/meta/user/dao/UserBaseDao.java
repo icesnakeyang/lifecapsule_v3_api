@@ -4,6 +4,8 @@ import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserBase;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.Map;
+
 @Mapper
 public interface UserBaseDao {
     /**
@@ -20,4 +22,17 @@ public interface UserBaseDao {
      * @return
      */
     UserView getUserBase(String userId);
+
+    /**
+     * 泛查询一个用户信息
+     *
+     * @param qIn userId
+     *            token
+     *            loginName
+     *            password
+     *            phone
+     *            email
+     * @return
+     */
+    UserView getUser(Map qIn);
 }

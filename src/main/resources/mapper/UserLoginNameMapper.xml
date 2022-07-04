@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.user.dao.UserLoginNameDao">
+    <!--配置表和对象的字段映射 -->
+    <resultMap id="userMap" type="cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView">
+        <result property="userId" column="user_id"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <!--创建一个用自定义登录名账号-->
+    <insert id="createUserLoginName"
+            useGeneratedKeys="true"
+            parameterType="cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserLoginName">
+        insert into user_login_name
+            (user_id, login_name, password)
+        values (#{userId}, #{loginName}, #{password})
+    </insert>
+
+    <!--查询一个登录名用户-->
+    <select id="getLoginName" parameterType="map" resultMap="userMap">
+        select * from user_login_name
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+        <choose>
+            <when test="loginName!=null">
+                and login_name=#{loginName}
+            </when>
+        </choose>
+        <choose>
+            <when test="password!=null">
+                and password=#{password}
+            </when>
+        </choose>
+    </select>
+</mapper>

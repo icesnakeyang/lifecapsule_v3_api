@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.timer.dao.UserTimerDao">
+    <!--配置表和对象的字段映射 -->
+    <resultMap id="timerMap" type="cc.cdtime.lifecapsule_v3_api.meta.timer.entity.TimerView">
+        <result property="userId" column="user_id"/>
+        <result property="timerId" column="timer_id"/>
+        <result property="timerTime" column="timer_time"/>
+        <result property="oldTimer" column="old_timer"/>
+        <result property="snoozeTime" column="snooze_time"/>
+        <result property="newTimer" column="new_timer"/>
+        <result property="timerStatus" column="timer_status"/>
+        <result property="userName" column="user_name"/>
+    </resultMap>
+
+    <!--创建一个计时器-->
+    <insert id="createUserTimer"
+            parameterType="cc.cdtime.lifecapsule_v3_api.meta.timer.entity.UserTimer">
+        insert into user_timer
+        (timer_id, user_id, timer_time,
+         status, remark, tag, type)
+        values (#{timerId}, #{userId}, #{timerTime},
+                #{timerStatus}, #{remark}, #{tag}, #{type})
+    </insert>
+
+    <!--查询用户的一个计时器-->
+    <select id="getUserTimer" parameterType="map"
+            resultMap="timerMap">
+        select * from user_timer
+        where 1=1
+        <choose>
+            <when test="timerId!=null">
+                and timer_id=#{timerId}
+            </when>
+        </choose>
+        <choose>
+            <when test="userId!=null">
+                and user_id = #{userId}
+                and type=#{type}
+            </when>
+        </choose>
+    </select>
+
+    <!--创建计时器日志-->
+    <insert id="createUserTimerLog" parameterType="cc.cdtime.lifecapsule_v3_api.meta.timer.entity.UserTimerLog">
+        insert into user_timer_log
+            (timer_id, user_id, old_timer, snooze_time, new_timer)
+        values (#{timerId}, #{userId}, #{oldTimer}, #{snoozeTime}, #{newTimer})
+    </insert>
+
+    <!--查询用户的触发时间列表-->
+    <select id="listUserTimer" parameterType="map" resultMap="timerMap">
+        select user_name,
+        ui.user_id,
+        phone,
+        email,
+        create_time,
+        timer_id,
+        timer_time,
+        ut.status as timer_status,
+        remark,
+        tag,
+        snooze,
+        type
+        from user_info ui
+        left join user_timer ut on ui.user_id=ut.user_id
+        where 1=1
+        <choose>
+            <when test="type!=null">
+                and type=#{type}
+            </when>
+        </choose>
+        <choose>
+            <when test="timerStatus!=null">
+                and ut.status=#{timerStatus}
+            </when>
+        </choose>
+    </select>
+
+    <!--修改用户的计时器-->
+    <update id="updateUserTimer" parameterType="map">
+        update user_timer
+        <set>
+            <if test="timerTime!=null">
+                timer_time=#{timerTime},
+            </if>
+            <if test="timerStatus!=null">
+                status=#{timerStatus},
+            </if>
+            <if test="remark!=null">
+                remark=#{remark},
+            </if>
+            <if test="tag!=null">
+                tag=#{tag},
+            </if>
+            <if test="snooze!=null">
+                snooze=#{snooze}
+            </if>
+        </set>
+        where timer_id=#{timerId}
+    </update>
+</mapper>

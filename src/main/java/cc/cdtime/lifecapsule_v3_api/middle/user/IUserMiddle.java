@@ -1,9 +1,6 @@
 package cc.cdtime.lifecapsule_v3_api.middle.user;
 
-import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserBase;
-import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserLogin;
-import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserLoginLog;
-import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
+import cc.cdtime.lifecapsule_v3_api.meta.user.entity.*;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -23,7 +20,7 @@ public interface IUserMiddle {
      * @return
      * @throws Exception
      */
-    UserView getUserTiny(Map qIn, Boolean returnNull) throws Exception;
+    UserView getUserTiny(Map qIn, Boolean returnNull, Boolean isLogin) throws Exception;
 
     /**
      * 记录用户登录日志
@@ -62,9 +59,43 @@ public interface IUserMiddle {
     /**
      * 查询一个用户的登录信息
      *
-     * @param userId
+     * @param qIn userId
+     *            token
      * @return
      */
     UserView getUserLogin(Map qIn, Boolean returnNull) throws Exception;
+
+    /**
+     * 创建一个用自定义登录名账号
+     *
+     * @param userLoginName
+     */
+    void createUserLoginName(UserLoginName userLoginName);
+
+    /**
+     * 查询一个登录名用户
+     *
+     * @param qIn userId
+     *            loginName
+     *            password
+     * @return
+     */
+    UserView getLoginName(Map qIn);
+
+    /**
+     * 获取一个用户信息，并判断是否已登录
+     *
+     * @param qIn        userId
+     *                   token
+     *                   loginName
+     *                   password
+     *                   phone
+     *                   email
+     * @param returnNull
+     * @param isLogin
+     * @return
+     * @throws Exception
+     */
+    UserView getUser(Map qIn, Boolean returnNull, Boolean isLogin) throws Exception;
 
 }

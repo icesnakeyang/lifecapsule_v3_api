@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.task.dao.TaskDao">
+    <!--配置表和对象的字段映射 -->
+    <resultMap id="taskMap" type="cc.cdtime.lifecapsule_v3_api.meta.task.entity.Task">
+        <result property="taskId" column="task_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="taskType" column="task_type"/>
+        <result property="endTime" column="end_time"/>
+        <result property="noteId" column="note_id"/>
+        <result property="taskTitle" column="task_title"/>
+        <result property="userEncodeKey" column="user_encode_key"/>
+    </resultMap>
+
+    <!--创建一个新任务-->
+    <select id="listTask" parameterType="map" resultMap="taskMap">
+        select * from task
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+        <choose>
+            <when test="noteId!=null">
+                and note_id=#{noteId}
+            </when>
+        </choose>
+        <choose>
+            <when test="taskType!=null">
+                and task_type=#{taskType}
+            </when>
+        </choose>
+        <choose>
+            <when test="status!=null">
+                and status=#{status}
+            </when>
+        </choose>
+        <choose>
+            <when test="important!=null">
+                and important=#{important}
+            </when>
+        </choose>
+        <choose>
+            <when test="odc!=null">
+                order by ids desc
+            </when>
+        </choose>
+        <choose>
+            <when test="opdc!=null">
+                order by important_level, priority desc
+            </when>
+        </choose>
+        <choose>
+            <when test="offset!=null">
+                limit #{offset}, #{size}
+            </when>
+        </choose>
+    </select>
+
+    <select id="totalTask" parameterType="map" resultType="java.lang.Integer">
+        select count(*) as total from task
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+        <choose>
+            <when test="noteId!=null">
+                and note_id=#{noteId}
+            </when>
+        </choose>
+        <choose>
+            <when test="taskType!=null">
+                and task_type=#{taskType}
+            </when>
+        </choose>
+        <choose>
+            <when test="status!=null">
+                and status=#{status}
+            </when>
+        </choose>
+        <choose>
+            <when test="important!=null">
+                and important=#{important}
+            </when>
+        </choose>
+    </select>
+
+    <!--读取任务列表-->
+    <insert id="createTask" parameterType="cc.cdtime.lifecapsule_v3_api.meta.task.entity.Task">
+        insert into task
+        (task_id, user_id, note_id,
+         priority, status, task_type,
+         user_encode_key,
+         pid, create_time, task_title,
+         important, complete, important_level)
+        values (#{taskId}, #{userId}, #{noteId},
+                #{priority}, #{status}, #{taskType},
+                #{userEncodeKey},
+                #{pid}, #{createTime}, #{taskTitle},
+                #{important}, #{complete}, #{importantLevel})
+    </insert>
+
+    <insert id="createTaskContent" parameterType="map">
+        insert into content_detail
+            (index_id, content)
+        values (#{indexId}, #{content})
+    </insert>
+
+    <!--读取任务详情-->
+    <select id="getTask" parameterType="map" resultMap="taskMap">
+        select * from task
+        where 1=1
+        <choose>
+            <when test="taskId!=null">
+                and task_id=#{taskId}
+            </when>
+        </choose>
+    </select>
+
+    <select id="getTaskDetail" parameterType="java.lang.String" resultMap="taskMap">
+        select *
+        from content_detail
+        where index_id = #{taskId}
+    </select>
+
+    <update id="updateTask" parameterType="map">
+        update task
+        <set>
+            <if test="taskTitle!=null">
+                task_title=#{taskTitle},
+            </if>
+            <if test="priority!=null">
+                priority=#{priority},
+            </if>
+            <if test="status!=null">
+                status=#{status},
+            </if>
+            <if test="taskType!=null">
+                task_type=#{taskType},
+            </if>
+            <if test="endTime!=null">
+                end_time=#{endTime},
+            </if>
+            <if test="important!=null">
+                important=#{important},
+                important_level=#{importantLevel},
+            </if>
+            <if test="complete!=null">
+                complete=#{complete},
+            </if>
+            <if test="userEncodeKey!=null">
+                user_encode_key=#{userEncodeKey}
+            </if>
+        </set>
+        where task_id=#{taskId}
+    </update>
+
+    <update id="updateTaskContent" parameterType="map">
+        update content_detail
+        set content=#{content}
+        where index_id = #{taskId}
+    </update>
+
+    <delete id="deleteTask" parameterType="map">
+        delete
+        from task
+        where 1=1
+        <choose>
+            <when test="taskId!=null">
+                and task_id = #{taskId}
+            </when>
+        </choose>
+        <choose>
+            <when test="noteId!=null">
+                and note_id=#{noteId}
+            </when>
+        </choose>
+    </delete>
+
+    <!--删除任务详情-->
+    <delete id="deleteTaskContent" parameterType="java.lang.String">
+        delete
+        from content_detail
+        where index_id = #{taskId}
+    </delete>
+</mapper>

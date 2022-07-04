@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.trigger.dao.TriggerDao">
+    <!--配置表和对象的字段映射 -->
+    <resultMap id="triggerMap" type="cc.cdtime.lifecapsule_v3_api.meta.trigger.entity.TriggerView">
+        <result property="triggerId" column="trigger_id"/>
+        <result property="noteId" column="note_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="triggerTime" column="trigger_time"/>
+        <result property="actTimes" column="act_times"/>
+        <result property="triggerType" column="trigger_type"/>
+        <result property="recipientId" column="recipient_id"/>
+    </resultMap>
+
+    <!--创建一个触发器-->
+    <insert id="createTrigger"
+            useGeneratedKeys="true"
+            parameterType="cc.cdtime.lifecapsule_v3_api.meta.trigger.entity.NoteTrigger">
+        insert into note_trigger
+        (trigger_id, note_id, remark,
+         trigger_time, create_time, user_id,
+         trigger_type, status, recipient_id)
+        values (#{triggerId}, #{noteId}, #{remark},
+                #{triggerTime}, #{createTime}, #{userId},
+                #{triggerType}, #{status}, #{recipientId})
+    </insert>
+
+    <!--查询一个触发器-->
+    <select id="getTrigger" parameterType="java.lang.String" resultMap="triggerMap">
+        select *
+        from note_trigger
+        where trigger_id = #{triggerId}
+    </select>
+
+    <!--查询触发器列表-->
+    <select id="listTrigger" parameterType="map" resultMap="triggerMap">
+        select * from note_trigger
+        where 1=1
+        <choose>
+            <when test="noteId!=null">
+                and note_id=#{noteId}
+            </when>
+            <when test="status!=null">
+                and status=#{status}
+            </when>
+        </choose>
+    </select>
+
+    <!--修改一个笔记触发条件-->
+    <update id="updateNoteTrigger" parameterType="map">
+        update note_trigger
+        <set>
+            <if test="remark!=null">
+                remark=#{remark},
+            </if>
+            <if test="triggerTime!=null">
+                trigger_time=#{triggerTime},
+            </if>
+            <if test="triggerType!=null">
+                trigger_type=#{triggerType},
+            </if>
+            <if test="status!=null">
+                status=#{status},
+            </if>
+            <if test="actTimes!=null">
+                act_times=#{actTimes}
+            </if>
+        </set>
+        where trigger_id=#{triggerId}
+    </update>
+</mapper>

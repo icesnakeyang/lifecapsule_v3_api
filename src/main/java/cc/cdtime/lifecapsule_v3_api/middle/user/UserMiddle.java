@@ -1,11 +1,10 @@
 package cc.cdtime.lifecapsule_v3_api.middle.user;
 
-import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserBase;
-import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserLogin;
-import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserLoginLog;
-import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
+import cc.cdtime.lifecapsule_v3_api.meta.user.entity.*;
 import cc.cdtime.lifecapsule_v3_api.meta.user.service.IUserBaseService;
+import cc.cdtime.lifecapsule_v3_api.meta.user.service.IUserLoginNameService;
 import cc.cdtime.lifecapsule_v3_api.meta.user.service.IUserLoginService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,11 +14,14 @@ import java.util.Map;
 public class UserMiddle implements IUserMiddle {
     private final IUserBaseService iUserBaseService;
     private final IUserLoginService iUserLoginService;
+    private final IUserLoginNameService iUserLoginNameService;
 
     public UserMiddle(IUserBaseService iUserBaseService,
-                      IUserLoginService iUserLoginService) {
+                      IUserLoginService iUserLoginService,
+                      IUserLoginNameService iUserLoginNameService) {
         this.iUserBaseService = iUserBaseService;
         this.iUserLoginService = iUserLoginService;
+        this.iUserLoginNameService = iUserLoginNameService;
     }
 
     @Override
@@ -28,7 +30,7 @@ public class UserMiddle implements IUserMiddle {
     }
 
     @Override
-    public UserView getUserTiny(Map qIn, Boolean returnNull) throws Exception {
+    public UserView getUserTiny(Map qIn, Boolean returnNull, Boolean isLogin) throws Exception {
         String userId = (String) qIn.get("userId");
         UserView userView = iUserBaseService.getUserBase(userId);
         if (userView == null) {
@@ -37,6 +39,12 @@ public class UserMiddle implements IUserMiddle {
             }
             //没有查询到用户信息
             throw new Exception("10002");
+        }
+        if (isLogin) {
+            /**
+             * 检查登录有效性
+             */
+            //todo
         }
         return userView;
     }
@@ -71,6 +79,34 @@ public class UserMiddle implements IUserMiddle {
             }
             //没有查询该用户登录信息
             throw new Exception("10003");
+        }
+        return userView;
+    }
+
+    @Override
+    public void createUserLoginName(UserLoginName userLoginName) {
+        iUserLoginNameService.createUserLoginName(userLoginName);
+    }
+
+    @Override
+    public UserView getLoginName(Map qIn) {
+        UserView userView = iUserLoginNameService.getLoginName(qIn);
+        return userView;
+    }
+
+    @Override
+    public UserView getUser(Map qIn, Boolean returnNull, Boolean isLogin) throws Exception {
+        UserView userView = iUserBaseService.getUser(qIn);
+        if (userView == null) {
+            if (returnNull) {
+                return null;
+            }
+            throw new Exception("10002");
+        }
+        if (isLogin) {
+            /**
+             * 检查登录有效性
+             */
         }
         return userView;
     }

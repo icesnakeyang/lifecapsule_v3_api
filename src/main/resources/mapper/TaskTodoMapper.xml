@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.task.dao.TaskTodoDao">
+    <!--配置表和对象的字段映射 -->
+    <resultMap id="taskTodoMap" type="cc.cdtime.lifecapsule_v3_api.meta.task.entity.TaskTodoView">
+        <result property="userId" column="user_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="taskId" column="task_id"/>
+    </resultMap>
+
+    <!--创建一个待办任务-->
+    <insert id="createTaskTodo"
+            useGeneratedKeys="true"
+            parameterType="cc.cdtime.lifecapsule_v3_api.meta.task.entity.TaskTodo">
+        insert into task_todo
+        (user_id, title, complete,
+         priority, create_time, task_id)
+        values (#{userId}, #{title}, #{complete},
+                #{priority}, #{createTime}, #{taskId})
+    </insert>
+
+    <!--创建任务内容-->
+    <insert id="createTaskTodoContent"
+            useGeneratedKeys="true"
+            parameterType="cc.cdtime.lifecapsule_v3_api.meta.task.entity.TaskTodo">
+        insert into content_detail
+            (index_id, content)
+        values (#{taskId}, #{content})
+    </insert>
+
+    <!--查询待办任务列表-->
+    <select id="listTaskTodo" parameterType="map" resultMap="taskTodoMap">
+        select * from task_todo
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+        <choose>
+            <when test="complete!=null">
+                and complete=#{complete}
+            </when>
+        </choose>
+        order by complete ,ids desc
+        limit #{size} offset #{offset}
+    </select>
+
+    <!--统计待办任务数量-->
+    <select id="totalTaskTodo" parameterType="map" resultType="java.lang.Integer">
+        select count(*) as total from task_todo
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+        <choose>
+            <when test="complete!=null">
+                and complete=#{complete}
+            </when>
+        </choose>
+    </select>
+
+    <!--查询一个代办任务-->
+    <select id="getTaskTodo" parameterType="java.lang.String" resultMap="taskTodoMap">
+        select tt.ids,
+               user_id,
+               title,
+               complete,
+               priority,
+               create_time,
+               task_id,
+               content
+        from task_todo tt
+                 left join content_detail cd on index_id = task_id
+        where task_id = #{taskId}
+    </select>
+
+    <!--修改待办任务-->
+    <update id="updateTaskTodo" parameterType="map">
+        update task_todo
+        <set>
+            <if test="title!=null">
+                title=#{title},
+            </if>
+            <if test="complete!=null">
+                complete=#{complete},
+            </if>
+            <if test="priority!=null">
+                priority=#{priority}
+            </if>
+        </set>
+        where task_id=#{taskId}
+    </update>
+
+    <!--修改任务内容-->
+    <update id="updateTaskTodoContent" parameterType="map">
+        update content_detail
+        set content=#{content}
+        where index_id = #{taskId}
+    </update>
+
+    <delete id="deleteTaskTodo" parameterType="java.lang.String">
+        delete
+        from task_todo
+        where task_id = #{taskId}
+    </delete>
+</mapper>
