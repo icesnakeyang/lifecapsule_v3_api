@@ -16,5 +16,6 @@ public enum ESTags {
     TIMER_TYPE_PRIMARY,
     TIMER_TYPE_DATETIME,
     NO_TRIGGER,
-    ANONYMOUS
+    ANONYMOUS,
+    ADMIN_ROOT
 }

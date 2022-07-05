@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.admin.dao.AdminUserDao">
+    <!--配置表和对象的字段映射 -->
+    <resultMap id="adminUserMap" type="cc.cdtime.lifecapsule_v3_api.meta.admin.entity.AdminUserView">
+        <result property="adminId" column="admin_id"/>
+        <result property="loginName" column="login_name"/>
+        <result property="password" column="login_password"/>
+        <result property="createTime" column="create_time"/>
+        <result property="roleType" column="role_type"/>
+        <result property="tokenTime" column="token_time"/>
+    </resultMap>
+
+    <!--创建一个系统管理员-->
+    <insert id="createAdminUser"
+            useGeneratedKeys="true"
+            parameterType="cc.cdtime.lifecapsule_v3_api.meta.admin.entity.AdminUser">
+        insert into admin_user
+        (admin_id, login_name, login_password,
+         create_time, role_type, token,
+         token_time)
+        values (#{adminId}, #{loginName}, #{password},
+                #{createTime}, #{roleType}, #{token},
+                #{tokenTime})
+    </insert>
+
+    <!--读取一个系统管理员账号-->
+    <select id="getAdminUser" parameterType="map" resultMap="adminUserMap">
+        select * from admin_user
+        where 1=1
+        <choose>
+            <when test="adminId!=null">
+                and admin_id=#{adminId}
+            </when>
+        </choose>
+        <choose>
+            <when test="loginName!=null">
+                and login_name=#{loginName}
+            </when>
+        </choose>
+        <choose>
+            <when test="token!=null">
+                and token=#{token}
+            </when>
+        </choose>
+    </select>
+</mapper>
