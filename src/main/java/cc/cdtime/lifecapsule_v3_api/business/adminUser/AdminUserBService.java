@@ -61,7 +61,8 @@ public class AdminUserBService implements IAdminUserBService {
         qIn.put("password", password);
         AdminUserView adminUserView = iAdminUserMiddle.getAdminUser(qIn,false);
 
-        if(!adminUserView.getPassword().equals(GogoTools.encoderByMd5(password))){
+        String p=GogoTools.encoderByMd5(password);
+        if(!adminUserView.getPassword().equals(p)){
             throw new Exception("10005");
         }
         Map out = new HashMap();

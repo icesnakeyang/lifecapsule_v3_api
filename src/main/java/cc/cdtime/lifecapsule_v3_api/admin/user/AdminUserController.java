@@ -43,7 +43,7 @@ public class AdminUserController {
     }
 
     @ResponseBody
-    @PostMapping("/adminLogin")
+    @PostMapping("/admin_login")
     public Response adminLogin(@RequestBody AdminUserRequest request) {
         Response response = new Response();
         Map in = new HashMap();
