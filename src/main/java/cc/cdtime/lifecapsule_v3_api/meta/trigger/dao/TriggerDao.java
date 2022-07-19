@@ -19,10 +19,11 @@ public interface TriggerDao {
     /**
      * 查询一个触发器
      *
-     * @param triggerId
+     * @param qIn triggerId
+     *            recipientId
      * @return
      */
-    TriggerView getTrigger(String triggerId);
+    TriggerView getTrigger(Map qIn);
 
     /**
      * 查询触发器列表
@@ -45,4 +46,11 @@ public interface TriggerDao {
      *            triggerId
      */
     void updateNoteTrigger(Map qIn);
+
+    /**
+     * 物理删除触发器
+     *
+     * @param triggerId
+     */
+    void deleteTrigger(String triggerId);
 }

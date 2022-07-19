@@ -44,7 +44,7 @@ public class CategoryBService implements ICategoryBService {
         qIn.put("token", token);
         UserView userView = iUserMiddle.getUser(qIn, false, true);
 
-        if (categoryId == null) {
+        if (categoryId == null || categoryId.equals("")) {
             /**
              * 新增
              */
@@ -131,6 +131,13 @@ public class CategoryBService implements ICategoryBService {
         /**
          * 普通笔记，需要把该分类下的笔记转移到DEFAULT分类里去，修改note的categoryId
          */
+        /**
+         * 如果是default分类，则不能删除
+         */
+        if(categoryView.getCategoryName().equals(ESTags.DEFAULT.toString())){
+            //不能删除默认笔记分类
+            throw new Exception("10028");
+        }
         //获取当前用户的default分类id
         CategoryView defaultCategory = iCategoryMiddle.getDefaultCategory(userView.getUserId());
         qIn = new HashMap();

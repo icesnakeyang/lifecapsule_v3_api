@@ -27,10 +27,20 @@
     </insert>
 
     <!--查询一个触发器-->
-    <select id="getTrigger" parameterType="java.lang.String" resultMap="triggerMap">
+    <select id="getTrigger" parameterType="map" resultMap="triggerMap">
         select *
         from note_trigger
-        where trigger_id = #{triggerId}
+        where 1=1
+        <choose>
+            <when test="triggerId!=null">
+                and trigger_id = #{triggerId}
+            </when>
+        </choose>
+        <choose>
+            <when test="recipientId!=null">
+                and recipient_id = #{recipientId}
+            </when>
+        </choose>
     </select>
 
     <!--查询触发器列表-->
@@ -69,4 +79,11 @@
         </set>
         where trigger_id=#{triggerId}
     </update>
+
+    <!--物理删除触发器-->
+    <delete id="deleteTrigger" parameterType="java.lang.String">
+        delete
+        from note_trigger
+        where trigger_id = #{triggerId}
+    </delete>
 </mapper>

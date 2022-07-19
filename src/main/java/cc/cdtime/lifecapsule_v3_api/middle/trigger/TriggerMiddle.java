@@ -22,8 +22,8 @@ public class TriggerMiddle implements ITriggerMiddle {
     }
 
     @Override
-    public TriggerView getTrigger(String triggerId, Boolean returnNull, String noteId, String userId) throws Exception {
-        TriggerView triggerView = iTriggerService.getTrigger(triggerId);
+    public TriggerView getTrigger(Map qIn, Boolean returnNull, String userId) throws Exception {
+        TriggerView triggerView = iTriggerService.getTrigger(qIn);
         if (triggerView == null) {
             if (returnNull) {
                 return null;
@@ -33,35 +33,8 @@ public class TriggerMiddle implements ITriggerMiddle {
              */
             throw new Exception("10017");
         }
-        if (noteId != null) {
-            if (!triggerView.getNoteId().equals(noteId)) {
-                //当前编辑的触发器不属于当前编辑的笔记
-                throw new Exception("10018");
-            }
-        }
-        if(userId!=null){
-            if(!triggerView.getUserId().equals(userId)){
-                //不能查询不属于自己的笔记的触发器
-                throw new Exception("10015");
-            }
-        }
-        return triggerView;
-    }
-
-    @Override
-    public TriggerView getTrigger(String triggerId, Boolean returnNull, String userId) throws Exception {
-        TriggerView triggerView = iTriggerService.getTrigger(triggerId);
-        if (triggerView == null) {
-            if (returnNull) {
-                return null;
-            }
-            /**
-             * 没有查询到对应的触发器
-             */
-            throw new Exception("10017");
-        }
-        if(userId!=null){
-            if(!triggerView.getUserId().equals(userId)){
+        if (userId != null) {
+            if (!triggerView.getUserId().equals(userId)) {
                 //不能查询不属于自己的笔记的触发器
                 throw new Exception("10015");
             }
@@ -78,5 +51,10 @@ public class TriggerMiddle implements ITriggerMiddle {
     @Override
     public void updateNoteTrigger(Map qIn) throws Exception {
         iTriggerService.updateNoteTrigger(qIn);
+    }
+
+    @Override
+    public void deleteTrigger(String triggerId) throws Exception {
+        iTriggerService.deleteTrigger(triggerId);
     }
 }

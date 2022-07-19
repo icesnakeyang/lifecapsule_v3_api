@@ -1,5 +1,6 @@
 package cc.cdtime.lifecapsule_v3_api.app.user.business;
 
+import cc.cdtime.lifecapsule_v3_api.business.userAccount.IUserAccountBService;
 import cc.cdtime.lifecapsule_v3_api.framework.constant.ESTags;
 import cc.cdtime.lifecapsule_v3_api.framework.tools.GogoTools;
 import cc.cdtime.lifecapsule_v3_api.meta.timer.entity.TimerView;
@@ -16,14 +17,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class AppUserBService implements IAppUserBService{
+public class AppUserBService implements IAppUserBService {
     private final IUserMiddle iUserMiddle;
-    private final ITimerMiddle iTimerMiddle;
+    private final IUserAccountBService iUserAccountBService;
 
     public AppUserBService(IUserMiddle iUserMiddle,
-                           ITimerMiddle iTimerMiddle) {
+                            IUserAccountBService iUserAccountBService) {
         this.iUserMiddle = iUserMiddle;
-        this.iTimerMiddle = iTimerMiddle;
+        this.iUserAccountBService = iUserAccountBService;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -107,152 +108,21 @@ public class AppUserBService implements IAppUserBService{
 
     @Override
     public Map signInByToken(Map in) throws Exception {
-        String token = in.get("token").toString();
-        String deviceName = (String) in.get("deviceName");
-        String deviceCode = (String) in.get("deviceCode");
-
-        Map qIn = new HashMap();
-        qIn.put("token", token);
-//        UserView userView = iUserMiddle.getUserLogin(qIn, false);
-        UserView userView = iUserMiddle.getUser(qIn, false,false);
-
-        /**
-         * todo
-         * 检查用户token是否过期，是否重新登录
-         */
-
-        Map user = new HashMap();
-        user.put("token", userView.getToken());
-        if(userView.getPhone()!=null){
-            user.put("userName", userView.getPhone());
-        }else{
-            if(userView.getEmail()!=null){
-                user.put("userName", userView.getEmail());
-            }else{
-                if(userView.getLoginName()!=null){
-                    user.put("userName", userView.getLoginName());
-                }
-            }
-        }
-
-        Map out = new HashMap();
-        out.put("user", user);
-
-        /////////////////////
-
-        /**
-         * 查询用户的主计时器到期时间
-         */
-        qIn = new HashMap();
-        qIn.put("userId", userView.getUserId());
-        qIn.put("type", ESTags.TIMER_TYPE_PRIMARY);
-        TimerView timerView = iTimerMiddle.getUserTimer(qIn, true);
-        if (timerView == null) {
-            /**
-             * 没有主计时器，就创建一个
-             */
-            Map map = iTimerMiddle.createUserTimer(userView.getUserId());
-            out.put("timerPrimary", map.get("timerTime"));
-        } else {
-            out.put("timerPrimary", timerView.getTimerTime().getTime());
-        }
-        //////////////////////
-
-
-        UserLoginLog userLoginLog = new UserLoginLog();
-        userLoginLog.setUserId(userView.getUserId());
-        userLoginLog.setLoginTime(new Date());
-        userLoginLog.setDeviceName(deviceName);
-        userLoginLog.setDeviceCode(deviceCode);
-
-            return out;
+        Map out=iUserAccountBService.signByToken(in);
+        return out;
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Map loginByLoginName(Map in) throws Exception {
-        String loginName = in.get("loginName").toString();
-        String password = in.get("password").toString();
-
-        Map qIn = new HashMap();
-        qIn.put("loginName", loginName);
-        qIn.put("password", GogoTools.encoderByMd5(password));
-        UserView userView = iUserMiddle.getLoginName(qIn);
-        if (userView == null) {
-            //用户名或密码不正确
-            throw new Exception("10005");
-        }
-
-        String token = loginUser(userView.getUserId());
-
-        Map out = new HashMap();
-        out.put("token", token);
-
-        /////////////////////
-
-        /**
-         * 查询用户的主计时器到期时间
-         */
-        qIn = new HashMap();
-        qIn.put("userId", userView.getUserId());
-        qIn.put("type", ESTags.TIMER_TYPE_PRIMARY);
-        TimerView timerView = iTimerMiddle.getUserTimer(qIn, true);
-        if (timerView == null) {
-            /**
-             * 没有主计时器，就创建一个
-             */
-            Map map = iTimerMiddle.createUserTimer(userView.getUserId());
-            out.put("timerPrimary", map.get("timerTime"));
-        } else {
-            out.put("timerPrimary", timerView.getTimerTime().getTime());
-        }
-        //////////////////////
-
+        Map out = iUserAccountBService.loginByLoginName(in);
         return out;
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Map registerByLoginName(Map in) throws Exception {
-        String loginName = in.get("loginName").toString();
-        String password = in.get("password").toString();
-
-        /**
-         * 1、检查loginName是否已经注册过了
-         * 2、注册流程
-         *      user_base表，创建用户基础信息表，生成userId
-         *      user_login_name表，创建用户的用户名，密码表记录，用于用户名密码登录
-         *      user_login表，登录用户，记录用户目前的登录状态，生成token
-         *      user_login_log表，记录登录日志
-         */
-
-        Map qIn = new HashMap();
-        qIn.put("loginName", loginName);
-        UserView userView = iUserMiddle.getLoginName(qIn);
-        if (userView != null) {
-            //该账号已经被注册了
-            throw new Exception("10006");
-        }
-
-        UserBase userBase = new UserBase();
-        userBase.setUserId(GogoTools.UUID32());
-        userBase.setCreateTime(new Date());
-        iUserMiddle.createUserBase(userBase);
-
-        String userId = userBase.getUserId();
-
-        UserLoginName userLoginName = new UserLoginName();
-        userLoginName.setLoginName(loginName);
-        userLoginName.setUserId(userId);
-        userLoginName.setPassword(GogoTools.encoderByMd5(password));
-        iUserMiddle.createUserLoginName(userLoginName);
-
-        String token = loginUser(userLoginName.getUserId());
-
-        Map out = new HashMap();
-        out.put("token", token);
-        out.put("userName", loginName);
-
+        Map out = iUserAccountBService.registerByLoginName(in);
         return out;
     }
 

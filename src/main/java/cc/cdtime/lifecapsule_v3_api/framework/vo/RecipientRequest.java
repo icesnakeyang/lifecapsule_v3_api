@@ -15,4 +15,5 @@ public class RecipientRequest {
     private String description;
     private String toName;
     private String fromName;
+    private String contactId;
 }

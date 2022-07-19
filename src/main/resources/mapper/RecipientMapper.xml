@@ -39,6 +39,12 @@
                 and note_id=#{noteId}
             </when>
         </choose>
+        <choose>
+            <when test="offset!=null">
+                limit #{size} offset #{offset}
+            </when>
+        </choose>
+        order by ids desc
     </select>
 
     <!--查询一个接收人信息-->
@@ -64,6 +70,12 @@
         from note_recipient recipient
                  left join note_trigger trigger on recipient.recipient_id = trigger.recipient_id
         where recipient.recipient_id = #{recipientId}
+    </select>
+
+    <select id="getRecipientTiny" parameterType="java.lang.String" resultMap="recipientMap">
+        select *
+        from note_recipient
+        where recipient_id = #{recipientId}
     </select>
 
     <!--删除一个接收人-->

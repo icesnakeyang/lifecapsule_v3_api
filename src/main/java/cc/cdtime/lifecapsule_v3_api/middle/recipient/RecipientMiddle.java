@@ -41,6 +41,25 @@ public class RecipientMiddle implements IRecipientMiddle {
     }
 
     @Override
+    public RecipientView getRecipientTiny(String recipientId,Boolean returnNull, String userId) throws Exception {
+        RecipientView recipientView = iRecipientService.getRecipientTiny(recipientId);
+        if (recipientView == null) {
+            if (returnNull) {
+                return null;
+            }
+            //没有查询该接收人
+            throw new Exception("10016");
+        }
+        if (userId != null) {
+            if (!recipientView.getUserId().equals(userId)) {
+                //要访问接收人不属于当前用户
+                throw new Exception("10021");
+            }
+        }
+        return recipientView;
+    }
+
+    @Override
     public RecipientView getRecipient(String recipientId, Boolean returnNull, String userId) throws Exception {
         RecipientView recipientView = iRecipientService.getRecipient(recipientId);
         if (recipientView == null) {
@@ -51,7 +70,7 @@ public class RecipientMiddle implements IRecipientMiddle {
         }
         if (userId != null) {
             if (!recipientView.getUserId().equals(userId)) {
-                //要修改的接收人不属于当前用户
+                //要访问接收人不属于当前用户
                 throw new Exception("10021");
             }
         }

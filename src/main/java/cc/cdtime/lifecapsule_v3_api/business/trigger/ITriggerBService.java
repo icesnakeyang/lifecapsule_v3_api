@@ -8,5 +8,14 @@ public interface ITriggerBService {
 
     Map saveNoteTrigger(Map in) throws Exception;
 
-    Map getNoteTrigger(Map in) throws Exception;
+    Map saveNoteRecipientTrigger(Map in) throws Exception;
+
+    /**
+     * 根据recipientId读取一个触发条件
+     *
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    Map getNoteRecipientTrigger(Map in) throws Exception;
 }

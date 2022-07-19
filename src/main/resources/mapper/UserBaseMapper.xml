@@ -6,6 +6,7 @@
         <result property="userId" column="user_id"/>
         <result property="createTime" column="create_time"/>
         <result property="loginName" column="login_name"/>
+        <result property="timerPrimary" column="timer_time"/>
     </resultMap>
 
     <!--创建一个基本用户账户-->
@@ -34,12 +35,14 @@
         login_name,
         password,
         phone,
-        email
+        email,
+        timer_time
         from user_base ub
         left join user_login ul on ub.user_id = ul.user_id
         left join user_login_name uln on ul.user_id = uln.user_id
         left join user_phone up on ub.user_id = up.user_id
         left join user_email ue on ub.user_id = ue.user_id
+        left join user_timer ut on ub.user_id=ut.user_id
         where 1 = 1
         <choose>
             <when test="userId!=null">

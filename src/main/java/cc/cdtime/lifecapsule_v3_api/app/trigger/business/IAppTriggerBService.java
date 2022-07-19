@@ -19,13 +19,4 @@ public interface IAppTriggerBService {
      * @return
      */
     Map saveNoteTrigger(Map in) throws Exception;
-
-    /**
-     * 用户查看笔记的一条触发器详情
-     *
-     * @param in
-     * @return
-     * @throws Exception
-     */
-    Map getNoteTrigger(Map in) throws Exception;
 }
