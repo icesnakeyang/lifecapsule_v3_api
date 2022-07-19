@@ -4,7 +4,6 @@ import cc.cdtime.lifecapsule_v3_api.app.trigger.business.IAppTriggerBService;
 import cc.cdtime.lifecapsule_v3_api.framework.vo.Response;
 import cc.cdtime.lifecapsule_v3_api.framework.vo.TriggerRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,38 +46,6 @@ public class AppTriggerController {
             } catch (Exception ex2) {
                 response.setCode(10001);
                 log.error("User listNoteTrigger error:" + ex.getMessage());
-            }
-        }
-        return response;
-    }
-
-    /**
-     * 用户查看笔记的一条触发器详情
-     *
-     * @param request
-     * @param httpServletRequest
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/getNoteTrigger")
-    public Response getNoteTrigger(@RequestBody TriggerRequest request,
-                                    HttpServletRequest httpServletRequest) {
-        Response response = new Response();
-        Map in = new HashMap();
-        try {
-            String token = httpServletRequest.getHeader("token");
-            in.put("token", token);
-            in.put("noteId", request.getNoteId());
-            in.put("triggerId", request.getTriggerId());
-
-            Map out = iAppTriggerBService.getNoteTrigger(in);
-            response.setData(out);
-        } catch (Exception ex) {
-            try {
-                response.setCode(Integer.parseInt(ex.getMessage()));
-            } catch (Exception ex2) {
-                response.setCode(10001);
-                log.error("User getNoteTrigger error:" + ex.getMessage());
             }
         }
         return response;

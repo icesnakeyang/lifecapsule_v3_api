@@ -31,6 +31,8 @@ public interface IRecipientService {
      */
     RecipientView getRecipient(String recipientId) throws Exception;
 
+    RecipientView getRecipientTiny(String recipientId) throws Exception;
+
     /**
      * 删除一个接收人
      *

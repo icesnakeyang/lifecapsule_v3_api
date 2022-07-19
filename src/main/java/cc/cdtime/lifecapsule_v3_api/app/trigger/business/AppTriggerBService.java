@@ -25,10 +25,4 @@ public class AppTriggerBService implements IAppTriggerBService {
         Map out = iTriggerBService.saveNoteTrigger(in);
         return out;
     }
-
-    @Override
-    public Map getNoteTrigger(Map in) throws Exception {
-        Map out = iTriggerBService.getNoteTrigger(in);
-        return out;
-    }
 }

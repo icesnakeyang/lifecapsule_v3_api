@@ -105,6 +105,7 @@ public class UserMiddle implements IUserMiddle {
         }
         if (isLogin) {
             /**
+             * todo
              * 检查登录有效性
              */
         }

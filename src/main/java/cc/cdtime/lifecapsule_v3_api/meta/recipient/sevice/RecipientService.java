@@ -34,6 +34,12 @@ public class RecipientService implements IRecipientService {
     }
 
     @Override
+    public RecipientView getRecipientTiny(String recipientId) throws Exception {
+        RecipientView recipientView = recipientDao.getRecipientTiny(recipientId);
+        return recipientView;
+    }
+
+    @Override
     public void deleteNoteRecipient(String recipientId) throws Exception {
         recipientDao.deleteNoteRecipient(recipientId);
     }

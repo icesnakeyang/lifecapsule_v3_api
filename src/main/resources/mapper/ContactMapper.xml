@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.contact.dao.ContactDao">
+    <!--配置表和对象的字段映射 -->
+    <resultMap id="contactMap" type="cc.cdtime.lifecapsule_v3_api.meta.contact.entity.ContactView">
+        <result property="contactId" column="contact_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="contactName" column="contact_name"/>
+    </resultMap>
+
+    <!--创建一个联系人-->
+    <insert id="createContact"
+            useGeneratedKeys="true"
+            parameterType="cc.cdtime.lifecapsule_v3_api.meta.contact.entity.Contact">
+        insert into contact
+        (contact_id, user_id,
+         contact_name, phone,
+         email)
+        values (#{contactId}, #{userId},
+                #{contactName}, #{phone},
+                #{email})
+    </insert>
+
+    <insert id="createContactRemark"
+            useGeneratedKeys="true"
+            parameterType="cc.cdtime.lifecapsule_v3_api.meta.contact.entity.Contact">
+        insert into content_detail
+            (index_id, content)
+        values (#{contactId}, #{remark})
+    </insert>
+
+    <!--读取联系人列表-->
+    <select id="listContact" parameterType="map" resultMap="contactMap">
+        select * from contact
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+        order by ids desc
+        <choose>
+            <when test="offset!=null">
+                limit #{size} offset #{offset}
+            </when>
+        </choose>
+    </select>
+
+    <!--读取一个联系人详情-->
+    <select id="getContact" parameterType="map" resultMap="contactMap">
+        select * from contact
+        where 1=1
+        <choose>
+            <when test="contactId!=null">
+                and contact_id=#{contactId}
+            </when>
+        </choose>
+        <choose>
+            <when test="phone!=null">
+                and phone=#{phone}
+            </when>
+        </choose>
+        <choose>
+            <when test="email!=null">
+                and email=#{email}
+            </when>
+        </choose>
+    </select>
+
+    <select id="getContactRemark" parameterType="map" resultMap="contactMap">
+        select index_id as contact_id,
+               content  as remark
+        from content_detail
+        where index_id = #{contactId}
+    </select>
+
+    <!--修改一个联系人信息-->
+    <update id="updateContact" parameterType="map">
+        update contact
+        <set>
+            <if test="contactName!=null">
+                contact_name=#{contactName},
+            </if>
+            <if test="phone!=null">
+                phone=#{phone},
+            </if>
+            <if test="email!=null">
+                email=#{email}
+            </if>
+        </set>
+        where contact_id=#{contactId}
+    </update>
+
+    <update id="updateContactRemark" parameterType="map">
+        update content_detail
+        set content=#{remark}
+        where index_id = #{contactId}
+    </update>
+
+    <!--物理删除一个联系人-->
+    <delete id="deleteContact" parameterType="java.lang.String">
+        delete
+        from contact
+        where contact_id = #{contactId}
+    </delete>
+
+    <delete id="deleteContactRemark" parameterType="java.lang.String">
+        delete
+        from content_detail
+        where index_id = #{contactId}
+    </delete>
+</mapper>

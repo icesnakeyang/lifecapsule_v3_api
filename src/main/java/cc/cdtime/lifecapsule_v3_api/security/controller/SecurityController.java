@@ -29,7 +29,7 @@ public class SecurityController {
      * @return
      */
     @ResponseBody
-    @GetMapping("/requestRSAPublicKey")
+    @GetMapping("/request_rsa_public_key")
     public Response requestRSAPublicKey() {
         Response response = new Response();
         try {

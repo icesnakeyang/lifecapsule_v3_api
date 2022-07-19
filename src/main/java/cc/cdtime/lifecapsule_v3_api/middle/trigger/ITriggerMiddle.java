@@ -18,11 +18,11 @@ public interface ITriggerMiddle {
     /**
      * 查询一个触发器
      *
-     * @param triggerId
+     * @param qIn triggerId
+     *            recipientId
      * @return
      */
-    TriggerView getTrigger(String triggerId, Boolean returnNull, String noteId, String userId) throws Exception;
-    TriggerView getTrigger(String triggerId, Boolean returnNull, String userId) throws Exception;
+    TriggerView getTrigger(Map qIn, Boolean returnNull, String userId) throws Exception;
 
     /**
      * 查询触发器列表
@@ -45,4 +45,11 @@ public interface ITriggerMiddle {
      *            triggerId
      */
     void updateNoteTrigger(Map qIn) throws Exception;
+
+    /**
+     * 物理删除触发器
+     *
+     * @param triggerId
+     */
+    void deleteTrigger(String triggerId) throws Exception;
 }

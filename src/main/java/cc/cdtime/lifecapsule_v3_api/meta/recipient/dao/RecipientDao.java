@@ -31,6 +31,7 @@ public interface RecipientDao {
      * @return
      */
     RecipientView getRecipient(String recipientId);
+    RecipientView getRecipientTiny(String recipientId);
 
     /**
      * 删除一个接收人

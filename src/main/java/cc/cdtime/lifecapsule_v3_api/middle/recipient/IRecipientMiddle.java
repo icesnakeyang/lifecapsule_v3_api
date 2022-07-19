@@ -29,6 +29,7 @@ public interface IRecipientMiddle {
      * @return
      */
     RecipientView getRecipient(String recipientId, Boolean returnNull) throws Exception;
+    RecipientView getRecipientTiny(String recipientId,Boolean returnNull, String userId) throws Exception;
 
     RecipientView getRecipient(String recipientId, Boolean returnNull, String userId) throws Exception;
 
