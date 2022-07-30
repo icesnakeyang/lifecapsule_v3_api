@@ -41,6 +41,7 @@ public class WebQuadTaskController {
             in.put("token", token);
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
+            in.put("status", request.getStatus());
 
             Map out = iWebQuadTaskBService.listMyQuadTask(in);
             response.setData(out);
