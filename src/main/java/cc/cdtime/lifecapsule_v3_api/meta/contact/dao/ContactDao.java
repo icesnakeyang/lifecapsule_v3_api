@@ -28,6 +28,8 @@ public interface ContactDao {
      */
     ArrayList<ContactView> listContact(Map qIn);
 
+    Integer totalContact(Map qIn);
+
     /**
      * 读取一个联系人详情
      *

@@ -96,9 +96,11 @@ public class ContactBService implements IContactBService {
         qIn.put("offset", offset);
         qIn.put("size", pageSize);
         ArrayList<ContactView> contactViews = iContactMiddle.listContact(qIn);
+        Integer totalContact = iContactMiddle.totalContact(qIn);
 
         Map out = new HashMap();
         out.put("contactList", contactViews);
+        out.put("totalContact", totalContact);
 
         return out;
     }

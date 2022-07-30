@@ -31,6 +31,12 @@ public class ContactService implements IContactService {
     }
 
     @Override
+    public Integer totalContact(Map qIn) throws Exception {
+        Integer total = contactDao.totalContact(qIn);
+        return total;
+    }
+
+    @Override
     public ContactView getContact(Map qIn) throws Exception {
         ContactView contactView = contactDao.getContact(qIn);
         ContactView remarkView = contactDao.getContactRemark(qIn);

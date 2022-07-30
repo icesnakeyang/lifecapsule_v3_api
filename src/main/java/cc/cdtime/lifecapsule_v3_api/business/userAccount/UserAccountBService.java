@@ -2,6 +2,7 @@ package cc.cdtime.lifecapsule_v3_api.business.userAccount;
 
 import cc.cdtime.lifecapsule_v3_api.framework.constant.ESTags;
 import cc.cdtime.lifecapsule_v3_api.framework.tools.GogoTools;
+import cc.cdtime.lifecapsule_v3_api.meta.category.entity.Category;
 import cc.cdtime.lifecapsule_v3_api.meta.category.entity.CategoryView;
 import cc.cdtime.lifecapsule_v3_api.meta.timer.entity.TimerView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.*;
@@ -10,6 +11,7 @@ import cc.cdtime.lifecapsule_v3_api.middle.timer.ITimerMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.user.IUserMiddle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -86,6 +88,7 @@ public class UserAccountBService implements IUserAccountBService {
         return out;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Map registerByLoginName(Map in) throws Exception {
         String loginName = in.get("loginName").toString();
@@ -123,9 +126,20 @@ public class UserAccountBService implements IUserAccountBService {
 
         String token = loginUser(userLoginName.getUserId());
 
+        /**
+         * 创建默认笔记分类
+         */
+        Category category = new Category();
+        category.setCategoryId(GogoTools.UUID32());
+        category.setUserId(userId);
+        category.setCategoryName(ESTags.DEFAULT.toString());
+        category.setNoteType(ESTags.NORMAL.toString());
+        iCategoryMiddle.createCategory(category);
+
         Map out = new HashMap();
         out.put("token", token);
         out.put("loginName", loginName);
+        out.put("defaultCategoryId", category.getCategoryId());
 
         return out;
     }

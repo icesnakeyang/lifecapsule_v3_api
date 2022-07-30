@@ -23,6 +23,7 @@ public interface IContactService {
      * @return
      */
     ArrayList<ContactView> listContact(Map qIn) throws Exception;
+    Integer totalContact(Map qIn) throws Exception;
 
     /**
      * 读取一个联系人详情

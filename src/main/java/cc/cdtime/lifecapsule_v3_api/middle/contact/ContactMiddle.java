@@ -29,6 +29,12 @@ public class ContactMiddle implements IContactMiddle {
     }
 
     @Override
+    public Integer totalContact(Map qIn) throws Exception {
+        Integer total = iContactService.totalContact(qIn);
+        return total;
+    }
+
+    @Override
     public ContactView getContact(Map qIn, Boolean returnNull, String userId) throws Exception {
         ContactView contactView = iContactService.getContact(qIn);
         if (contactView == null) {
