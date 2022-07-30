@@ -3,7 +3,7 @@ package cc.cdtime.lifecapsule_v3_api.framework.vo;
 import lombok.Data;
 
 @Data
-public class UserAccountRequest {
+public class UserAccountRequest extends Request{
     private String deviceCode;
     private String deviceName;
     private String loginName;

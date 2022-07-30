@@ -41,6 +41,11 @@
                 and user_id=#{userId}
             </when>
         </choose>
+        <choose>
+            <when test="noteType!=null">
+                and note_type=#{noteType}
+            </when>
+        </choose>
     </select>
 
     <!--查询笔记分类列表-->

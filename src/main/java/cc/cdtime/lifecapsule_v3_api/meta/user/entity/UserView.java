@@ -21,4 +21,5 @@ public class UserView {
     private String email;
     private String loginName;
     private Timestamp timerPrimary;
+    private String password;
 }

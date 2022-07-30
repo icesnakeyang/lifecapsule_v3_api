@@ -111,4 +111,16 @@ public class UserMiddle implements IUserMiddle {
         }
         return userView;
     }
+
+    @Override
+    public ArrayList<UserView> listUser(Map qIn) throws Exception {
+        ArrayList<UserView> userViews = iUserBaseService.listUser(qIn);
+        return userViews;
+    }
+
+    @Override
+    public Integer totalUser(Map qIn) throws Exception {
+        Integer total = iUserBaseService.totalUser(qIn);
+        return total;
+    }
 }

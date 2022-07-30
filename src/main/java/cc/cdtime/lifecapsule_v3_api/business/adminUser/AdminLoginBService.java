@@ -13,10 +13,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class AdminUserBService implements IAdminUserBService {
+public class AdminLoginBService implements IAdminLoginBService {
     private final IAdminUserMiddle iAdminUserMiddle;
 
-    public AdminUserBService(IAdminUserMiddle iAdminUserMiddle) {
+    public AdminLoginBService(IAdminUserMiddle iAdminUserMiddle) {
         this.iAdminUserMiddle = iAdminUserMiddle;
     }
 

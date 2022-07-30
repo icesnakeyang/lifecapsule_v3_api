@@ -7,6 +7,7 @@
         <result property="createTime" column="create_time"/>
         <result property="loginName" column="login_name"/>
         <result property="timerPrimary" column="timer_time"/>
+        <result property="loginTime" column="login_time"/>
     </resultMap>
 
     <!--创建一个基本用户账户-->
@@ -72,6 +73,85 @@
         <choose>
             <when test="email!=null">
                 and email=#{email}
+            </when>
+        </choose>
+    </select>
+
+    <!--查询用户列表-->
+    <select id="listUser" parameterType="map" resultMap="userMap">
+        select *
+        from user_base ub
+        left join user_login_name uln on ub.user_id = uln.user_id
+        left join user_phone up on ub.user_id = up.user_id
+        left join user_email ue on ub.user_id = ue.user_id
+        left join (select *
+        from (
+        select user_id,
+        row_number() over (partition by user_id order by login_time desc),
+        ids,
+        login_time
+        from user_login_log
+        ) as de_dump
+        where row_number = 1) aa on ub.user_id = aa.user_id
+        where 1 = 1
+        <choose>
+            <when test="userId!=null">
+                and ub.user_id = #{userId}
+            </when>
+        </choose>
+        <choose>
+            <when test="loginName!=null">
+                and login_name = #{loginName}
+            </when>
+        </choose>
+        <choose>
+            <when test="phone!=null">
+                and phone = #{phone}
+            </when>
+        </choose>
+        <choose>
+            <when test="email!=null">
+                and email = #{email}
+            </when>
+        </choose>
+        order by create_time desc
+        limit #{size}
+        offset #{offset}
+    </select>
+    <select id="totalUser" parameterType="map" resultType="java.lang.Integer">
+        select count(*) as total
+        from user_base ub
+        left join user_login_name uln on ub.user_id = uln.user_id
+        left join user_phone up on ub.user_id = up.user_id
+        left join user_email ue on ub.user_id = ue.user_id
+        left join (select *
+        from (
+        select user_id,
+        row_number() over (partition by user_id order by login_time desc),
+        ids,
+        login_time
+        from user_login_log
+        ) as de_dump
+        where row_number = 1) aa on ub.user_id = aa.user_id
+        where 1 = 1
+        <choose>
+            <when test="userId!=null">
+                and ub.user_id = #{userId}
+            </when>
+        </choose>
+        <choose>
+            <when test="loginName!=null">
+                and login_name = #{loginName}
+            </when>
+        </choose>
+        <choose>
+            <when test="phone!=null">
+                and phone = #{phone}
+            </when>
+        </choose>
+        <choose>
+            <when test="email!=null">
+                and email = #{email}
             </when>
         </choose>
     </select>

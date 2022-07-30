@@ -22,17 +22,22 @@ public class TaskService implements ITaskService {
         /**
          * 确定important和importantLevel
          */
-        if (task.getImportant().equals(ESTags.IMPORTANT_AND_URGENT.toString())) {
+        if (task.getImportant() == null) {
+            task.setImportant(ESTags.IMPORTANT_AND_URGENT.toString());
             task.setImportantLevel(0);
         } else {
-            if (task.getImportant().equals(ESTags.IMPORTANT_NOT_URGENT.toString())) {
-                task.setImportantLevel(1);
+            if (task.getImportant().equals(ESTags.IMPORTANT_AND_URGENT.toString())) {
+                task.setImportantLevel(0);
             } else {
-                if (task.getImportant().equals(ESTags.URGENT_NOT_IMPORTANT.toString())) {
-                    task.setImportantLevel(2);
+                if (task.getImportant().equals(ESTags.IMPORTANT_NOT_URGENT.toString())) {
+                    task.setImportantLevel(1);
                 } else {
-                    if (task.getImportant().equals(ESTags.NOTHING)) {
-                        task.setImportantLevel(3);
+                    if (task.getImportant().equals(ESTags.URGENT_NOT_IMPORTANT.toString())) {
+                        task.setImportantLevel(2);
+                    } else {
+                        if (task.getImportant().equals(ESTags.NOTHING)) {
+                            task.setImportantLevel(3);
+                        }
                     }
                 }
             }

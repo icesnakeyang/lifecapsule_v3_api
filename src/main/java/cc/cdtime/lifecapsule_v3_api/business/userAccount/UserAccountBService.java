@@ -125,7 +125,7 @@ public class UserAccountBService implements IUserAccountBService {
 
         Map out = new HashMap();
         out.put("token", token);
-        out.put("userName", loginName);
+        out.put("loginName", loginName);
 
         return out;
     }

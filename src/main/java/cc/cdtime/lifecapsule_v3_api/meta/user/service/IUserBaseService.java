@@ -3,6 +3,7 @@ package cc.cdtime.lifecapsule_v3_api.meta.user.service;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserBase;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public interface IUserBaseService {
@@ -33,4 +34,16 @@ public interface IUserBaseService {
      * @return
      */
     UserView getUser(Map qIn) throws Exception;
+
+    /**
+     * @param qIn 查询用户列表
+     *            userId
+     *            loginName
+     *            phone
+     *            email
+     * @return
+     */
+    ArrayList<UserView> listUser(Map qIn) throws Exception;
+
+    Integer totalUser(Map qIn) throws Exception;
 }

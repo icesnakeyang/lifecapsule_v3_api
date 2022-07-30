@@ -36,10 +36,23 @@ public class TaskTodoService implements ITaskTodoService {
 
     @Override
     public void updateTaskTodo(Map qIn) throws Exception {
-        taskTodoDao.updateTaskTodo(qIn);
-        String taskId = (String) qIn.get("taskId");
-        if (taskId != null) {
-            taskTodoDao.updateTaskTodoContent(qIn);
+        int cc = 0;
+        if (qIn.get("title") != null) {
+            cc++;
+        }
+        if (qIn.get("complete") != null) {
+            cc++;
+        }
+        if (qIn.get("priority") != null) {
+            cc++;
+        }
+        if (cc > 0) {
+            taskTodoDao.updateTaskTodo(qIn);
+        }
+        if (qIn.get("taskId") != null) {
+            if (qIn.get("content") != null) {
+                taskTodoDao.updateTaskTodoContent(qIn);
+            }
         }
 
     }
@@ -53,5 +66,6 @@ public class TaskTodoService implements ITaskTodoService {
     @Override
     public void deleteTaskTodo(String taskId) throws Exception {
         taskTodoDao.deleteTaskTodo(taskId);
+        taskTodoDao.deleteTaskTodoContent(taskId);
     }
 }

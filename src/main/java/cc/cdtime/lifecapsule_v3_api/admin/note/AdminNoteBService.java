@@ -37,9 +37,11 @@ public class AdminNoteBService implements IAdminNoteBService {
         qIn.put("offset", offset);
         qIn.put("size", pageSize);
         ArrayList<NoteView> noteViews = iNoteMiddle.listNote(qIn);
+        Integer totalNote = iNoteMiddle.totalNote(qIn);
 
         Map out = new HashMap();
         out.put("noteList", noteViews);
+        out.put("totalNote", totalNote);
 
         return out;
     }

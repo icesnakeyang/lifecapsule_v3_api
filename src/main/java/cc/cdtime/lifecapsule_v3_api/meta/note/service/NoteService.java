@@ -51,6 +51,7 @@ public class NoteService implements INoteService {
         /**
          * 检查是否有需要修改的字段
          */
+        String noteId = qIn.get("noteId").toString();
         int cc = 0;
         if (qIn.get("title") != null) {
             cc++;
@@ -67,8 +68,19 @@ public class NoteService implements INoteService {
         if (cc > 0) {
             noteDao.updateNoteInfo(qIn);
         }
-        if (qIn.get("content") != null) {
-            noteDao.updateNoteDetail(qIn);
+        String content = (String) qIn.get("content");
+        if (content != null) {
+            NoteView noteView = noteDao.getNoteDetail(noteId);
+            if (noteView == null || noteView.getContent() == null) {
+                NoteInfo noteInfo = new NoteInfo();
+                noteInfo.setNoteId(noteId);
+                noteInfo.setContent(content);
+                noteDao.createNoteDetail(noteInfo);
+            } else {
+                if (!noteView.getContent().equals(content)) {
+                    noteDao.updateNoteDetail(qIn);
+                }
+            }
         }
     }
 
