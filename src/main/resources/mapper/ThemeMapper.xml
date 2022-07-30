@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.theme.dao.ThemeDao">
+    <!--配置表和对象的字段映射 -->
+    <resultMap id="themeMap" type="cc.cdtime.lifecapsule_v3_api.meta.theme.entity.Theme">
+        <result property="themeId" column="theme_id"/>
+        <result property="themeName" column="theme_name"/>
+        <result property="createUserId" column="create_user_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="blockDark" column="block_dark"/>
+        <result property="blockLight" column="block_light"/>
+        <result property="textLight" column="text_light"/>
+        <result property="textDark" column="text_dark"/>
+        <result property="textHolder" column="text_holder"/>
+        <result property="colorDark" column="color_dark"/>
+        <result property="colorLight" column="color_light"/>
+        <result property="colorMedium" column="color_medium"/>
+        <result property="themeType" column="theme_type"/>
+    </resultMap>
+
+    <!--创建一个主题-->
+    <insert id="createTheme"
+            useGeneratedKeys="true"
+            parameterType="cc.cdtime.lifecapsule_v3_api.meta.theme.entity.Theme">
+        insert into theme
+        (theme_id, theme_name, create_time, create_user_id,
+         background, block_dark, block_light,
+         text_dark, text_light, text_holder,
+         color_dark, color_light, color_medium,
+         status, theme_type)
+        values (#{themeId}, #{themeName}, #{createTime}, #{createUserId},
+                #{background}, #{blockDark}, #{blockLight},
+                #{textDark}, #{textLight}, #{textHolder},
+                #{colorDark}, #{colorLight}, #{colorMedium},
+                #{status}, #{themeType})
+    </insert>
+
+    <!--读取一个主题-->
+    <select id="getTheme" parameterType="java.lang.String" resultMap="themeMap">
+        select * from theme
+        where 1=1
+        <choose>
+            <when test="themeId!=null">
+                and theme_id=#{themeId}
+            </when>
+        </choose>
+    </select>
+
+    <select id="listTheme" parameterType="map" resultMap="themeMap">
+        select *
+        from theme
+        where 1 = 1
+        <choose>
+            <when test="themeType!=null">
+                and theme_type=#{themeType}
+            </when>
+        </choose>
+        order by create_time desc
+    </select>
+
+    <update id="updateTheme" parameterType="map">
+        update theme
+        <set>
+            <if test="background!=null">
+                background=#{background},
+            </if>
+            <if test="blockDark!=null">
+                block_dark=#{blockDark},
+            </if>
+            <if test="blockLight!=null">
+                block_light=#{blockLight},
+            </if>
+            <if test="textDark!=null">
+                text_dark=#{textDark},
+            </if>
+            <if test="textLight!=null">
+                text_light=#{textLight},
+            </if>
+            <if test="textHolder!=null">
+                text_holder=#{textHolder},
+            </if>
+            <if test="themeName!=null">
+                theme_name=#{themeName}
+            </if>
+        </set>
+        where theme_id=#{themeId}
+    </update>
+</mapper>

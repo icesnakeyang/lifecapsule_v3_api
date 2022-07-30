@@ -208,8 +208,10 @@ public class RecipientBService implements IRecipientBService {
             //删除trigger
             qIn = new HashMap();
             qIn.put("recipientId", recipientId);
-            TriggerView triggerView = iTriggerMiddle.getTrigger(qIn, false, userView.getUserId());
-            iTriggerMiddle.deleteTrigger(triggerView.getTriggerId());
+            TriggerView triggerView = iTriggerMiddle.getTrigger(qIn, true, userView.getUserId());
+            if (triggerView!=null && triggerView.getTriggerId() != null) {
+                iTriggerMiddle.deleteTrigger(triggerView.getTriggerId());
+            }
         }
         /**
          * 删除接收人

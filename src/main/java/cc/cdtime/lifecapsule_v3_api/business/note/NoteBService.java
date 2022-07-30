@@ -363,7 +363,9 @@ public class NoteBService implements INoteBService {
          */
         if (encrypt != null) {
             qInEdit.put("encrypt", encrypt);
-            qInEdit.put("userEncodeKey", strAESKey);
+            if (encrypt == 1) {
+                qInEdit.put("userEncodeKey", strAESKey);
+            }
             cc++;
         }
 
@@ -376,6 +378,11 @@ public class NoteBService implements INoteBService {
                 qInEdit.put("content", content);
                 cc++;
             }
+        }else{
+            /**
+             * 还没有笔记内容
+             */
+            qInEdit.put("content",content);
         }
         qInEdit.put("noteId", noteId);
         iNoteMiddle.updateNoteInfo(qInEdit);

@@ -8,14 +8,47 @@ public enum ESTags {
     DEFAULT,
     NORMAL,
     ACTIVE,
-    CREATIVE_NOTE,
-    IMPORTANT_AND_URGENT,
-    IMPORTANT_NOT_URGENT,
-    URGENT_NOT_IMPORTANT,
-    NOTHING,
     TIMER_TYPE_PRIMARY,
     TIMER_TYPE_DATETIME,
     NO_TRIGGER,
     ANONYMOUS,
-    ADMIN_ROOT
+    ADMIN_ROOT,
+    CREATIVE1,
+    CREATIVE2,
+    CREATIVE3,
+    /**
+     * 10秒行动任务
+     */
+    ACTION_10_SEC,
+    /**
+     * 重要且紧急
+     */
+    IMPORTANT_AND_URGENT,
+    /**
+     * 重要但不紧急
+     */
+    IMPORTANT_NOT_URGENT,
+    /**
+     * 紧急但不重要
+     */
+    URGENT_NOT_IMPORTANT,
+    /**
+     * 不重要不紧急
+     */
+    NOTHING,
+    CREATIVE_NOTE,
+    COMPLETE,
+    PROGRESS,
+    /**
+     * 四象限任务
+     */
+    TASK_QUAD,
+    /**
+     * 网页端用户
+     */
+    WEB_CLIENT,
+    /**
+     * 移动端用户
+     */
+    MOBILE_CLIENT
 }

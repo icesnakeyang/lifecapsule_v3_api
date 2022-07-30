@@ -98,4 +98,16 @@ public interface IUserMiddle {
      */
     UserView getUser(Map qIn, Boolean returnNull, Boolean isLogin) throws Exception;
 
+    /**
+     * @param qIn 查询用户列表
+     *            userId
+     *            loginName
+     *            phone
+     *            email
+     * @return
+     */
+    ArrayList<UserView> listUser(Map qIn) throws Exception;
+    Integer totalUser(Map qIn) throws Exception;
+
+
 }

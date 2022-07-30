@@ -59,4 +59,6 @@ public interface TaskTodoDao {
     TaskTodoView getTaskTodo(String taskId);
 
     void deleteTaskTodo(String taskId);
+
+    void deleteTaskTodoContent(String taskId);
 }

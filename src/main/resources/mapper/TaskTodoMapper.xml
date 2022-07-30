@@ -106,4 +106,10 @@
         from task_todo
         where task_id = #{taskId}
     </delete>
+
+    <delete id="deleteTaskTodoContent" parameterType="map">
+        delete
+        from content_detail
+        where index_id = #{taskId}
+    </delete>
 </mapper>

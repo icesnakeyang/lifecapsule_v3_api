@@ -49,12 +49,12 @@
         </choose>
         <choose>
             <when test="opdc!=null">
-                order by important_level, priority desc
+                order by important_level, priority desc,create_time desc
             </when>
         </choose>
         <choose>
             <when test="offset!=null">
-                limit #{offset}, #{size}
+                limit #{size} offset #{offset}
             </when>
         </choose>
     </select>

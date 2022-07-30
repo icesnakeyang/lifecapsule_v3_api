@@ -46,7 +46,8 @@ public class TaskMiddle implements ITaskMiddle{
         }
         if (userId != null) {
             if (!task.getUserId().equals(userId)) {
-                throw new Exception("10048");
+                //不能查询不属于自己的任务
+                throw new Exception("10036");
             }
         }
         return task;

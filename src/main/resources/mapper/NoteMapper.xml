@@ -90,7 +90,7 @@
                 and title like concat('%',#{keyword}, '%')
             </when>
         </choose>
-        order by n.ids desc
+        order by create_time desc
         <choose>
             <when test="offset!=null">
                 limit #{size} offset #{offset}
