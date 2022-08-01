@@ -55,26 +55,46 @@ public class AdminMaintenanceBService implements IAdminMaintenanceBService {
 
 //        ArrayList<Maintenance> noteOldList = iMaintenanceService.listNoteOld();
 
-        ArrayList<UserView> userViews = iMaintenanceService.listUserOld();
+        ArrayList<UserView> userViewsOld = iMaintenanceService.listUserOld();
 
-//        for (int i = 0; i < userViews.size(); i++) {
-//            UserView userView = userViews.get(i);
-//            UserLoginName userLoginName = new UserLoginName();
-//            if (userView.getPhone() != null) {
-//                userLoginName.setLoginName(userView.getPhone());
-//            }
-//            if (userView.getEmail() != null) {
-//                userLoginName.setLoginName(userView.getEmail());
-//            }
-//            userLoginName.setUserId(userView.getUserId());
-//            userLoginName.setPassword(userView.getPassword());
-//            iUserMiddle.createUserLoginName(userLoginName);
-//
-//            UserBase userBase = new UserBase();
-//            userBase.setUserId(userView.getUserId());
-//            userBase.setCreateTime(userView.getCreateTime());
-//            iUserMiddle.createUserBase(userBase);
-//        }
+        /**
+         * 把旧的user表里的数据添加到新的user表里
+         */
+        for (int i = 0; i < userViewsOld.size(); i++) {
+            UserView userViewOld = userViewsOld.get(i);
+            qIn = new HashMap();
+            qIn.put("userId", userViewOld.getUserId());
+            UserView userViewNow = iUserMiddle.getUser(qIn, true, false);
+            int cc = 0;
+            if (userViewNow == null) {
+                UserLoginName userLoginName = new UserLoginName();
+                if (userViewOld.getPhone() != null) {
+                    if (userViewOld.getPhone().equals("19113161230")) {
+                        userLoginName.setLoginName("19113161230_old");
+                    } else {
+                        userLoginName.setLoginName(userViewOld.getPhone());
+                    }
+                    cc++;
+                }
+                if (userViewOld.getEmail() != null) {
+                    userLoginName.setLoginName(userViewOld.getEmail());
+                    cc++;
+                }
+                if (cc == 0) {
+                    String ss = GogoTools.generateString(16);
+                    userLoginName.setLoginName(ss);
+                }
+                userLoginName.setUserId(userViewOld.getUserId());
+                userLoginName.setPassword(userViewOld.getPassword());
+                iUserMiddle.createUserLoginName(userLoginName);
+
+                UserBase userBase = new UserBase();
+                userBase.setUserId(userViewOld.getUserId());
+                userBase.setCreateTime(userViewOld.getCreateTime());
+                iUserMiddle.createUserBase(userBase);
+            }
+
+        }
 
 //        ArrayList<CategoryView> categoryViews = iMaintenanceService.listCategoryOld();
 //        for (int i = 0; i < categoryViews.size(); i++) {
@@ -90,22 +110,28 @@ public class AdminMaintenanceBService implements IAdminMaintenanceBService {
 //
 //        }
 
-        ArrayList<NoteView> noteOldList = iMaintenanceService.listNoteOld();
-        for(int i=0;i<noteOldList.size();i++){
-            NoteView noteView=noteOldList.get(i);
-
-            NoteInfo noteInfo=new NoteInfo();
-            noteInfo.setStatus(noteView.getStatus());
-            noteInfo.setNoteId(noteView.getNoteId());
-            noteInfo.setEncrypt(noteView.getEncrypt());
-            noteInfo.setContent(noteView.getContent());
-            noteInfo.setCategoryId(noteView.getCategoryId());
-            noteInfo.setCreateTime(noteView.getCreateTime());
-            noteInfo.setTitle(noteView.getTitle());
-            noteInfo.setUserEncodeKey(noteView.getUserEncodeKey());
-            noteInfo.setUserId(noteView.getUserId());
-            iNoteMiddle.createNoteInfo(noteInfo);
-        }
+        /**
+         * 把旧笔记数据添加到新笔记表里
+         */
+//        ArrayList<NoteView> noteOldList = iMaintenanceService.listNoteOld();
+//        for(int i=0;i<noteOldList.size();i++){
+//            NoteView noteViewOld=noteOldList.get(i);
+//
+//            NoteView noteViewNow=iNoteMiddle.getNoteTiny(noteViewOld.getNoteId(), true,null);
+//            if(noteViewNow==null){
+//                NoteInfo noteInfo=new NoteInfo();
+//                noteInfo.setStatus(noteViewOld.getStatus());
+//                noteInfo.setNoteId(noteViewOld.getNoteId());
+//                noteInfo.setEncrypt(noteViewOld.getEncrypt());
+//                noteInfo.setContent(noteViewOld.getContent());
+//                noteInfo.setCategoryId(noteViewOld.getCategoryId());
+//                noteInfo.setCreateTime(noteViewOld.getCreateTime());
+//                noteInfo.setTitle(noteViewOld.getTitle());
+//                noteInfo.setUserEncodeKey(noteViewOld.getUserEncodeKey());
+//                noteInfo.setUserId(noteViewOld.getUserId());
+//                iNoteMiddle.createNoteInfo(noteInfo);
+//            }
+//        }
 
 
         Map out = new HashMap();

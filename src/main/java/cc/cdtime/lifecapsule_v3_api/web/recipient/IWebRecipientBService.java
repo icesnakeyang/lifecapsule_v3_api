@@ -23,4 +23,6 @@ public interface IWebRecipientBService {
     Map getRecipient(Map in) throws Exception;
 
     void deleteRecipient(Map in) throws Exception;
+
+    void saveRecipient(Map in) throws Exception;
 }

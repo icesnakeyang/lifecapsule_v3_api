@@ -37,6 +37,7 @@ public class TaskTodoService implements ITaskTodoService {
     @Override
     public void updateTaskTodo(Map qIn) throws Exception {
         int cc = 0;
+        String taskId = qIn.get("taskId").toString();
         if (qIn.get("title") != null) {
             cc++;
         }
@@ -49,12 +50,17 @@ public class TaskTodoService implements ITaskTodoService {
         if (cc > 0) {
             taskTodoDao.updateTaskTodo(qIn);
         }
-        if (qIn.get("taskId") != null) {
-            if (qIn.get("content") != null) {
-                taskTodoDao.updateTaskTodoContent(qIn);
-            }
+        TaskTodoView v1 = taskTodoDao.getTaskTodoContent(taskId);
+        String content = (String) qIn.get("content");
+        if (v1 == null) {
+            TaskTodo taskTodo = new TaskTodo();
+            taskTodo.setTaskId(taskId);
+            taskTodo.setContent(content);
+            taskTodoDao.createTaskTodoContent(taskTodo);
+        } else {
+            int aa = 0;
+            taskTodoDao.updateTaskTodoContent(qIn);
         }
-
     }
 
     @Override

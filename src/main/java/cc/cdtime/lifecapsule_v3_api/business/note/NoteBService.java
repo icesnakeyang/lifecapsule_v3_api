@@ -103,6 +103,10 @@ public class NoteBService implements INoteBService {
         NoteView noteView = iNoteMiddle.getNoteDetail(noteId, false, userView.getUserId());
 
         if (noteView.getEncrypt() != null && noteView.getEncrypt() == 1) {
+            if(strAESKey==null){
+                //查询秘钥错误
+                throw new Exception("10037");
+            }
             //用AES秘钥加密笔记内容的AES秘钥
             String data = noteView.getUserEncodeKey();
             String outCode = GogoTools.encryptAESKey(data, strAESKey);

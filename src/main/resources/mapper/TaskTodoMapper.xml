@@ -112,4 +112,10 @@
         from content_detail
         where index_id = #{taskId}
     </delete>
+
+    <select id="getTaskTodoContent" parameterType="java.lang.String" resultMap="taskTodoMap">
+        select *
+        from content_detail
+        where index_id = #{taskId}
+    </select>
 </mapper>

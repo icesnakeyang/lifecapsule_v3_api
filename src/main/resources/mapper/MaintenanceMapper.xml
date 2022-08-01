@@ -6,6 +6,9 @@
         <result property="userId" column="user_id"/>
         <result property="createTime" column="create_time"/>
         <result property="tokenTime" column="token_time"/>
+        <result property="loginName" column="login_name"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="deviceId" column="device_id"/>
     </resultMap>
 
     <resultMap id="categoryMap" type="cc.cdtime.lifecapsule_v3_api.meta.category.entity.CategoryView">
@@ -25,7 +28,7 @@
 
     <select id="listNoteOld" resultMap="noteMap">
         select *
-        from note
+        from note_old
     </select>
 
     <select id="listUserOld" resultMap="userMap">

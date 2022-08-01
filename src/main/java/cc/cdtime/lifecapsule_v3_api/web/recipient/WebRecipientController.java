@@ -144,4 +144,41 @@ public class WebRecipientController {
         return response;
     }
 
+    /**
+     * web端用户修改一个接收人信息
+     *
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/saveRecipient")
+    public Response saveRecipient(@RequestBody RecipientRequest request,
+                                    HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("recipientId", request.getRecipientId());
+            in.put("name", request.getName());
+            in.put("phone", request.getPhone());
+            in.put("email", request.getEmail());
+            in.put("title", request.getTitle());
+            in.put("description", request.getDescription());
+            in.put("toName", request.getToName());
+            in.put("fromName", request.getFromName());
+
+            iWebRecipientBService.saveRecipient(in);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("Web saveRecipient error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
 }
