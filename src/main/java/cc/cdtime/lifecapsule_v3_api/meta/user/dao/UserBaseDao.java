@@ -46,5 +46,14 @@ public interface UserBaseDao {
      * @return
      */
     ArrayList<UserView> listUser(Map qIn);
+
     Integer totalUser(Map qIn);
+
+    /**
+     * 修改用户基本信息
+     *
+     * @param qIn nickname
+     *            userId
+     */
+    void updateUserBase(Map qIn);
 }

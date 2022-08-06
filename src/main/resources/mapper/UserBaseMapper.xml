@@ -15,8 +15,10 @@
             useGeneratedKeys="true"
             parameterType="cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserBase">
         insert into user_base
-            (user_id, create_time)
-        values (#{userId}, #{createTime})
+        (user_id, create_time,
+         nickname)
+        values (#{userId}, #{createTime},
+                #{nickname})
     </insert>
 
     <!--查询用户基础信息-->
@@ -37,7 +39,8 @@
         password,
         phone,
         email,
-        timer_time
+        timer_time,
+        nickname
         from user_base ub
         left join user_login ul on ub.user_id = ul.user_id
         left join user_login_name uln on ul.user_id = uln.user_id
@@ -115,8 +118,12 @@
             </when>
         </choose>
         order by create_time desc
-        limit #{size}
-        offset #{offset}
+        <choose>
+            <when test="offset!=null">
+                limit #{size}
+                offset #{offset}
+            </when>
+        </choose>
     </select>
     <select id="totalUser" parameterType="map" resultType="java.lang.Integer">
         select count(*) as total
@@ -155,4 +162,10 @@
             </when>
         </choose>
     </select>
+
+    <update id="updateUserBase" parameterType="map">
+        update user_base
+        set nickname = #{nickname}
+        where user_id = #{userId}
+    </update>
 </mapper>

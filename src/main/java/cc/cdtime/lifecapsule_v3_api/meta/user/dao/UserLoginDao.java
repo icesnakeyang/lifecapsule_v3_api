@@ -27,6 +27,7 @@ public interface UserLoginDao {
      * @return
      */
     ArrayList<UserView> listUserLoginLog(Map qIn);
+    Integer totalUserLoginLog(Map qIn);
 
     /**
      * 创建一个用户的登录信息

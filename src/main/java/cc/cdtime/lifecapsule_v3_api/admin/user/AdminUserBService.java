@@ -3,6 +3,7 @@ package cc.cdtime.lifecapsule_v3_api.admin.user;
 import cc.cdtime.lifecapsule_v3_api.meta.admin.entity.AdminUserView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
 import cc.cdtime.lifecapsule_v3_api.middle.admin.IAdminUserMiddle;
+import cc.cdtime.lifecapsule_v3_api.middle.note.INoteMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.user.IUserMiddle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,12 +17,15 @@ import java.util.Map;
 public class AdminUserBService implements IAdminUserBService {
     private final IAdminUserMiddle iAdminUserMiddle;
     private final IUserMiddle iUserMiddle;
+    private final INoteMiddle iNoteMiddle;
 
 
     public AdminUserBService(IAdminUserMiddle iAdminUserMiddle,
-                             IUserMiddle iUserMiddle) {
+                             IUserMiddle iUserMiddle,
+                             INoteMiddle iNoteMiddle) {
         this.iAdminUserMiddle = iAdminUserMiddle;
         this.iUserMiddle = iUserMiddle;
+        this.iNoteMiddle = iNoteMiddle;
     }
 
     @Override
@@ -47,5 +51,52 @@ public class AdminUserBService implements IAdminUserBService {
 
         return out;
 
+    }
+
+    @Override
+    public Map listUserLoginLog(Map in) throws Exception {
+        String token = in.get("token").toString();
+        Integer pageIndex = (Integer) in.get("pageIndex");
+        Integer pageSize = (Integer) in.get("pageSize");
+        String searchKey = (String) in.get("searchKey");
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        AdminUserView adminUserView = iAdminUserMiddle.getAdminUser(qIn, false);
+
+        qIn = new HashMap();
+        Integer offset = (pageIndex - 1) * pageSize;
+        qIn.put("offset", offset);
+        qIn.put("size", pageSize);
+        qIn.put("loginName", searchKey);
+        ArrayList<UserView> userViews = iUserMiddle.listUserLoginLog(qIn);
+        Integer totalUserLogs = iUserMiddle.totalUserLoginLog(qIn);
+
+        Map out = new HashMap();
+        out.put("userList", userViews);
+        out.put("totalUserLogs", totalUserLogs);
+
+        return out;
+    }
+
+    @Override
+    public Map loadUserStatistic(Map in) throws Exception {
+        String token = in.get("token").toString();
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        AdminUserView adminUserView = iAdminUserMiddle.getAdminUser(qIn, false);
+
+        qIn = new HashMap();
+        Integer totalUserLogs = iUserMiddle.totalUserLoginLog(qIn);
+        Integer totalUser = iUserMiddle.totalUser(qIn);
+        Integer totalNote = iNoteMiddle.totalNote(qIn);
+
+        Map out = new HashMap();
+        out.put("totalUserLogs", totalUserLogs);
+        out.put("totalUser", totalUser);
+        out.put("totalNote", totalNote);
+
+        return out;
     }
 }

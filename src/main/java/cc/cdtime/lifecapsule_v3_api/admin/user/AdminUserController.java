@@ -53,4 +53,67 @@ public class AdminUserController {
         }
         return response;
     }
+
+    /**
+     * 读取所有用户登录日志列表
+     *
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/listUserLoginLog")
+    public Response listUserLoginLog(@RequestBody UserAccountRequest request,
+                                     HttpServletRequest httpServletRequest
+    ) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("pageIndex", request.getPageIndex());
+            in.put("pageSize", request.getPageSize());
+            in.put("searchKey", request.getSearchKey());
+
+                Map out = iAdminUserBService.listUserLoginLog(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("Admin listUserLoginLog error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
+     * 读取用户统计数据
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @GetMapping("/loadUserStatistic")
+    public Response loadUserStatistic(HttpServletRequest httpServletRequest
+    ) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+
+            Map out = iAdminUserBService.loadUserStatistic(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("Admin loadUserStatistic error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
 }

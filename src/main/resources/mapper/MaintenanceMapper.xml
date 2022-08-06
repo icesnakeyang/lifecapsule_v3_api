@@ -7,7 +7,6 @@
         <result property="createTime" column="create_time"/>
         <result property="tokenTime" column="token_time"/>
         <result property="loginName" column="login_name"/>
-        <result property="nickName" column="nick_name"/>
         <result property="deviceId" column="device_id"/>
     </resultMap>
 

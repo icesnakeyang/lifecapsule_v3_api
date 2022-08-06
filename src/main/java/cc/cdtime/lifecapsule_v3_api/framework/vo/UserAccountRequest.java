@@ -8,4 +8,6 @@ public class UserAccountRequest extends Request{
     private String deviceName;
     private String loginName;
     private String password;
+    private String nickname;
+    private String searchKey;
 }

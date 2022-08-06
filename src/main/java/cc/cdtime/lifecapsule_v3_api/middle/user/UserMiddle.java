@@ -61,6 +61,12 @@ public class UserMiddle implements IUserMiddle {
     }
 
     @Override
+    public Integer totalUserLoginLog(Map qIn) throws Exception {
+        Integer total = iUserLoginService.totalUserLoginLog(qIn);
+        return total;
+    }
+
+    @Override
     public void createUserLogin(UserLogin userLogin) throws Exception {
         iUserLoginService.createUserLogin(userLogin);
     }
@@ -122,5 +128,10 @@ public class UserMiddle implements IUserMiddle {
     public Integer totalUser(Map qIn) throws Exception {
         Integer total = iUserBaseService.totalUser(qIn);
         return total;
+    }
+
+    @Override
+    public void updateUserBase(Map qIn) throws Exception {
+        iUserBaseService.updateUserBase(qIn);
     }
 }

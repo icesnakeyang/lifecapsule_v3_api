@@ -24,4 +24,8 @@ public class UserLoginLog {
      * 设备登录时间
      */
     private Date loginTime;
+    /**
+     * 用户登录的终端
+     */
+    private String frontEnd;
 }

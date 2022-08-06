@@ -38,4 +38,21 @@ public interface IAppUserBService {
      * @throws Exception
      */
     Map registerByLoginName(Map in) throws Exception;
+
+    /**
+     * App用户查询自己的个人信息
+     *
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    Map getMyProfile(Map in) throws Exception;
+
+    /**
+     * App用户保存自己的个人信息
+     *
+     * @param in
+     * @throws Exception
+     */
+    void saveMyProfile(Map in) throws Exception;
 }

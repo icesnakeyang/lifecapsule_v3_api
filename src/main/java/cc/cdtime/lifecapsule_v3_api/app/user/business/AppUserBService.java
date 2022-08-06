@@ -22,7 +22,7 @@ public class AppUserBService implements IAppUserBService {
     private final IUserAccountBService iUserAccountBService;
 
     public AppUserBService(IUserMiddle iUserMiddle,
-                            IUserAccountBService iUserAccountBService) {
+                           IUserAccountBService iUserAccountBService) {
         this.iUserMiddle = iUserMiddle;
         this.iUserAccountBService = iUserAccountBService;
     }
@@ -101,6 +101,7 @@ public class AppUserBService implements IAppUserBService {
         userLoginLog.setDeviceCode(deviceCode);
         userLoginLog.setDeviceName(deviceName);
         userLoginLog.setLoginTime(new Date());
+        userLoginLog.setFrontEnd(ESTags.MOBILE_CLIENT.toString());
         iUserMiddle.createUserLoginLog(userLoginLog);
 
         return out;
@@ -108,13 +109,14 @@ public class AppUserBService implements IAppUserBService {
 
     @Override
     public Map signInByToken(Map in) throws Exception {
-        Map out=iUserAccountBService.signByToken(in);
+        Map out = iUserAccountBService.signByToken(in);
         return out;
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Map loginByLoginName(Map in) throws Exception {
+        in.put("frontEnd", ESTags.MOBILE_CLIENT);
         Map out = iUserAccountBService.loginByLoginName(in);
         return out;
     }
@@ -124,6 +126,24 @@ public class AppUserBService implements IAppUserBService {
     public Map registerByLoginName(Map in) throws Exception {
         Map out = iUserAccountBService.registerByLoginName(in);
         return out;
+    }
+
+    /**
+     * App用户查询自己的个人信息
+     *
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Map getMyProfile(Map in) throws Exception {
+        Map out = iUserAccountBService.getProfile(in);
+        return out;
+    }
+
+    @Override
+    public void saveMyProfile(Map in) throws Exception {
+       iUserAccountBService.saveProfile(in);
     }
 
     private void verifyToken() throws Exception {

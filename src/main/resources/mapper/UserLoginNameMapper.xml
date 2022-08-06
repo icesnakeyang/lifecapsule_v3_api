@@ -5,6 +5,7 @@
     <resultMap id="userMap" type="cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView">
         <result property="userId" column="user_id"/>
         <result property="createTime" column="create_time"/>
+        <result property="loginName" column="login_name"/>
     </resultMap>
 
     <!--创建一个用自定义登录名账号-->
@@ -18,11 +19,16 @@
 
     <!--查询一个登录名用户-->
     <select id="getLoginName" parameterType="map" resultMap="userMap">
-        select * from user_login_name
-        where 1=1
+        select uln.ids,
+        uln.user_id,
+        login_name,
+        nickname
+        from user_login_name uln
+        left join user_base ub on uln.user_id = ub.user_id
+        where 1 = 1
         <choose>
             <when test="userId!=null">
-                and user_id=#{userId}
+                and uln.user_id=#{userId}
             </when>
         </choose>
         <choose>

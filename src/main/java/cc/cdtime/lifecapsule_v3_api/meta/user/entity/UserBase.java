@@ -12,4 +12,5 @@ public class UserBase {
     private Integer ids;
     private String userId;
     private Date createTime;
+    private String nickname;
 }

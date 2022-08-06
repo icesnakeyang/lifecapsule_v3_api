@@ -50,6 +50,7 @@ public class AppUserController {
 
             memo.put("deviceCode", request.getDeviceCode());
             memo.put("deviceName", request.getDeviceName());
+            memo.put("frontEnd", ESTags.MOBILE_CLIENT);
 
             Map out = iAppUserBService.signInByDevice(in);
             response.setData(out);
@@ -93,6 +94,7 @@ public class AppUserController {
 
             logMap.put("UserActType", ESTags.USER_LOGIN);
             logMap.put("token", token);
+            memo.put("frontEnd", ESTags.MOBILE_CLIENT);
 
             Map out = iAppUserBService.signInByToken(in);
             response.setData(out);
@@ -140,6 +142,7 @@ public class AppUserController {
             logMap.put("UserActType", ESTags.USER_LOGIN);
             logMap.put("token", token);
             memo.put("loginName", request.getLoginName());
+            memo.put("frontEnd", ESTags.MOBILE_CLIENT);
 
             Map out = iAppUserBService.loginByLoginName(in);
             response.setData(out);
@@ -207,6 +210,64 @@ public class AppUserController {
             iCommonService.createUserActLog(logMap);
         } catch (Exception ex3) {
             log.error("User registerByLoginName user act error:" + ex3.getMessage());
+        }
+        return response;
+    }
+
+    /**
+     * App用户查询自己的个人信息
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/getMyProfile")
+    public Response getMyProfile(@RequestBody UserAccountRequest request,
+                                 HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+
+            Map out = iAppUserBService.getMyProfile(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("User getMyProfile error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
+     * App用户保存自己的个人信息
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/saveMyProfile")
+    public Response saveMyProfile(@RequestBody UserAccountRequest request,
+                                  HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("nickname", request.getNickname());
+
+            iAppUserBService.saveMyProfile(in);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("User saveMyProfile error:" + ex.getMessage());
+            }
         }
         return response;
     }

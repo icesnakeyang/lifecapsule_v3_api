@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.noteSendLog.dao.NoteSendDao">
+    <!--配置表和对象的字段映射 -->
+    <resultMap id="noteSendMap" type="cc.cdtime.lifecapsule_v3_api.meta.noteSendLog.entity.NoteSendLogView">
+        <result property="sendLogId" column="send_log_id"/>
+        <result property="sendUserId" column="send_user_id"/>
+        <result property="receiveUserId" column="receive_user_id"/>
+        <result property="sendTime" column="send_time"/>
+        <result property="readTime" column="read_time"/>
+        <result property="sendLoginName" column="send_login_name"/>
+        <result property="receiveLoginName" column="receive_login_name"/>
+        <result property="userEncodeKey" column="user_encode_key"/>
+        <result property="sendUserNickname" column="send_user_nickname"/>
+        <result property="receiveUserNickname" column="receive_user_nickname"/>
+    </resultMap>
+
+    <!--创建一个笔记发送记录-->
+    <insert id="createNoteSendLog"
+            useGeneratedKeys="true"
+            parameterType="cc.cdtime.lifecapsule_v3_api.meta.noteSendLog.entity.NoteSendLog">
+        insert into note_send_log
+        (send_user_id, receive_user_id,
+         send_time, read_time,
+         send_log_id)
+        values (#{sendUserId}, #{receiveUserId},
+                #{sendTime}, #{readTime},
+                #{sendLogId})
+    </insert>
+
+    <insert id="createContentDetail" parameterType="cc.cdtime.lifecapsule_v3_api.meta.noteSendLog.entity.NoteSendLog">
+        insert into content_detail
+            (index_id, content)
+        values (#{sendLogId}, #{noteContent})
+    </insert>
+
+    <!--读取主动发送笔记记录列表-->
+    <select id="listNoteSendLog" parameterType="map" resultMap="noteSendMap">
+        select nsl.ids,
+        send_user_id,
+        receive_user_id,
+        send_time,
+        read_time,
+        send_log_id,
+        su.login_name as send_login_name,
+        ru.login_name as receive_login_name,
+        ubsend.nickname as send_user_nickname,
+        ubreceive.nickname as receive_user_nickname
+        from note_send_log nsl
+        left join user_login_name su on send_user_id = su.user_id
+        left join user_login_name ru on receive_user_id = ru.user_id
+        left join user_base ubsend on send_user_id = ubsend.user_id
+        left join user_base ubreceive on receive_user_id = ubreceive.user_id
+        where 1 = 1
+        <choose>
+            <when test="sendUserId!=null">
+                and send_user_id=#{sendUserId}
+            </when>
+        </choose>
+        <choose>
+            <when test="receiveUserId!=null">
+                and receive_user_id=#{receiveUserId}
+            </when>
+        </choose>
+    </select>
+
+    <select id="totalNoteSendLog" parameterType="map" resultType="java.lang.Integer">
+        select count(*) as total from note_send_log
+        where 1=1
+        <choose>
+            <when test="sendUserId!=null">
+                and send_user_id=#{sendUserId}
+            </when>
+        </choose>
+        <choose>
+            <when test="receiveUserId!=null">
+                and receive_user_id=#{receiveUserId}
+            </when>
+        </choose>
+        <choose>
+            <when test="unread">
+                and read_time is null
+            </when>
+        </choose>
+    </select>
+
+    <select id="getNoteSendLog" parameterType="java.lang.String" resultMap="noteSendMap">
+        select nsl.ids,
+               send_user_id,
+               receive_user_id,
+               send_time,
+               read_time,
+               send_log_id,
+               su.login_name      as send_login_name,
+               ru.login_name      as receive_login_name,
+               ubsend.nickname    as send_user_nickname,
+               ubreceive.nickname as receive_user_nickname,
+               content
+        from note_send_log nsl
+                 left join user_login_name su on send_user_id = su.user_id
+                 left join user_login_name ru on receive_user_id = ru.user_id
+                 left join user_base ubsend on send_user_id = ubsend.user_id
+                 left join user_base ubreceive on receive_user_id = ubreceive.user_id
+                 left join content_detail cd on index_id = send_log_id
+        where send_log_id = #{sendLogId}
+    </select>
+</mapper>

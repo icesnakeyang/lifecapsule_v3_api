@@ -39,6 +39,7 @@ public interface IUserMiddle {
      * @return
      */
     ArrayList<UserView> listUserLoginLog(Map qIn) throws Exception;
+    Integer totalUserLoginLog(Map qIn) throws Exception;
 
     /**
      * 创建一个用户的登录信息
@@ -108,6 +109,14 @@ public interface IUserMiddle {
      */
     ArrayList<UserView> listUser(Map qIn) throws Exception;
     Integer totalUser(Map qIn) throws Exception;
+
+    /**
+     * 修改用户基本信息
+     *
+     * @param qIn nickname
+     *            userId
+     */
+    void updateUserBase(Map qIn) throws Exception;
 
 
 }

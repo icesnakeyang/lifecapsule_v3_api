@@ -23,6 +23,7 @@ public interface IUserAccountBService {
 
     /**
      * 获取用户基本信息
+     *
      * @param in
      * @return
      * @throws Exception
@@ -30,4 +31,15 @@ public interface IUserAccountBService {
     Map getUserInfo(Map in) throws Exception;
 
     Map signByToken(Map in) throws Exception;
+
+    /**
+     * App用户查询自己的个人信息
+     *
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    Map getProfile(Map in) throws Exception;
+
+    void saveProfile(Map in) throws Exception;
 }

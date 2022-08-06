@@ -1,6 +1,7 @@
 package cc.cdtime.lifecapsule_v3_api.web.user;
 
 import cc.cdtime.lifecapsule_v3_api.business.userAccount.IUserAccountBService;
+import cc.cdtime.lifecapsule_v3_api.framework.constant.ESTags;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
 import cc.cdtime.lifecapsule_v3_api.middle.user.IUserMiddle;
 import org.springframework.stereotype.Service;
@@ -27,12 +28,14 @@ public class WebUserBService implements IWebUserBService {
 
     @Override
     public Map login(Map in) throws Exception {
+        in.put("frontEnd", ESTags.WEB_CLIENT.toString());
         Map out = iUserAccountBService.loginByLoginName(in);
         return out;
     }
 
     @Override
     public Map registerByLoginName(Map in) throws Exception {
+        in.put("frontEnd", ESTags.WEB_CLIENT.toString());
         Map out = iUserAccountBService.registerByLoginName(in);
         return out;
     }
@@ -45,6 +48,7 @@ public class WebUserBService implements IWebUserBService {
 
     @Override
     public Map signByToken(Map in) throws Exception {
+        in.put("frontEnd", ESTags.WEB_CLIENT.toString());
         Map out = iUserAccountBService.signByToken(in);
         return out;
     }

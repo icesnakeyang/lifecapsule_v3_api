@@ -8,6 +8,9 @@
         <result property="deviceName" column="device_name"/>
         <result property="loginTime" column="login_time"/>
         <result property="tokenTime" column="token_time"/>
+        <result property="loginName" column="login_name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="frontEnd" column="front_end"/>
     </resultMap>
 
     <!--记录用户登录日志-->
@@ -16,16 +19,28 @@
             parameterType="cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserLoginLog">
         insert into user_login_log
         (user_id, device_code,
-         device_name, login_time)
+         device_name, login_time, front_end)
         values (#{userId}, #{deviceCode},
-                #{deviceName}, #{loginTime})
+                #{deviceName}, #{loginTime}, #{frontEnd})
     </insert>
 
     <!--查询用户登录日志列表-->
     <select id="listUserLoginLog" parameterType="map" resultMap="userMap">
-        select *
-        from user_login_log
+        select ulg.ids,
+        ulg.user_id,
+        login_time,
+        login_name,
+        create_time,
+        front_end
+        from user_login_log ulg
+        left join user_login_name uln on ulg.user_id = uln.user_id
+        left join user_base ub on ulg.user_id=ub.user_id
         where 1=1
+        <choose>
+            <when test="loginName!=null">
+                and login_name like concat('%',#{loginName}, '%')
+            </when>
+        </choose>
         <choose>
             <when test="deviceCode!=null">
                 and device_code = #{deviceCode}
@@ -33,13 +48,35 @@
         </choose>
         <choose>
             <when test="userId!=null">
-                and user_id=#{userId}
+                and ulg.user_id=#{userId}
             </when>
         </choose>
-        order by ids desc
+        order by login_time desc
         <choose>
             <when test="offset!=null">
                 limit #{size} offset #{offset}
+            </when>
+        </choose>
+    </select>
+    <select id="totalUserLoginLog" parameterType="map" resultType="java.lang.Integer">
+        select count(*) as total
+        from user_login_log ulg
+        left join user_login_name uln on ulg.user_id = uln.user_id
+        left join user_base ub on ulg.user_id=ub.user_id
+        where 1=1
+        <choose>
+            <when test="loginName!=null">
+                and login_name like concat('%',#{loginName}, '%')
+            </when>
+        </choose>
+        <choose>
+            <when test="deviceCode!=null">
+                and device_code = #{deviceCode}
+            </when>
+        </choose>
+        <choose>
+            <when test="userId!=null">
+                and ulg.user_id=#{userId}
             </when>
         </choose>
     </select>

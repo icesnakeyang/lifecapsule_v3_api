@@ -22,6 +22,7 @@ public class UserView {
     private String loginName;
     private Timestamp timerPrimary;
     private String password;
-    private String nickName;
+    private String nickname;
     private String deviceId;
+    private String frontEnd;
 }

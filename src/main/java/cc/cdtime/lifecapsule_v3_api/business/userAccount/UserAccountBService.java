@@ -36,6 +36,7 @@ public class UserAccountBService implements IUserAccountBService {
     public Map loginByLoginName(Map in) throws Exception {
         String loginName = in.get("loginName").toString();
         String password = in.get("password").toString();
+        String frontEnd = in.get("frontEnd").toString();
 
         Map qIn = new HashMap();
         qIn.put("loginName", loginName);
@@ -46,7 +47,9 @@ public class UserAccountBService implements IUserAccountBService {
             throw new Exception("10005");
         }
 
-        String token = loginUser(userView.getUserId());
+        Map params = new HashMap();
+        params.put("frontEnd", frontEnd);
+        String token = loginUser(userView.getUserId(), params);
 
         Map out = new HashMap();
         out.put("token", token);
@@ -74,7 +77,10 @@ public class UserAccountBService implements IUserAccountBService {
         /**
          * 读取用户的账号信息
          */
-        out.put("loginName", loginName);
+        Map user=new HashMap();
+        user.put("loginName", userView.getLoginName());
+        user.put("nickname", userView.getNickname());
+        out.put("user", user);
 
         CategoryView categoryView = iCategoryMiddle.getDefaultCategory(userView.getUserId());
 
@@ -93,6 +99,9 @@ public class UserAccountBService implements IUserAccountBService {
     public Map registerByLoginName(Map in) throws Exception {
         String loginName = in.get("loginName").toString();
         String password = in.get("password").toString();
+        String deviceName = in.get("deviceName").toString();
+        String deviceCode = in.get("deviceCode").toString();
+        String frontEnd = in.get("frontEnd").toString();
 
         /**
          * 1、检查loginName是否已经注册过了
@@ -124,7 +133,9 @@ public class UserAccountBService implements IUserAccountBService {
         userLoginName.setPassword(GogoTools.encoderByMd5(password));
         iUserMiddle.createUserLoginName(userLoginName);
 
-        String token = loginUser(userLoginName.getUserId());
+        Map params = new HashMap();
+        params.put("frontEnd", frontEnd);
+        String token = loginUser(userLoginName.getUserId(), params);
 
         /**
          * 创建默认笔记分类
@@ -172,23 +183,29 @@ public class UserAccountBService implements IUserAccountBService {
         String token = in.get("token").toString();
         String deviceName = (String) in.get("deviceName");
         String deviceCode = (String) in.get("deviceCode");
+        String frontEnd = (String) in.get("frontEnd");
 
         Map qIn = new HashMap();
         qIn.put("token", token);
         UserView userView = iUserMiddle.getUser(qIn, false, true);
 
+        /**
+         * 获取用户的个人信息
+         */
         Map user = new HashMap();
         user.put("token", userView.getToken());
         if (userView.getPhone() != null) {
-            user.put("userName", userView.getPhone());
-        } else {
-            if (userView.getEmail() != null) {
-                user.put("userName", userView.getEmail());
-            } else {
-                if (userView.getLoginName() != null) {
-                    user.put("userName", userView.getLoginName());
-                }
-            }
+            user.put("phone", userView.getPhone());
+        }
+        if (userView.getEmail() != null) {
+            user.put("email", userView.getEmail());
+        }
+        if (userView.getLoginName() != null) {
+            user.put("loginName", userView.getLoginName());
+        }
+        if (userView.getNickname() != null) {
+            user.put("nickname", userView.getNickname());
+
         }
 
         Map out = new HashMap();
@@ -213,18 +230,63 @@ public class UserAccountBService implements IUserAccountBService {
             out.put("timerPrimary", timerView.getTimerTime().getTime());
         }
         //////////////////////
-
-
+        /**
+         * 记录userLoginLog
+         */
         UserLoginLog userLoginLog = new UserLoginLog();
         userLoginLog.setUserId(userView.getUserId());
         userLoginLog.setLoginTime(new Date());
         userLoginLog.setDeviceName(deviceName);
         userLoginLog.setDeviceCode(deviceCode);
+        userLoginLog.setFrontEnd(frontEnd);
+        iUserMiddle.createUserLoginLog(userLoginLog);
 
         return out;
     }
 
-    private String loginUser(String userId) throws Exception {
+    @Override
+    public Map getProfile(Map in) throws Exception {
+        String token = in.get("token").toString();
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        UserView userView = iUserMiddle.getUser(qIn, false, true);
+
+        Map user = new HashMap();
+        user.put("loginName", userView.getLoginName());
+        Map out = new HashMap();
+        out.put("userInfo", userView);
+        return out;
+    }
+
+    @Override
+    public void saveProfile(Map in) throws Exception {
+        String token = in.get("token").toString();
+        String nickname = in.get("nickname").toString();
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        UserView userView = iUserMiddle.getUser(qIn, false, true);
+
+        int cc = 0;
+        if (nickname != null) {
+            if (userView.getNickname() == null) {
+                cc++;
+            } else {
+                if (!nickname.equals(userView.getNickname())) {
+                    cc++;
+                }
+            }
+        }
+        if (cc > 0) {
+            qIn = new HashMap();
+            qIn.put("nickname", nickname);
+            qIn.put("userId", userView.getUserId());
+            iUserMiddle.updateUserBase(qIn);
+        }
+    }
+
+    private String loginUser(String userId, Map params) throws Exception {
         Map qIn = new HashMap();
         qIn.put("userId", userId);
         UserView userView = iUserMiddle.getUserLogin(qIn, true);
@@ -251,6 +313,14 @@ public class UserAccountBService implements IUserAccountBService {
         UserLoginLog userLoginLog = new UserLoginLog();
         userLoginLog.setUserId(userId);
         userLoginLog.setLoginTime(new Date());
+        if (params != null) {
+            String deviceName = (String) params.get("deviceName");
+            String deviceCode = (String) params.get("deviceCode");
+            String frontEnd = (String) params.get("frontEnd");
+            userLoginLog.setDeviceName(deviceName);
+            userLoginLog.setDeviceCode(deviceCode);
+            userLoginLog.setFrontEnd(frontEnd);
+        }
         iUserMiddle.createUserLoginLog(userLoginLog);
 
         return token;

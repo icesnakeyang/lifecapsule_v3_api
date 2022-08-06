@@ -46,4 +46,12 @@ public interface IUserBaseService {
     ArrayList<UserView> listUser(Map qIn) throws Exception;
 
     Integer totalUser(Map qIn) throws Exception;
+
+    /**
+     * 修改用户基本信息
+     *
+     * @param qIn nickname
+     *            userId
+     */
+    void updateUserBase(Map qIn) throws Exception;
 }

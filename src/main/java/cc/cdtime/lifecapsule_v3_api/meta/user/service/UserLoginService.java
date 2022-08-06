@@ -29,6 +29,12 @@ public class UserLoginService implements IUserLoginService {
     }
 
     @Override
+    public Integer totalUserLoginLog(Map qIn) throws Exception {
+        Integer total = userLoginDao.totalUserLoginLog(qIn);
+        return total;
+    }
+
+    @Override
     public void createUserLogin(UserLogin userLogin) throws Exception {
         userLoginDao.createUserLogin(userLogin);
     }

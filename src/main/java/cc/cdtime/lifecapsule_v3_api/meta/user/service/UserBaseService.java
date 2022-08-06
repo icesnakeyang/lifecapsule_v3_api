@@ -44,4 +44,9 @@ public class UserBaseService implements IUserBaseService {
         Integer total = userBaseDao.totalUser(qIn);
         return total;
     }
+
+    @Override
+    public void updateUserBase(Map qIn) throws Exception {
+        userBaseDao.updateUserBase(qIn);
+    }
 }

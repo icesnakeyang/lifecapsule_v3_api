@@ -17,4 +17,9 @@
         values (#{createTime}, #{actType}, #{result},
                 #{memo}, #{userId})
     </insert>
+
+    <select id="totaluserAct" parameterType="map" resultType="java.lang.Integer">
+        select count(*) as total
+        from user_act
+    </select>
 </mapper>
