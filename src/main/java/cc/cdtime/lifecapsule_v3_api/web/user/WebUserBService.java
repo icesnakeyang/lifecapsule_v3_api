@@ -22,6 +22,7 @@ public class WebUserBService implements IWebUserBService {
 
     @Override
     public Map register(Map in) throws Exception {
+        in.put("frontEnd", ESTags.WEB_CLIENT.toString());
         Map out = iUserAccountBService.registerByLoginName(in);
         return out;
     }

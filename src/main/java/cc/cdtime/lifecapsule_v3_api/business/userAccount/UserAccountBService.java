@@ -99,8 +99,8 @@ public class UserAccountBService implements IUserAccountBService {
     public Map registerByLoginName(Map in) throws Exception {
         String loginName = in.get("loginName").toString();
         String password = in.get("password").toString();
-        String deviceName = in.get("deviceName").toString();
-        String deviceCode = in.get("deviceCode").toString();
+        String deviceName = (String)in.get("deviceName");
+        String deviceCode =(String) in.get("deviceCode");
         String frontEnd = in.get("frontEnd").toString();
 
         /**

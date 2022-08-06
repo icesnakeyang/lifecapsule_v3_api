@@ -124,6 +124,7 @@ public class AppUserBService implements IAppUserBService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Map registerByLoginName(Map in) throws Exception {
+        in.put("frontEnd", ESTags.MOBILE_CLIENT.toString());
         Map out = iUserAccountBService.registerByLoginName(in);
         return out;
     }
