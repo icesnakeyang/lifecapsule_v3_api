@@ -16,6 +16,7 @@
         <result property="colorLight" column="color_light"/>
         <result property="colorMedium" column="color_medium"/>
         <result property="themeType" column="theme_type"/>
+        <result property="colorDanger" column="color_danger"/>
     </resultMap>
 
     <!--创建一个主题-->
@@ -27,12 +28,12 @@
          background, block_dark, block_light,
          text_dark, text_light, text_holder,
          color_dark, color_light, color_medium,
-         status, theme_type)
+         status, theme_type, color_danger)
         values (#{themeId}, #{themeName}, #{createTime}, #{createUserId},
                 #{background}, #{blockDark}, #{blockLight},
                 #{textDark}, #{textLight}, #{textHolder},
                 #{colorDark}, #{colorLight}, #{colorMedium},
-                #{status}, #{themeType})
+                #{status}, #{themeType}, #{colorDanger})
     </insert>
 
     <!--读取一个主题-->
@@ -78,6 +79,9 @@
             </if>
             <if test="textHolder!=null">
                 text_holder=#{textHolder},
+            </if>
+            <if test="colorDanger!=null">
+                color_danger=#{colorDanger},
             </if>
             <if test="themeName!=null">
                 theme_name=#{themeName}

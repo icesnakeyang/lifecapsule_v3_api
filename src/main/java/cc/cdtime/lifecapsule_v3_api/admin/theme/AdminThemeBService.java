@@ -53,6 +53,7 @@ public class AdminThemeBService implements IAdminThemeBService {
         String textDark = (String) in.get("textDark");
         String textLight = (String) in.get("textLight");
         String textHolder = (String) in.get("textHolder");
+        String colorDanger = (String) in.get("colorDanger");
 
         Map qIn = new HashMap();
         qIn.put("token", token);
@@ -71,6 +72,7 @@ public class AdminThemeBService implements IAdminThemeBService {
         theme.setTextLight(textLight);
         theme.setTextDark(textDark);
         theme.setTextHolder(textHolder);
+        theme.setColorDanger(colorDanger);
         iThemeMiddle.createTheme(theme);
     }
 
@@ -104,6 +106,7 @@ public class AdminThemeBService implements IAdminThemeBService {
         String textLight = (String) in.get("textLight");
         String textHolder = (String) in.get("textHolder");
         String themeName = (String) in.get("themeName");
+        String colorDanger = (String) in.get("colorDanger");
 
         int cc = 0;
         Map qIn = new HashMap();
@@ -135,6 +138,10 @@ public class AdminThemeBService implements IAdminThemeBService {
             qIn.put("themeName", themeName);
             cc++;
         }
+        if (colorDanger != null) {
+            qIn.put("colorDanger", colorDanger);
+            cc++;
+        }
         if (cc == 0) {
             return;
         }
@@ -146,6 +153,134 @@ public class AdminThemeBService implements IAdminThemeBService {
         AdminUserView adminUserView = iAdminUserMiddle.getAdminUser(qIn2, false);
 
         iThemeMiddle.updateTheme(qIn);
+    }
+
+    @Override
+    public void createAppTheme(Map in) throws Exception {
+        String token = in.get("token").toString();
+        String themeName = in.get("themeName").toString();
+        String background = (String) in.get("background");
+        String blockDark = (String) in.get("blockDark");
+        String blockLight = (String) in.get("blockLight");
+        String textDark = (String) in.get("textDark");
+        String textLight = (String) in.get("textLight");
+        String textHolder = (String) in.get("textHolder");
+        String colorDanger = (String) in.get("colorDanger");
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        AdminUserView adminUserView = iAdminUserMiddle.getAdminUser(qIn, false);
+
+        Theme theme = new Theme();
+        theme.setThemeId(GogoTools.UUID32());
+        theme.setThemeType(ESTags.MOBILE_CLIENT.toString());
+        theme.setThemeName(themeName);
+        theme.setCreateTime(new Date());
+        theme.setCreateUserId(adminUserView.getAdminId());
+        theme.setStatus(ESTags.ACTIVE.toString());
+        theme.setBackground(background);
+        theme.setBlockDark(blockDark);
+        theme.setBlockLight(blockLight);
+        theme.setTextLight(textLight);
+        theme.setTextDark(textDark);
+        theme.setTextHolder(textHolder);
+        theme.setColorDanger(colorDanger);
+        iThemeMiddle.createTheme(theme);
+    }
+
+    @Override
+    public void updateAppTheme(Map in) throws Exception {
+        String token = in.get("token").toString();
+        String themeId = in.get("themeId").toString();
+        String background = (String) in.get("background");
+        String blockDark = (String) in.get("blockDark");
+        String blockLight = (String) in.get("blockLight");
+        String textDark = (String) in.get("textDark");
+        String textLight = (String) in.get("textLight");
+        String textHolder = (String) in.get("textHolder");
+        String themeName = (String) in.get("themeName");
+        String colorDanger = (String) in.get("colorDanger");
+
+        int cc = 0;
+        Map qIn = new HashMap();
+        if (background != null) {
+            qIn.put("background", background);
+            cc++;
+        }
+        if (blockDark != null) {
+            qIn.put("blockDark", blockDark);
+            cc++;
+        }
+        if (blockLight != null) {
+            qIn.put("blockLight", blockLight);
+            cc++;
+        }
+        if (textDark != null) {
+            qIn.put("textDark", textDark);
+            cc++;
+        }
+        if (textLight != null) {
+            qIn.put("textLight", textLight);
+            cc++;
+        }
+        if (textHolder != null) {
+            qIn.put("textHolder", textHolder);
+            cc++;
+        }
+        if (themeName != null) {
+            qIn.put("themeName", themeName);
+            cc++;
+        }
+        if (colorDanger != null) {
+            qIn.put("colorDanger", colorDanger);
+            cc++;
+        }
+        if (cc == 0) {
+            return;
+        }
+
+        qIn.put("themeId", themeId);
+
+        Map qIn2 = new HashMap();
+        qIn2.put("token", token);
+        AdminUserView adminUserView = iAdminUserMiddle.getAdminUser(qIn2, false);
+
+        iThemeMiddle.updateTheme(qIn);
+    }
+
+    @Override
+    public Map listAppTheme(Map in) throws Exception {
+        String token = in.get("token").toString();
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        AdminUserView adminUserView = iAdminUserMiddle.getAdminUser(qIn, false);
+
+        qIn = new HashMap();
+        qIn.put("themeType", ESTags.MOBILE_CLIENT);
+        ArrayList<Theme> themes = iThemeMiddle.listTheme(qIn);
+
+        Map out = new HashMap();
+        out.put("themeList", themes);
+
+        return out;
+    }
+
+    @Override
+    public Map getAppTheme(Map in) throws Exception {
+        String token = in.get("token").toString();
+        String themeId = in.get("themeId").toString();
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        AdminUserView adminUserView = iAdminUserMiddle.getAdminUser(qIn, false);
+
+        Theme theme = iThemeMiddle.getTheme(themeId, false);
+
+        Map out = new HashMap();
+        out.put("theme", theme);
+
+        return out;
     }
 
 

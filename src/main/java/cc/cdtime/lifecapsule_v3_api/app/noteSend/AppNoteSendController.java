@@ -36,8 +36,10 @@ public class AppNoteSendController {
         try {
             String token = httpServletRequest.getHeader("token");
             in.put("token", token);
-            in.put("receiveUserId", request.getReceiveUserId());
+            in.put("phone", request.getPhone());
+            in.put("email", request.getEmail());
             in.put("noteContent", request.getNoteContent());
+            in.put("title", request.getTitle());
 
             iAppNoteSendBService.sendNote(in);
         } catch (Exception ex) {
@@ -147,6 +149,38 @@ public class AppNoteSendController {
     }
 
     /**
+     * App端用户读取自己发送的笔记列表
+     *
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/listMyNoteSendLog")
+    public Response listMyNoteSendLogSend(@RequestBody NoteSendRequest request,
+                             HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("pageIndex", request.getPageIndex());
+            in.put("pageSize", request.getPageSize());
+
+            Map out=iAppNoteSendBService.listMyNoteSendLogSend(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("App listMyNoteSendLogSend error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
      * App端用户读取一个发送的笔记详情
      * 未读note数
      *
@@ -173,6 +207,36 @@ public class AppNoteSendController {
             } catch (Exception ex2) {
                 response.setCode(10001);
                 log.error("App getMyReceiveNote error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
+     * App端用户物理删除一个发送的笔记
+     *
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/deleteMySendNote")
+    public Response deleteMySendNote(@RequestBody NoteSendRequest request,
+                             HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("sendLogId", request.getSendLogId());
+
+            iAppNoteSendBService.deleteMySendNote(in);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("App deleteMySendNote error:" + ex.getMessage());
             }
         }
         return response;

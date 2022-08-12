@@ -125,6 +125,38 @@ public class AppNoteController {
     }
 
     /**
+     * App用户查询自己的笔记的简要信息，不包含笔记内容
+     *
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/getMyNoteTiny")
+    public Response getMyNoteTiny(@RequestBody NoteRequest request,
+                              HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("noteId", request.getNoteId());
+
+            Map out = iAppNoteBService.getMyNoteTiny(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("App getMyNoteTiny error:" + ex.getMessage());
+            }
+        }
+        return response;
+
+    }
+
+    /**
      * App端用户保存笔记，如果没有就新增
      *
      * @param request

@@ -99,6 +99,7 @@ public class AdminThemeController {
             in.put("textDark", request.getTextDark());
             in.put("textLight", request.getTextLight());
             in.put("textHolder", request.getTextHolder());
+            in.put("colorDanger", request.getColorDanger());
 
             iAdminThemeBService.createWebTheme(in);
         } catch (Exception ex) {
@@ -107,6 +108,42 @@ public class AdminThemeController {
             } catch (Exception ex2) {
                 response.setCode(10001);
                 log.error("Admin createWebTheme error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
+     * 管理员新增一个App主题
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/createAppTheme")
+    public Response createAppTheme(@RequestBody ThemeRequest request,
+                                   HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("themeName", request.getThemeName());
+            in.put("background", request.getBackground());
+            in.put("blockDark", request.getBlockDark());
+            in.put("blockLight", request.getBlockLight());
+            in.put("textDark", request.getTextDark());
+            in.put("textLight", request.getTextLight());
+            in.put("textHolder", request.getTextHolder());
+            in.put("colorDanger", request.getColorDanger());
+
+            iAdminThemeBService.createAppTheme(in);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("Admin createAppTheme error:" + ex.getMessage());
             }
         }
         return response;
@@ -135,6 +172,7 @@ public class AdminThemeController {
             in.put("textDark", request.getTextDark());
             in.put("textLight", request.getTextLight());
             in.put("textHolder", request.getTextHolder());
+            in.put("colorDanger", request.getColorDanger());
 
             iAdminThemeBService.updateWebTheme(in);
         } catch (Exception ex) {
@@ -143,6 +181,102 @@ public class AdminThemeController {
             } catch (Exception ex2) {
                 response.setCode(10001);
                 log.error("Admin updateWebTheme error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
+     * 管理员修改一个App主题
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/updateAppTheme")
+    public Response updateAppTheme(@RequestBody ThemeRequest request,
+                                   HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("themeName", request.getThemeName());
+            in.put("themeId", request.getThemeId());
+            in.put("background", request.getBackground());
+            in.put("blockDark", request.getBlockDark());
+            in.put("blockLight", request.getBlockLight());
+            in.put("textDark", request.getTextDark());
+            in.put("textLight", request.getTextLight());
+            in.put("textHolder", request.getTextHolder());
+            in.put("colorDanger", request.getColorDanger());
+
+            iAdminThemeBService.updateAppTheme(in);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("Admin updateAppTheme error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
+     * 管理员查询App端的主题列表
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/listAppTheme")
+    public Response listAppTheme(@RequestBody ThemeRequest request,
+                                 HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+
+            Map out = iAdminThemeBService.listAppTheme(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("Admin listAppTheme error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
+     * 管理员查询App端的主题详情
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/getAppTheme")
+    public Response getAppTheme(@RequestBody ThemeRequest request,
+                                HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("themeId", request.getThemeId());
+
+            Map out = iAdminThemeBService.getAppTheme(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("Admin getAppTheme error:" + ex.getMessage());
             }
         }
         return response;

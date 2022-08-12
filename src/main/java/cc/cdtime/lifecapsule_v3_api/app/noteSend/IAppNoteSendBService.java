@@ -39,4 +39,21 @@ public interface IAppNoteSendBService {
     Map listMyNoteReceiveLog(Map in) throws Exception;
 
     Map getMyReceiveNote(Map in) throws Exception;
+
+    /**
+     * App端用户读取自己发送的笔记列表
+     *
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    Map listMyNoteSendLogSend(Map in) throws Exception;
+
+    /**
+     * App端用户物理删除一个发送的笔记
+     *
+     * @param in
+     * @throws Exception
+     */
+    void deleteMySendNote(Map in) throws Exception;
 }

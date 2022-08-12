@@ -16,4 +16,7 @@ public class NoteSendLog {
     private Date sendTime;
     private Date readTime;
     private String noteContent;
+    private String sendPhone;
+    private String sendEmail;
+    private String title;
 }

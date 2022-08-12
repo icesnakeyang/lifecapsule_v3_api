@@ -97,4 +97,10 @@ public class AppNoteBservice implements IAppNoteBService {
         Map out = iNoteBService.totalNote(in);
         return out;
     }
+
+    @Override
+    public Map getMyNoteTiny(Map in) throws Exception {
+        Map out = iNoteBService.getNoteTiny(in);
+        return out;
+    }
 }

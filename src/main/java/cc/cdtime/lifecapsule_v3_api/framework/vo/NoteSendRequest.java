@@ -9,4 +9,7 @@ public class NoteSendRequest extends Request{
     private String searchKey;
     private String sendLogId;
     private String noteContent;
+    private String phone;
+    private String email;
+    private String title;
 }

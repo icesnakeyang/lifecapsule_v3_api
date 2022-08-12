@@ -10,6 +10,9 @@ public interface INoteSendBService {
     Map loadMyNoteSendStatistic(Map in) throws Exception;
 
     Map listNoteReceiveLog(Map in) throws Exception;
+    Map listNoteSendLogSend(Map in) throws Exception;
 
     Map getNoteSendLog(Map in) throws Exception;
+
+    void deleteSendNote(Map in) throws Exception;
 }

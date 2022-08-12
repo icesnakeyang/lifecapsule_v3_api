@@ -122,4 +122,13 @@ public interface IAppNoteBService {
      * @throws Exception
      */
     Map totalMyNote(Map in) throws Exception;
+
+    /**
+     * App用户查询自己的笔记的简要信息，不包含笔记内容
+     *
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    Map getMyNoteTiny(Map in) throws Exception;
 }

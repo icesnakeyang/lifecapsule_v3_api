@@ -7,7 +7,7 @@ public interface INoteBService {
 
     Map getMyNote(Map in) throws Exception;
 
-    void saveNote(Map in) throws Exception;
+    Map saveNote(Map in) throws Exception;
 
     /**
      * 统计笔记数量
@@ -19,4 +19,12 @@ public interface INoteBService {
     Map totalNote(Map in) throws Exception;
 
     void deleteNote(Map in) throws Exception;
+
+    /**
+     * 查询笔记的简要信息，不包含笔记内容
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    Map getNoteTiny(Map in) throws Exception;
 }

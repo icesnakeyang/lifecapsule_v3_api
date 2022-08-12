@@ -40,4 +40,26 @@ public interface NoteSendDao {
     Integer totalNoteSendLog(Map qIn);
 
     NoteSendLogView getNoteSendLog(String sendLogId);
+
+    /**
+     * 修改笔记发送日志
+     *
+     * @param qIn readTime
+     *            sendLogId
+     */
+    void updateNoteSendLog(Map qIn);
+
+    /**
+     * 物理删除一个发送的笔记
+     *
+     * @param sendLogId
+     */
+    void deleteNoteSendLog(String sendLogId);
+
+    /**
+     * 物理删除发送笔记的内容
+     *
+     * @param sendLogId
+     */
+    void deleteNoteSendContent(String sendLogId);
 }

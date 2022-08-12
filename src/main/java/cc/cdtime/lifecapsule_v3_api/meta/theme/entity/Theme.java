@@ -20,6 +20,7 @@ public class Theme {
     private String colorDark;
     private String colorLight;
     private String colorMedium;
+    private String colorDanger;
     private String status;
     private String themeType;
 }

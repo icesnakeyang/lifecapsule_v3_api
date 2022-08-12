@@ -103,7 +103,7 @@ public class NoteBService implements INoteBService {
         NoteView noteView = iNoteMiddle.getNoteDetail(noteId, false, userView.getUserId());
 
         if (noteView.getEncrypt() != null && noteView.getEncrypt() == 1) {
-            if(strAESKey==null){
+            if (strAESKey == null) {
                 //查询秘钥错误
                 throw new Exception("10037");
             }
@@ -123,7 +123,7 @@ public class NoteBService implements INoteBService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void saveNote(Map in) throws Exception {
+    public Map saveNote(Map in) throws Exception {
         String token = in.get("token").toString();
         String noteId = (String) in.get("noteId");
         String title = (String) in.get("title");
@@ -165,7 +165,8 @@ public class NoteBService implements INoteBService {
                 CategoryView categoryView = iCategoryMiddle.getDefaultCategory(userView.getUserId());
                 in.put("categoryId", categoryView.getCategoryId());
             }
-            createNote(in);
+            noteId = createNote(in);
+
         } else {
             /**
              * 修改
@@ -173,6 +174,9 @@ public class NoteBService implements INoteBService {
             in.put("strAESKey", strAESKey);
             updateNote(in);
         }
+        Map out = new HashMap();
+        out.put("noteId", noteId);
+        return out;
     }
 
     @Override
@@ -226,7 +230,30 @@ public class NoteBService implements INoteBService {
         iTaskMiddle.deleteTask(qIn);
     }
 
-    private void createNote(Map in) throws Exception {
+    @Override
+    public Map getNoteTiny(Map in) throws Exception {
+        String token = in.get("token").toString();
+        String noteId = in.get("noteId").toString();
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        UserView userView = iUserMiddle.getUser(qIn, false, true);
+
+        NoteView noteView = iNoteMiddle.getNoteTiny(noteId, false, userView.getUserId());
+
+        Map note = new HashMap();
+        note.put("noteId", noteView.getNoteId());
+        note.put("categoryId", noteView.getCategoryId());
+        note.put("categoryName", noteView.getCategoryName());
+        note.put("createTime", noteView.getCreateTime());
+        note.put("title", noteView.getTitle());
+        Map out = new HashMap();
+        out.put("note", note);
+
+        return out;
+    }
+
+    private String createNote(Map in) throws Exception {
         String content = in.get("content").toString();
         String categoryId = in.get("categoryId").toString();
         String userId = in.get("userId").toString();
@@ -281,6 +308,7 @@ public class NoteBService implements INoteBService {
         noteInfo.setUserId(userId);
         noteInfo.setTitle(title);
         iNoteMiddle.createNoteInfo(noteInfo);
+        return noteInfo.getNoteId();
     }
 
     private void updateNote(Map in) throws Exception {
@@ -382,11 +410,11 @@ public class NoteBService implements INoteBService {
                 qInEdit.put("content", content);
                 cc++;
             }
-        }else{
+        } else {
             /**
              * 还没有笔记内容
              */
-            qInEdit.put("content",content);
+            qInEdit.put("content", content);
         }
         qInEdit.put("noteId", noteId);
         iNoteMiddle.updateNoteInfo(qInEdit);

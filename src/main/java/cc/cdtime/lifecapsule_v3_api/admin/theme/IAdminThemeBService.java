@@ -29,4 +29,26 @@ public interface IAdminThemeBService {
      * @throws Exception
      */
     void updateWebTheme(Map in) throws Exception;
+
+    void createAppTheme(Map in) throws Exception;
+
+    void updateAppTheme(Map in) throws Exception;
+
+    /**
+     * 管理员查询App端的主题列表
+     *
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    Map listAppTheme(Map in) throws Exception;
+
+    /**
+     * 管理员查询App端的主题详情
+     *
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    Map getAppTheme(Map in) throws Exception;
 }

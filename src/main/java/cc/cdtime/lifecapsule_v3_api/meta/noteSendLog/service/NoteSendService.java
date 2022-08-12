@@ -39,4 +39,15 @@ public class NoteSendService implements INoteSendService {
         NoteSendLogView noteSendLogView = noteSendDao.getNoteSendLog(sendLogId);
         return noteSendLogView;
     }
+
+    @Override
+    public void updateNoteSendLog(Map qIn) throws Exception {
+        noteSendDao.updateNoteSendLog(qIn);
+    }
+
+    @Override
+    public void deleteNoteSendLog(String sendLogId) throws Exception {
+        noteSendDao.deleteNoteSendLog(sendLogId);
+        noteSendDao.deleteNoteSendContent(sendLogId);
+    }
 }

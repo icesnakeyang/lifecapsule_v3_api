@@ -90,7 +90,8 @@ public class WebNoteController {
             in.put("content", request.getContent());
             in.put("encrypt", request.getEncrypt());
 
-            iWebNoteBService.saveMyNote(in);
+            Map out=iWebNoteBService.saveMyNote(in);
+            response.setData(out);
         } catch (Exception ex) {
             try {
                 response.setCode(Integer.parseInt(ex.getMessage()));

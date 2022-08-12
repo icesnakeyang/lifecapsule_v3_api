@@ -13,7 +13,7 @@ public interface IWebNoteBService {
 
     void deleteMyCategory(Map in) throws Exception;
 
-    void saveMyNote(Map in) throws Exception;
+    Map saveMyNote(Map in) throws Exception;
 
     /**
      * 用户物理删除一篇笔记

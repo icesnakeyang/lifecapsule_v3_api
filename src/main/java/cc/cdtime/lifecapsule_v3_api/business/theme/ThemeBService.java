@@ -23,14 +23,10 @@ public class ThemeBService implements IThemeBService {
 
     @Override
     public Map listTheme(Map in) throws Exception {
-        String token = in.get("token").toString();
-        String themeType=in.get("themeType").toString();
+        String themeType = in.get("themeType").toString();
 
         Map qIn = new HashMap();
-        qIn.put("token", token);
-        UserView userView = iUserMiddle.getUser(qIn, false, true);
-
-        qIn = new HashMap();
+        qIn.put("themeType", themeType);
         ArrayList<Theme> themes = iThemeMiddle.listTheme(qIn);
 
         Map out = new HashMap();

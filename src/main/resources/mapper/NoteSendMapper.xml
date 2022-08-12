@@ -13,6 +13,8 @@
         <result property="userEncodeKey" column="user_encode_key"/>
         <result property="sendUserNickname" column="send_user_nickname"/>
         <result property="receiveUserNickname" column="receive_user_nickname"/>
+        <result property="sendPhone" column="send_phone"/>
+        <result property="sendEmail" column="send_email"/>
     </resultMap>
 
     <!--创建一个笔记发送记录-->
@@ -22,10 +24,12 @@
         insert into note_send_log
         (send_user_id, receive_user_id,
          send_time, read_time,
-         send_log_id)
+         send_log_id, send_phone, send_email,
+         title)
         values (#{sendUserId}, #{receiveUserId},
                 #{sendTime}, #{readTime},
-                #{sendLogId})
+                #{sendLogId}, #{sendPhone}, #{sendEmail},
+                #{title})
     </insert>
 
     <insert id="createContentDetail" parameterType="cc.cdtime.lifecapsule_v3_api.meta.noteSendLog.entity.NoteSendLog">
@@ -42,10 +46,13 @@
         send_time,
         read_time,
         send_log_id,
+        send_phone,
+        send_email,
         su.login_name as send_login_name,
         ru.login_name as receive_login_name,
         ubsend.nickname as send_user_nickname,
-        ubreceive.nickname as receive_user_nickname
+        ubreceive.nickname as receive_user_nickname,
+        title
         from note_send_log nsl
         left join user_login_name su on send_user_id = su.user_id
         left join user_login_name ru on receive_user_id = ru.user_id
@@ -95,7 +102,10 @@
                ru.login_name      as receive_login_name,
                ubsend.nickname    as send_user_nickname,
                ubreceive.nickname as receive_user_nickname,
-               content
+               content,
+               send_phone,
+               send_email,
+               title
         from note_send_log nsl
                  left join user_login_name su on send_user_id = su.user_id
                  left join user_login_name ru on receive_user_id = ru.user_id
@@ -104,4 +114,23 @@
                  left join content_detail cd on index_id = send_log_id
         where send_log_id = #{sendLogId}
     </select>
+
+    <update id="updateNoteSendLog" parameterType="map">
+        update note_send_log
+        set read_time=#{readTime}
+        where send_log_id = #{sendLogId}
+    </update>
+
+    <!--物理删除一个发送的笔记-->
+    <delete id="deleteNoteSendLog" parameterType="map">
+        delete
+        from note_send_log
+        where send_log_id = #{sendLogId}
+    </delete>
+    <!--物理删除发送笔记的内容-->
+    <delete id="deleteNoteSendContent" parameterType="map">
+        delete
+        from content_detail
+        where index_id = #{sendLogId}
+    </delete>
 </mapper>

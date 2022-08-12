@@ -31,25 +31,48 @@ public class NoteSendBService implements INoteSendBService {
     @Override
     public void sendNote(Map in) throws Exception {
         String token = in.get("token").toString();
-        String receiveUserId = in.get("receiveUserId").toString();
-        String noteContent = in.get("noteContent").toString();
+        String phone = (String) in.get("phone");
+        String email = (String) in.get("email");
+        String noteContent = (String) in.get("noteContent");
+        String title = (String) in.get("title");
 
         Map qIn = new HashMap();
         qIn.put("token", token);
         UserView userView = iUserMiddle.getUser(qIn, false, true);
 
-        UserView receiver = iUserMiddle.getUser(qIn, true, false);
-        if (receiver == null) {
-            //发送的用户不存在
-            throw new Exception("10038");
+        UserView receiver = null;
+        qIn = new HashMap();
+        if (phone != null) {
+            qIn.put("phone", phone);
+            receiver = iUserMiddle.getUser(qIn, true, false);
+            if (receiver == null) {
+                qIn = new HashMap();
+                qIn.put("loginName", phone);
+                receiver = iUserMiddle.getUser(qIn, true, false);
+            }
+        } else {
+            if (email != null) {
+                qIn.put("email", email);
+                receiver = iUserMiddle.getUser(qIn, true, false);
+                if (receiver == null) {
+                    qIn = new HashMap();
+                    qIn.put("loginName", email);
+                    receiver = iUserMiddle.getUser(qIn, true, false);
+                }
+            }
         }
 
         NoteSendLog noteSendLog = new NoteSendLog();
         noteSendLog.setSendLogId(GogoTools.UUID32());
         noteSendLog.setSendTime(new Date());
         noteSendLog.setSendUserId(userView.getUserId());
-        noteSendLog.setReceiveUserId(receiveUserId);
+        if (receiver != null) {
+            noteSendLog.setReceiveUserId(receiver.getUserId());
+        }
+        noteSendLog.setSendPhone(phone);
+        noteSendLog.setSendEmail(email);
         noteSendLog.setNoteContent(noteContent);
+        noteSendLog.setTitle(title);
         iNoteSendMiddle.createNoteSendLog(noteSendLog);
     }
 
@@ -137,6 +160,40 @@ public class NoteSendBService implements INoteSendBService {
         return out;
     }
 
+    /**
+     * App端用户读取自己发送的笔记列表
+     *
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Map listNoteSendLogSend(Map in) throws Exception {
+        String token = in.get("token").toString();
+        Integer pageIndex = (Integer) in.get("pageIndex");
+        Integer pageSize = (Integer) in.get("pageSize");
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        UserView userView = iUserMiddle.getUser(qIn, false, true);
+
+        Map out = new HashMap();
+
+        //我发送的笔记列表
+        qIn = new HashMap();
+        qIn.put("sendUserId", userView.getUserId());
+        ArrayList<NoteSendLogView> views = iNoteSendMiddle.listNoteSendLog(qIn);
+        Integer total = iNoteSendMiddle.totalNoteSendLog(qIn);
+        out.put("sendNoteList", views);
+        out.put("totalSendNote", total);
+        //未读总数
+        qIn.put("unread", true);
+        Integer totalSendNoteUnread = iNoteSendMiddle.totalNoteSendLog(qIn);
+        out.put("totalSendNoteUnread", totalSendNoteUnread);
+
+        return out;
+    }
+
     @Override
     public Map getNoteSendLog(Map in) throws Exception {
         String token = in.get("token").toString();
@@ -149,9 +206,23 @@ public class NoteSendBService implements INoteSendBService {
         Map out = new HashMap();
 
         //我收到的笔记列表
-        NoteSendLogView noteSendLogView = iNoteSendMiddle.getNoteSendLog(sendLogId);
+        NoteSendLogView noteSendLogView = iNoteSendMiddle.getNoteSendLog(sendLogId, false, userView.getUserId());
         out.put("noteSendLog", noteSendLogView);
 
         return out;
+    }
+
+    @Override
+    public void deleteSendNote(Map in) throws Exception {
+        String token = in.get("token").toString();
+        String sendLogId = in.get("sendLogId").toString();
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        UserView userView = iUserMiddle.getUser(qIn, false, true);
+
+        NoteSendLogView noteSendLogView = iNoteSendMiddle.getNoteSendLog(sendLogId, false, userView.getUserId());
+
+        iNoteSendMiddle.deleteNoteSendLog(sendLogId);
     }
 }

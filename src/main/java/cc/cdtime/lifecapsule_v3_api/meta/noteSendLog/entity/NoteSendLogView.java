@@ -19,5 +19,9 @@ public class NoteSendLogView {
     private String userEncodeKey;
     private String sendUserNickname;
     private String receiveUserNickname;
+    private Date readTime;
+    private String sendPhone;
+    private String sendEmail;
+    private String title;
 
 }
