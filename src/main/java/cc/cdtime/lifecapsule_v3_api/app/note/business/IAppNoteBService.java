@@ -27,7 +27,7 @@ public interface IAppNoteBService {
      * @param in
      * @throws Exception
      */
-    void saveMyNote(Map in) throws Exception;
+    Map saveMyNote(Map in) throws Exception;
 
     /**
      * App端用户删除笔记

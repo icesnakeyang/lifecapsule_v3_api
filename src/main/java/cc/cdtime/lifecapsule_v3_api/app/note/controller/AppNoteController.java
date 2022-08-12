@@ -180,8 +180,8 @@ public class AppNoteController {
             in.put("encrypt", request.getEncrypt());
             in.put("categoryId", request.getCategoryId());
 
-            iAppNoteBService.saveMyNote(in);
-            int cc=0;
+            Map out=iAppNoteBService.saveMyNote(in);
+            response.setData(out);
         } catch (Exception ex) {
             try {
                 response.setCode(Integer.parseInt(ex.getMessage()));

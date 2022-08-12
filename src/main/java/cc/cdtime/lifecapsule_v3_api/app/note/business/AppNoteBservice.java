@@ -30,8 +30,9 @@ public class AppNoteBservice implements IAppNoteBService {
     }
 
     @Override
-    public void saveMyNote(Map in) throws Exception {
-        iNoteBService.saveNote(in);
+    public Map saveMyNote(Map in) throws Exception {
+        Map out = iNoteBService.saveNote(in);
+        return out;
     }
 
     @Override
