@@ -50,5 +50,13 @@ public enum ESTags {
     /**
      * 移动端用户
      */
-    MOBILE_CLIENT
+    MOBILE_CLIENT,
+    /**
+     * 游客，没有进行email验证
+     */
+    USER_GUEST,
+    /**
+     * 已经email验证
+     */
+    USER_NORMAL
 }

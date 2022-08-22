@@ -76,6 +76,28 @@ public class AppUserController {
     }
 
     /**
+     * 当用户第一次使用app，或者打开app时，手机上没有token信息时，直接创建一个用户账号
+     */
+    @ResponseBody
+    @GetMapping("/signInByNothing")
+    public Response signInByNothing() {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            Map out = iAppUserBService.signInByNothing(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("User signInByNothing error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
      * 用户通过token登录
      *
      * @param httpServletRequest
@@ -86,20 +108,12 @@ public class AppUserController {
     public Response signInByToken(HttpServletRequest httpServletRequest) {
         Response response = new Response();
         Map in = new HashMap();
-        Map logMap = new HashMap();
-        Map memo = new HashMap();
         try {
             String token = httpServletRequest.getHeader("token");
             in.put("token", token);
 
-            logMap.put("UserActType", ESTags.USER_LOGIN);
-            logMap.put("token", token);
-            memo.put("frontEnd", ESTags.MOBILE_CLIENT);
-
             Map out = iAppUserBService.signInByToken(in);
             response.setData(out);
-
-            logMap.put("result", ESTags.SUCCESS);
         } catch (Exception ex) {
             try {
                 response.setCode(Integer.parseInt(ex.getMessage()));
@@ -107,14 +121,38 @@ public class AppUserController {
                 response.setCode(10001);
                 log.error("User signInByToken error:" + ex.getMessage());
             }
-            logMap.put("result", ESTags.FAIL);
-            memo.put("error", ex.getMessage());
         }
+        return response;
+    }
+
+    /**
+     * 用户绑定email
+     * email通过验证后，绑定给用户账号
+     *
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/bindEmail")
+    public Response bindEmail(@RequestBody UserAccountRequest request,
+                                  HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
         try {
-            logMap.put("memo", memo);
-            iCommonService.createUserActLog(logMap);
-        } catch (Exception ex3) {
-            log.error("User signInByToken user act error:" + ex3.getMessage());
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("email", request.getEmail());
+
+            Map out = iAppUserBService.bindEmail(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("User signInByEmail error:" + ex.getMessage());
+            }
         }
         return response;
     }
@@ -259,6 +297,7 @@ public class AppUserController {
             String token = httpServletRequest.getHeader("token");
             in.put("token", token);
             in.put("nickname", request.getNickname());
+            in.put("email", request.getEmail());
 
             iAppUserBService.saveMyProfile(in);
         } catch (Exception ex) {
@@ -267,6 +306,96 @@ public class AppUserController {
             } catch (Exception ex2) {
                 response.setCode(10001);
                 log.error("User saveMyProfile error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
+     * App用户查询自己的所有email列表
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/listMyEmail")
+    public Response listMyEmail(@RequestBody UserAccountRequest request,
+                                HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("pageIndex", request.getPageIndex());
+            in.put("pageSize", request.getPageSize());
+
+            Map out = iAppUserBService.listMyEmail(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("User listMyEmail error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
+     * App用户查询自己的email详情
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/getMyEmail")
+    public Response getMyEmail(@RequestBody UserAccountRequest request,
+                               HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("emailId", request.getEmailId());
+
+            Map out = iAppUserBService.getMyEmail(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("User getMyEmail error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
+     * App用户设置一个email为默认
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/setDefaultEmail")
+    public Response setDefaultEmail(@RequestBody UserAccountRequest request,
+                                    HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("emailId", request.getEmailId());
+
+            iAppUserBService.setDefaultEmail(in);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("User setDefaultEmail error:" + ex.getMessage());
             }
         }
         return response;

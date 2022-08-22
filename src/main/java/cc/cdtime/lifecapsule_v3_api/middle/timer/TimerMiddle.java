@@ -56,7 +56,7 @@ public class TimerMiddle implements ITimerMiddle {
                 return null;
             } else {
                 //没有查询到该计时器
-                throw new Exception("10042");
+                throw new Exception("10044");
             }
         }
         return timerView;

@@ -23,19 +23,6 @@ public interface IUserBaseService {
     UserView getUserBase(String userId) throws Exception;
 
     /**
-     * 泛查询一个用户信息
-     *
-     * @param qIn userId
-     *            token
-     *            loginName
-     *            password
-     *            phone
-     *            email
-     * @return
-     */
-    UserView getUser(Map qIn) throws Exception;
-
-    /**
      * @param qIn 查询用户列表
      *            userId
      *            loginName

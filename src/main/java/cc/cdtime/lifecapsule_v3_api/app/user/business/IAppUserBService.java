@@ -55,4 +55,27 @@ public interface IAppUserBService {
      * @throws Exception
      */
     void saveMyProfile(Map in) throws Exception;
+
+    Map signInByNothing(Map in) throws Exception;
+
+    Map listMyEmail(Map in) throws Exception;
+
+    Map getMyEmail(Map in) throws Exception;
+
+    /**
+     * App用户设置一个email为默认
+     *
+     * @param in
+     * @throws Exception
+     */
+    void setDefaultEmail(Map in) throws Exception;
+
+    /**
+     * 用户通过email验证登录
+     *
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    Map bindEmail(Map in) throws Exception;
 }

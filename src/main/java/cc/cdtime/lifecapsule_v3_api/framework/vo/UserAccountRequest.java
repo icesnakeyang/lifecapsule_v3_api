@@ -10,4 +10,6 @@ public class UserAccountRequest extends Request{
     private String password;
     private String nickname;
     private String searchKey;
+    private String email;
+    private String emailId;
 }

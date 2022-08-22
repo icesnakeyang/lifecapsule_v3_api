@@ -15,7 +15,7 @@ public class UserView {
     private Timestamp loginTime;
     private Timestamp regTime;
     private String token;
-    private String tokenTime;
+    private Timestamp tokenTime;
     private Timestamp createTime;
     private String phone;
     private String email;
@@ -25,4 +25,5 @@ public class UserView {
     private String nickname;
     private String deviceId;
     private String frontEnd;
+    private String emailId;
 }

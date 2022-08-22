@@ -42,4 +42,28 @@ public interface IUserAccountBService {
     Map getProfile(Map in) throws Exception;
 
     void saveProfile(Map in) throws Exception;
+
+    Map signInByNothing(Map in) throws Exception;
+
+    Map listEmail(Map in) throws Exception;
+
+    Map getEmail(Map in) throws Exception;
+
+    /**
+     * App用户设置一个email为默认
+     *
+     * @param in
+     * @throws Exception
+     */
+    void setDefaultEmail(Map in) throws Exception;
+
+    /**
+     * 用户绑定email
+     * email通过验证后，绑定给用户账号
+     *
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    Map bindEmail(Map in) throws Exception;
 }

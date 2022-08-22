@@ -25,19 +25,6 @@ public interface UserBaseDao {
     UserView getUserBase(String userId);
 
     /**
-     * 泛查询一个用户信息
-     *
-     * @param qIn userId
-     *            token
-     *            loginName
-     *            password
-     *            phone
-     *            email
-     * @return
-     */
-    UserView getUser(Map qIn);
-
-    /**
      * @param qIn 查询用户列表
      *            userId
      *            loginName

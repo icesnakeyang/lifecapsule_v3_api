@@ -28,12 +28,6 @@ public class UserBaseService implements IUserBaseService {
     }
 
     @Override
-    public UserView getUser(Map qIn) throws Exception {
-        UserView userView = userBaseDao.getUser(qIn);
-        return userView;
-    }
-
-    @Override
     public ArrayList<UserView> listUser(Map qIn) throws Exception {
         ArrayList<UserView> userViews = userBaseDao.listUser(qIn);
         return userViews;

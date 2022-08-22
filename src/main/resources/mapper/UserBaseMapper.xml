@@ -28,58 +28,6 @@
         where user_id = #{userId}
     </select>
 
-    <!--泛查询一个用户信息-->
-    <select id="getUser" parameterType="map" resultMap="userMap">
-        select ub.ids,
-        ub.user_id,
-        create_time,
-        token,
-        token_time,
-        login_name,
-        password,
-        phone,
-        email,
-        timer_time,
-        nickname
-        from user_base ub
-        left join user_login ul on ub.user_id = ul.user_id
-        left join user_login_name uln on ul.user_id = uln.user_id
-        left join user_phone up on ub.user_id = up.user_id
-        left join user_email ue on ub.user_id = ue.user_id
-        left join user_timer ut on ub.user_id=ut.user_id
-        where 1 = 1
-        <choose>
-            <when test="userId!=null">
-                and ub.user_id = #{userId}
-            </when>
-        </choose>
-        <choose>
-            <when test="token!=null">
-                and token = #{token}
-            </when>
-        </choose>
-        <choose>
-            <when test="loginName!=null">
-                and login_name = #{loginName}
-            </when>
-        </choose>
-        <choose>
-            <when test="password!=null">
-                and password = #{password}
-            </when>
-        </choose>
-        <choose>
-            <when test="phone!=null">
-                and phone=#{phone}
-            </when>
-        </choose>
-        <choose>
-            <when test="email!=null">
-                and email=#{email}
-            </when>
-        </choose>
-    </select>
-
     <!--查询用户列表-->
     <select id="listUser" parameterType="map" resultMap="userMap">
         select *
@@ -165,7 +113,11 @@
 
     <update id="updateUserBase" parameterType="map">
         update user_base
-        set nickname = #{nickname}
+        <set>
+            <if test="nickname!=null">
+                nickname = #{nickname}
+            </if>
+        </set>
         where user_id = #{userId}
     </update>
 </mapper>

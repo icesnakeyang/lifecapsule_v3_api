@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.email.dao.UserEmailDao">
+    <!--配置表和对象的字段映射 -->
+    <resultMap id="userEmailMap" type="cc.cdtime.lifecapsule_v3_api.meta.email.entity.UserEmailView">
+        <result property="userId" column="user_id"/>
+        <result property="emailId" column="email_id"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <!--创建用户的email账号-->
+    <insert id="createUserEmail"
+            useGeneratedKeys="true"
+            parameterType="cc.cdtime.lifecapsule_v3_api.meta.email.entity.UserEmail">
+        insert into user_email
+        (email_id, user_id,
+         email, status, create_time)
+        values (#{emailId}, #{userId},
+                #{email}, #{status}, #{createTime})
+    </insert>
+
+    <!--根据email或userId查询用户-->
+    <select id="getUserEmail" parameterType="map" resultMap="userEmailMap">
+        select *
+        from user_email
+        where 1=1
+        <choose>
+            <when test="emailId!=null">
+                and email_id = #{emailId}
+            </when>
+        </choose>
+        <choose>
+            <when test="email!=null">
+                and email=#{email}
+            </when>
+        </choose>
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+                and status='DEFAULT'
+            </when>
+        </choose>
+    </select>
+
+    <!--修改用户email-->
+    <update id="updateUserEmail" parameterType="map">
+        update user_email
+        <set>
+            <if test="email!=null">
+                email=#{email},
+            </if>
+            <if test="status!=null">
+                status=#{status}
+            </if>
+        </set>
+        where email_id = #{emailId}
+    </update>
+
+    <!--查询用户email列表-->
+    <select id="listEmail" parameterType="map" resultMap="userEmailMap">
+        select *
+        from user_email
+        where 1 = 1
+        <choose>
+            <when test="userId!=null">
+                and user_id = #{userId}
+            </when>
+        </choose>
+        order by create_time desc
+    </select>
+    <select id="totalUser" parameterType="map" resultType="java.lang.Integer">
+        select count(*) as total
+        from user_base ub
+        left join user_login_name uln on ub.user_id = uln.user_id
+        left join user_phone up on ub.user_id = up.user_id
+        left join user_email ue on ub.user_id = ue.user_id
+        left join (select *
+        from (
+        select user_id,
+        row_number() over (partition by user_id order by login_time desc),
+        ids,
+        login_time
+        from user_login_log
+        ) as de_dump
+        where row_number = 1) aa on ub.user_id = aa.user_id
+        where 1 = 1
+        <choose>
+            <when test="userId!=null">
+                and ub.user_id = #{userId}
+            </when>
+        </choose>
+        <choose>
+            <when test="loginName!=null">
+                and login_name = #{loginName}
+            </when>
+        </choose>
+        <choose>
+            <when test="phone!=null">
+                and phone = #{phone}
+            </when>
+        </choose>
+        <choose>
+            <when test="email!=null">
+                and email = #{email}
+            </when>
+        </choose>
+    </select>
+    <!--把某个用户的所有email设置为某个状态-->
+    <update id="setEmailStatus" parameterType="map">
+        update user_email set
+            status=#{status}
+        where user_id=#{userId}
+    </update>
+</mapper>

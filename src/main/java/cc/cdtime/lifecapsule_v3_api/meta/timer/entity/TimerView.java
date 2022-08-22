@@ -2,6 +2,7 @@ package cc.cdtime.lifecapsule_v3_api.meta.timer.entity;
 
 import lombok.Data;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Data
@@ -9,7 +10,7 @@ public class TimerView {
     private Integer ids;
     private String timerId;
     private String userId;
-    private Date timerTime;
+    private Timestamp timerTime;
     private String status;
     private String remark;
     private String tag;

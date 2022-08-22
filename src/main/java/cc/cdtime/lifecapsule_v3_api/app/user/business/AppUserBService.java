@@ -109,6 +109,7 @@ public class AppUserBService implements IAppUserBService {
 
     @Override
     public Map signInByToken(Map in) throws Exception {
+        in.put("frontEnd", ESTags.MOBILE_CLIENT.toString());
         Map out = iUserAccountBService.signByToken(in);
         return out;
     }
@@ -116,7 +117,7 @@ public class AppUserBService implements IAppUserBService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Map loginByLoginName(Map in) throws Exception {
-        in.put("frontEnd", ESTags.MOBILE_CLIENT);
+        in.put("frontEnd", ESTags.MOBILE_CLIENT.toString());
         Map out = iUserAccountBService.loginByLoginName(in);
         return out;
     }
@@ -144,7 +145,51 @@ public class AppUserBService implements IAppUserBService {
 
     @Override
     public void saveMyProfile(Map in) throws Exception {
-       iUserAccountBService.saveProfile(in);
+        iUserAccountBService.saveProfile(in);
+    }
+
+    @Override
+    public Map signInByNothing(Map in) throws Exception {
+        in.put("frontEnd", ESTags.MOBILE_CLIENT.toString());
+        Map out = iUserAccountBService.signInByNothing(in);
+        return out;
+    }
+
+    @Override
+    public Map listMyEmail(Map in) throws Exception {
+        Map out = iUserAccountBService.listEmail(in);
+        return out;
+    }
+
+    @Override
+    public Map getMyEmail(Map in) throws Exception {
+        Map out = iUserAccountBService.getEmail(in);
+        return out;
+    }
+
+    /**
+     * App用户设置一个email为默认
+     *
+     * @param in
+     * @throws Exception
+     */
+    @Override
+    public void setDefaultEmail(Map in) throws Exception {
+        iUserAccountBService.setDefaultEmail(in);
+    }
+
+    /**
+     * 用户绑定email
+     * email通过验证后，绑定给用户账号
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Map bindEmail(Map in) throws Exception {
+        in.put("frontEnd", ESTags.MOBILE_CLIENT.toString());
+        Map out = iUserAccountBService.bindEmail(in);
+        return out;
     }
 
     private void verifyToken() throws Exception {
