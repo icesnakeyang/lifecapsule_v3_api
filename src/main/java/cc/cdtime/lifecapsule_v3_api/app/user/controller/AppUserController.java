@@ -136,7 +136,7 @@ public class AppUserController {
     @ResponseBody
     @PostMapping("/bindEmail")
     public Response bindEmail(@RequestBody UserAccountRequest request,
-                                  HttpServletRequest httpServletRequest) {
+                              HttpServletRequest httpServletRequest) {
         Response response = new Response();
         Map in = new HashMap();
         try {
@@ -396,6 +396,34 @@ public class AppUserController {
             } catch (Exception ex2) {
                 response.setCode(10001);
                 log.error("User setDefaultEmail error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
+     * App用户通过token获取用户登录信息，查看是否需要口令登录
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/getUserLoginByToken")
+    public Response getUserLoginByToken(HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+
+            Map out=iAppUserBService.getUserLoginByToken(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("User getUserLoginByToken error:" + ex.getMessage());
             }
         }
         return response;

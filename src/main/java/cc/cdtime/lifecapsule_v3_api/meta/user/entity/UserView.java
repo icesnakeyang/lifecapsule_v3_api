@@ -26,4 +26,5 @@ public class UserView {
     private String deviceId;
     private String frontEnd;
     private String emailId;
+    private String openPassword;
 }

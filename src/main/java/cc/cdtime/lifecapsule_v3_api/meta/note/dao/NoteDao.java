@@ -86,5 +86,14 @@ public interface NoteDao {
      * @param noteId
      */
     void deleteNote(String noteId);
+
     void deleteNoteDetail(String noteId);
+
+    /**
+     * 查询创建了触发器的笔记列表
+     *
+     * @param userId
+     * @return
+     */
+    ArrayList<NoteView> listNoteTrigger(String userId);
 }

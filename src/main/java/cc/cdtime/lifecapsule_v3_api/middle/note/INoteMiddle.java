@@ -69,4 +69,12 @@ public interface INoteMiddle {
      * @param noteId
      */
     void deleteNote(String noteId) throws Exception;
+
+    /**
+     * 查询创建了触发器的笔记列表
+     *
+     * @param userId
+     * @return
+     */
+    ArrayList<NoteView> listNoteTrigger(String userId) throws Exception;
 }

@@ -41,17 +41,28 @@ public class TriggerBService implements ITriggerBService {
     @Override
     public Map listNoteTrigger(Map in) throws Exception {
         String token = in.get("token").toString();
-        String noteId = in.get("noteId").toString();
+        String noteId = (String) in.get("noteId");
 
         Map qIn = new HashMap();
         qIn.put("token", token);
         UserView userView = iUserMiddle.getUser(qIn, false, true);
 
-        NoteView noteView = iNoteMiddle.getNoteTiny(noteId, false, userView.getUserId());
+        ArrayList<TriggerView> triggerViews = null;
+        if (noteId != null) {
+            /**
+             * 查询一条笔记的触发列表
+             */
+            NoteView noteView = iNoteMiddle.getNoteTiny(noteId, false, userView.getUserId());
+            qIn = new HashMap();
+            qIn.put("noteId", noteView.getNoteId());
+            triggerViews = iTriggerMiddle.listTrigger(qIn);
+        } else {
+            /**
+             * 查询当前用户所有笔记的触发列表
+             */
 
-        qIn = new HashMap();
-        qIn.put("noteId", noteView.getNoteId());
-        ArrayList<TriggerView> triggerViews = iTriggerMiddle.listTrigger(qIn);
+        }
+
 
         Map out = new HashMap();
         out.put("triggerList", triggerViews);
@@ -235,7 +246,7 @@ public class TriggerBService implements ITriggerBService {
             /**
              * 新增触发器
              */
-            if(triggerView!=null){
+            if (triggerView != null) {
                 //触发器已经存在，不能新增
                 throw new Exception("10033");
             }

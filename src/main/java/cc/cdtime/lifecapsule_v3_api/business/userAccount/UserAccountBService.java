@@ -542,6 +542,24 @@ public class UserAccountBService implements IUserAccountBService {
         return out;
     }
 
+    @Override
+    public Map getUserLoginByToken(Map in) throws Exception {
+        String token = in.get("token").toString();
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        UserView userView = iUserMiddle.getUserLogin(qIn, false);
+
+        Map out = new HashMap();
+        if (userView.getOpenPassword() != null) {
+            out.put("openPassword", true);
+        } else {
+            out.put("openPassword", false);
+        }
+
+        return out;
+    }
+
     private String loginUser(String userId, Map params) throws Exception {
         Map qIn = new HashMap();
         qIn.put("userId", userId);

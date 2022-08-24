@@ -56,6 +56,7 @@ public interface IUserMiddle {
      *
      * @param qIn token
      *            tokenTime
+     *            openPassword
      *            userId
      */
     void updateUserLogin(Map qIn) throws Exception;

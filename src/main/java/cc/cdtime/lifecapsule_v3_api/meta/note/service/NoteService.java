@@ -89,4 +89,10 @@ public class NoteService implements INoteService {
         noteDao.deleteNote(noteId);
         noteDao.deleteNoteDetail(noteId);
     }
+
+    @Override
+    public ArrayList<NoteView> listNoteTrigger(String userId) throws Exception {
+        ArrayList<NoteView> noteViews = noteDao.listNoteTrigger(userId);
+        return noteViews;
+    }
 }

@@ -15,7 +15,7 @@ public class RecipientView {
     private String userId;
     private String triggerRemark;
     private String triggerTime;
-    private String actTime;
+    private String actTimes;
     private String triggerType;
     private String description;
     private String title;

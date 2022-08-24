@@ -66,4 +66,13 @@ public interface IUserAccountBService {
      * @throws Exception
      */
     Map bindEmail(Map in) throws Exception;
+
+    /**
+     * 用户通过token获取用户登录信息，查看是否需要口令登录
+     *
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    Map getUserLoginByToken(Map in) throws Exception;
 }

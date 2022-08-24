@@ -12,7 +12,7 @@
         <result property="recipientRemark" column="recipient_remark"/>
         <result property="triggerRemark" column="trigger_remark"/>
         <result property="triggerTime" column="trigger_time"/>
-        <result property="actTime" column="act_time"/>
+        <result property="actTimes" column="act_times"/>
         <result property="triggerType" column="trigger_type"/>
         <result property="fromName" column="from_name"/>
         <result property="toName" column="to_name"/>
@@ -60,7 +60,7 @@
                recipient.user_id,
                trigger.remark   as trigger_remark,
                trigger_time,
-               act_time,
+               act_times,
                trigger_type,
                trigger.status,
                from_name,

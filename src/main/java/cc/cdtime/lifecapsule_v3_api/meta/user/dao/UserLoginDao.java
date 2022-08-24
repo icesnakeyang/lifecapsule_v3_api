@@ -41,6 +41,7 @@ public interface UserLoginDao {
      *
      * @param qIn token
      *            tokenTime
+     *            openPassword
      *            userId
      */
     void updateUserLogin(Map qIn);

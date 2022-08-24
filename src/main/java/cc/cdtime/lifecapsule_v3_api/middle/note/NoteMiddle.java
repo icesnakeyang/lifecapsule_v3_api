@@ -80,4 +80,10 @@ public class NoteMiddle implements INoteMiddle {
     public void deleteNote(String noteId) throws Exception {
         iNoteService.deleteNote(noteId);
     }
+
+    @Override
+    public ArrayList<NoteView> listNoteTrigger(String userId) throws Exception {
+        ArrayList<NoteView> noteViews = iNoteService.listNoteTrigger(userId);
+        return noteViews;
+    }
 }
