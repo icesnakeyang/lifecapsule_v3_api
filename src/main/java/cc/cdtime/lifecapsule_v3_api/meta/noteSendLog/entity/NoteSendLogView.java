@@ -23,5 +23,7 @@ public class NoteSendLogView {
     private String sendPhone;
     private String sendEmail;
     private String title;
+    private String recipientId;
+    private String triggerType;
 
 }

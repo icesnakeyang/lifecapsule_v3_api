@@ -90,8 +90,8 @@ public class WebUserController {
         Response response = new Response();
         Map in = new HashMap();
         try {
-            String token=httpServletRequest.getHeader("token");
-            if(token==null  || token.equals("")){
+            String token = httpServletRequest.getHeader("token");
+            if (token == null || token.equals("")) {
                 //token不正确
                 throw new Exception("10029");
             }
@@ -166,7 +166,7 @@ public class WebUserController {
     @ResponseBody
     @PostMapping("/get_user_by_token")
     public Response getUserInfoByToken(@RequestBody UserAccountRequest request,
-                                 HttpServletRequest httpServletRequest) {
+                                       HttpServletRequest httpServletRequest) {
         Response response = new Response();
         Map in = new HashMap();
         try {
@@ -186,5 +186,87 @@ public class WebUserController {
         return response;
     }
 
+    /**
+     * 当用户第一次使用web，web storage上没有token信息时，直接创建一个用户账号
+     */
+    @ResponseBody
+    @GetMapping("/signInByNothing")
+    public Response signInByNothing() {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            Map out = iWebUserBService.signInByNothing(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("web user signInByNothing error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
 
+    /**
+     * 用户绑定email
+     * email通过验证后，绑定给用户账号
+     *
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/bindEmail")
+    public Response bindEmail(@RequestBody UserAccountRequest request,
+                              HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("email", request.getEmail());
+            in.put("emailCode", request.getEmailCode());
+
+            Map out = iWebUserBService.bindEmail(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("Web user bindEmail error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
+     * web 用户保存昵称
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/saveUserNickname")
+    public Response saveUserNickname(@RequestBody UserAccountRequest request,
+                                     HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("nickname", request.getNickname());
+
+            iWebUserBService.saveUserNickname(in);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("Web saveUserNickname error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
 }

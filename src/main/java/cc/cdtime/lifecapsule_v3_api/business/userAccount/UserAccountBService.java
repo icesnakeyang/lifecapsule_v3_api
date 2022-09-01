@@ -223,6 +223,7 @@ public class UserAccountBService implements IUserAccountBService {
          */
         CategoryView categoryView = iCategoryMiddle.getDefaultCategory(userView.getUserId());
         user.put("defaultCategoryId", categoryView.getCategoryId());
+        user.put("defaultCategoryName", categoryView.getCategoryName());
 
 
         Map out = new HashMap();
@@ -402,6 +403,7 @@ public class UserAccountBService implements IUserAccountBService {
         out.put("token", token);
         out.put("nickname", userBase.getNickname());
         out.put("defaultCategoryId", category.getCategoryId());
+        out.put("defaultCategoryName", category.getCategoryName());
         out.put("timerPrimary", map.get("timerTime"));
 
         /**
@@ -492,6 +494,7 @@ public class UserAccountBService implements IUserAccountBService {
     public Map bindEmail(Map in) throws Exception {
         String token = in.get("token").toString();
         String email = in.get("email").toString();
+        String emailCode = in.get("emailCode").toString();
 
         /**
          * 获取当前登录的用户
@@ -499,6 +502,11 @@ public class UserAccountBService implements IUserAccountBService {
         Map qIn = new HashMap();
         qIn.put("token", token);
         UserView userView = iUserMiddle.getUser(qIn, false, true);
+
+        if(userView.getEmail()!=null){
+            //已经绑定email了
+            throw new Exception("10046");
+        }
 
         /**
          * 查询email记录
@@ -510,6 +518,12 @@ public class UserAccountBService implements IUserAccountBService {
         /**
          * todo 检查email的认证情况
          */
+
+        if (!emailCode.equals("xxxxxx")) {
+            //email未认证成功
+            throw new Exception("10045");
+        }
+
 
         /**
          * 绑定email
@@ -523,7 +537,7 @@ public class UserAccountBService implements IUserAccountBService {
             userEmail.setEmail(email);
             userEmail.setEmailId(GogoTools.UUID32());
             userEmail.setUserId(userView.getUserId());
-            userEmail.setStatus(ESTags.ACTIVE.toString());
+            userEmail.setStatus(ESTags.DEFAULT.toString());
             userEmail.setCreateTime(new Date());
             iUserMiddle.createUserEmail(userEmail);
             out.put("token", token);

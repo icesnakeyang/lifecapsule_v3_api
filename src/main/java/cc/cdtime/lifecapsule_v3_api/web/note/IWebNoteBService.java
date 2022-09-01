@@ -21,4 +21,13 @@ public interface IWebNoteBService {
      * @throws Exception
      */
     void deleteMyNote(Map in) throws Exception;
+
+    /**
+     * web端用户读取自己的note发送和接收统计信息
+     * 未读note数
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    Map loadMyNoteSendStatistic(Map in) throws Exception;
 }

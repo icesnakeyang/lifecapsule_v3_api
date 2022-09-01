@@ -2,6 +2,7 @@ package cc.cdtime.lifecapsule_v3_api.web.note;
 
 import cc.cdtime.lifecapsule_v3_api.framework.vo.CategoryRequest;
 import cc.cdtime.lifecapsule_v3_api.framework.vo.NoteRequest;
+import cc.cdtime.lifecapsule_v3_api.framework.vo.NoteSendRequest;
 import cc.cdtime.lifecapsule_v3_api.framework.vo.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -223,6 +224,37 @@ public class WebNoteController {
             } catch (Exception ex2) {
                 response.setCode(10001);
                 log.error("Web deleteMyNote error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
+     * web端用户读取自己的note发送和接收统计信息
+     * 未读note数
+     *
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/loadMyNoteSendStatistic")
+    public Response loadMyNoteSendStatistic(@RequestBody NoteSendRequest request,
+                                            HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+
+            Map out=iWebNoteBService.loadMyNoteSendStatistic(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("Web loadMyNoteSendStatistic error:" + ex.getMessage());
             }
         }
         return response;

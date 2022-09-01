@@ -20,10 +20,10 @@
         insert into note_info
         (note_id, user_id, title,
          create_time, status, encrypt,
-         user_encode_key, category_id)
+         category_id)
         values (#{noteId}, #{userId}, #{title},
                 #{createTime}, #{status}, #{encrypt},
-                #{userEncodeKey}, #{categoryId})
+             #{categoryId})
     </insert>
 
     <!--创建笔记的内容详情记录-->

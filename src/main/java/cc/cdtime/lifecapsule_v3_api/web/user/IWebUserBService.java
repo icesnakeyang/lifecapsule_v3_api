@@ -25,6 +25,7 @@ public interface IWebUserBService {
 
     /**
      * web端用户通过token获取个人账户信息
+     *
      * @param in
      * @return
      * @throws Exception
@@ -32,4 +33,16 @@ public interface IWebUserBService {
     Map getUserInfoByToken(Map in) throws Exception;
 
     Map signByToken(Map in) throws Exception;
+
+    Map signInByNothing(Map in) throws Exception;
+
+    Map bindEmail(Map in) throws Exception;
+
+    /**
+     * web 用户保存昵称
+     *
+     * @param in
+     * @throws Exception
+     */
+    void saveUserNickname(Map in) throws Exception;
 }

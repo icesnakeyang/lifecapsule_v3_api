@@ -100,6 +100,7 @@ public class AdminThemeController {
             in.put("textLight", request.getTextLight());
             in.put("textHolder", request.getTextHolder());
             in.put("colorDanger", request.getColorDanger());
+            in.put("colorDanger2", request.getColorDanger2());
 
             iAdminThemeBService.createWebTheme(in);
         } catch (Exception ex) {
@@ -136,6 +137,7 @@ public class AdminThemeController {
             in.put("textLight", request.getTextLight());
             in.put("textHolder", request.getTextHolder());
             in.put("colorDanger", request.getColorDanger());
+            in.put("colorDanger2", request.getColorDanger2());
 
             iAdminThemeBService.createAppTheme(in);
         } catch (Exception ex) {
@@ -173,6 +175,7 @@ public class AdminThemeController {
             in.put("textLight", request.getTextLight());
             in.put("textHolder", request.getTextHolder());
             in.put("colorDanger", request.getColorDanger());
+            in.put("colorDanger2", request.getColorDanger2());
 
             iAdminThemeBService.updateWebTheme(in);
         } catch (Exception ex) {
@@ -210,6 +213,7 @@ public class AdminThemeController {
             in.put("textLight", request.getTextLight());
             in.put("textHolder", request.getTextHolder());
             in.put("colorDanger", request.getColorDanger());
+            in.put("colorDanger2", request.getColorDanger2());
 
             iAdminThemeBService.updateAppTheme(in);
         } catch (Exception ex) {

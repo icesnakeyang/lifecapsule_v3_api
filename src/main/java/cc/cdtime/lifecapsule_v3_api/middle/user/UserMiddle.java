@@ -144,35 +144,39 @@ public class UserMiddle implements IUserMiddle {
             if (userId == null) {
                 userId = userView.getUserId();
             }
-        }else{
+        } else {
             /**
              * 如果有userId，通过userId读取用户
              */
-            if(userId!=null){
+            if (userId != null) {
                 userView = iUserBaseService.getUserBase(userId);
-            }else{
+            } else {
                 /**
                  * 通过email读取用户
                  */
-                if(email!=null){
-                    qIn=new HashMap();
+                if (email != null) {
+                    qIn = new HashMap();
                     qIn.put("email", email);
-                    UserEmailView userEmailView=iUserEmailService.getUserEmail(qIn);
-                    if(userEmailView!=null){
-                        userView=iUserBaseService.getUserBase(userEmailView.getUserId());
+                    UserEmailView userEmailView = iUserEmailService.getUserEmail(qIn);
+                    if (userEmailView != null) {
+                        userView = iUserBaseService.getUserBase(userEmailView.getUserId());
                     }
                 }
             }
         }
-        UserView userViewBase = iUserBaseService.getUserBase(userId);
+        if (userView == null) {
+            //没有查询到用户信息
+            throw new Exception("10047");
+        }
+        UserView userViewBase = iUserBaseService.getUserBase(userView.getUserId());
         userView.setCreateTime(userViewBase.getCreateTime());
         userView.setNickname(userViewBase.getNickname());
         qIn = new HashMap();
-        qIn.put("userId", userId);
-        qIn.put("type", ESTags.TIMER_TYPE_PRIMARY);
+        qIn.put("userId", userView.getUserId());
+        qIn.put("type", ESTags.TIMER_TYPE_PRIMARY.toString());
         TimerView timerView = iUserTimerService.getUserTimer(qIn);
         if (timerView == null) {
-            Map timer = iTimerMiddle.createUserTimer(userId);
+            Map timer = iTimerMiddle.createUserTimer(userView.getUserId());
             Long tl = (Long) timer.get("timerTime");
             Timestamp ts = new Timestamp(tl);
             userView.setTimerPrimary(ts);
@@ -184,7 +188,7 @@ public class UserMiddle implements IUserMiddle {
          * 获取用户email
          */
         qIn = new HashMap();
-        qIn.put("userId", userId);
+        qIn.put("userId", userView.getUserId());
         UserEmailView userViewEmail = iUserEmailService.getUserEmail(qIn);
         if (userViewEmail != null) {
             userView.setEmail(userViewEmail.getEmail());
@@ -232,15 +236,15 @@ public class UserMiddle implements IUserMiddle {
     @Override
     public UserEmailView getUserEmail(Map qIn, Boolean returnNull, String userId) throws Exception {
         UserEmailView userEmailView = iUserEmailService.getUserEmail(qIn);
-        if(userEmailView==null){
-            if(returnNull){
+        if (userEmailView == null) {
+            if (returnNull) {
                 return null;
             }
             //email不存在
             throw new Exception("10042");
         }
-        if(userId!=null){
-            if(!userEmailView.getUserId().equals(userId)){
+        if (userId != null) {
+            if (!userEmailView.getUserId().equals(userId)) {
                 //不是当前用户的email
                 throw new Exception("10043");
             }

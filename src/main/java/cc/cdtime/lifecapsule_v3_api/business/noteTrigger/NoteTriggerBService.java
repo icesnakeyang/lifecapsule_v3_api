@@ -23,13 +23,19 @@ public class NoteTriggerBService implements INoteTriggerBService {
     }
 
     @Override
-    public Map listMyNoteTrigger(Map in) throws Exception {
+    public Map listNoteTrigger(Map in) throws Exception {
         String token = in.get("token").toString();
+        Integer pageIndex = (Integer) in.get("pageIndex");
+        Integer pageSize = (Integer) in.get("pageSize");
 
         Map qIn = new HashMap();
         qIn.put("token", token);
         UserView userView = iUserMiddle.getUser(qIn, false, true);
 
+        qIn=new HashMap();
+        Integer offset=(pageIndex-1)*pageSize;
+        qIn.put("offset", offset);
+        qIn.put("size", pageSize);
         ArrayList<NoteView> noteViews = iNoteMiddle.listNoteTrigger(userView.getUserId());
         for (int i = 0; i < noteViews.size(); i++) {
 

@@ -2,6 +2,7 @@ package cc.cdtime.lifecapsule_v3_api.meta.noteSendLog.dao;
 
 import cc.cdtime.lifecapsule_v3_api.meta.noteSendLog.entity.NoteSendLog;
 import cc.cdtime.lifecapsule_v3_api.meta.noteSendLog.entity.NoteSendLogView;
+import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserEncodeKey;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.ArrayList;
@@ -18,12 +19,15 @@ public interface NoteSendDao {
 
     void createContentDetail(NoteSendLog noteSendLog);
 
+    void createUserEncodeKey(UserEncodeKey userEncodeKey);
+
     /**
      * 读取主动发送笔记记录列表
      *
      * @param qIn noteId
      *            sendUserId
      *            receiveUserId
+     *            triggerType
      * @return
      */
     ArrayList<NoteSendLogView> listNoteSendLog(Map qIn);

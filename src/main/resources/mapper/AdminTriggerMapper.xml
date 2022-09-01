@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.trigger.dao.AdminTriggerDao">
+    <!--配置表和对象的字段映射 -->
+    <resultMap id="triggerMap" type="cc.cdtime.lifecapsule_v3_api.meta.trigger.entity.TriggerView">
+        <result property="userId" column="user_id"/>
+        <result property="recipientId" column="recipient_id"/>
+        <result property="triggerId" column="trigger_id"/>
+        <result property="noteId" column="note_id"/>
+        <result property="triggerTime" column="trigger_time"/>
+        <result property="actTimes" column="act_times"/>
+    </resultMap>
+
+    <!--管理后台读取所有触发器-->
+    <select id="adminListTrigger" parameterType="map" resultMap="triggerMap">
+        select *
+        from note_trigger
+        where 1 = 1
+        and recipient_id is not null
+        <choose>
+            <when test="triggerType!=null">
+                and trigger_type = #{triggerType}
+            </when>
+        </choose>
+        <choose>
+            <when test="status!=null">
+                and status = #{status}
+            </when>
+        </choose>
+    </select>
+
+    <!--管理员修改笔记触发器 -->
+    <update id="updateNoteTrigger" parameterType="map">
+        update note_trigger
+        <set>
+            <if test="actTimes!=null">
+                act_times=#{actTimes},
+            </if>
+            <if test="status!=null">
+                status=#{status}
+            </if>
+        </set>
+        where trigger_id=#{triggerId}
+    </update>
+</mapper>

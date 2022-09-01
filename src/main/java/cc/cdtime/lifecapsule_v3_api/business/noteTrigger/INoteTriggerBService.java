@@ -4,5 +4,5 @@ import java.util.Map;
 
 public interface INoteTriggerBService {
 
-    Map listMyNoteTrigger(Map in) throws Exception;
+    Map listNoteTrigger(Map in) throws Exception;
 }

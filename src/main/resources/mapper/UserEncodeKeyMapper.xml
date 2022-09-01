@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.user.dao.UserEncodeKeyDao">
+    <!--配置表和对象的字段映射 -->
+    <resultMap id="userEncodeKeyMap" type="cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserEncodeKeyView">
+        <result property="encodeKeyId" column="encode_key_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="encodeKey" column="encode_key"/>
+    </resultMap>
+
+    <insert id="createUserEncodeKey" useGeneratedKeys="true"
+            parameterType="cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserEncodeKey">
+        insert into user_encode_key
+            (encode_key_id, user_id, create_time, encode_key, index_id)
+        values (#{encodeKeyId}, #{userId}, #{createTime}, #{encodeKey}, #{indexId})
+    </insert>
+
+    <!--读取一个用户秘钥记录-->
+    <select id="getUserEncodeKey" parameterType="map" resultMap="userEncodeKeyMap">
+        select *
+        from user_encode_key
+        where 1=1
+        <choose>
+            <when test="encodeKeyId!=null">
+                and encode_key_id= #{encodeKeyId}
+            </when>
+        </choose>
+        <choose>
+            <when test="indexId!=null">
+                and index_id=#{indexId}
+            </when>
+        </choose>
+    </select>
+
+    <update id="updateUserEncodeKey" parameterType="map">
+        update user_encode_key
+        set encode_key=#{encodeKey}
+        where index_id = #{indexId}
+    </update>
+</mapper>

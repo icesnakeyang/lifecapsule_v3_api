@@ -6,12 +6,15 @@ import cc.cdtime.lifecapsule_v3_api.meta.category.entity.Category;
 import cc.cdtime.lifecapsule_v3_api.meta.category.entity.CategoryView;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteInfo;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
+import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserEncodeKey;
+import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserEncodeKeyView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
 import cc.cdtime.lifecapsule_v3_api.middle.category.ICategoryMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.creativeNote.ICreativeNoteMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.note.INoteMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.security.ISecurityMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.task.ITaskMiddle;
+import cc.cdtime.lifecapsule_v3_api.middle.user.IUserEncodeKeyMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.user.IUserMiddle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,19 +33,22 @@ public class NoteBService implements INoteBService {
     private final ICategoryMiddle iCategoryMiddle;
     private final ICreativeNoteMiddle iCreativeNoteMiddle;
     private final ITaskMiddle iTaskMiddle;
+    private final IUserEncodeKeyMiddle iUserEncodeKeyMiddle;
 
     public NoteBService(IUserMiddle iUserMiddle,
                         INoteMiddle iNoteMiddle,
                         ISecurityMiddle iSecurityMiddle,
                         ICategoryMiddle iCategoryMiddle,
                         ICreativeNoteMiddle iCreativeNoteMiddle,
-                        ITaskMiddle iTaskMiddle) {
+                        ITaskMiddle iTaskMiddle,
+                        IUserEncodeKeyMiddle iUserEncodeKeyMiddle) {
         this.iUserMiddle = iUserMiddle;
         this.iNoteMiddle = iNoteMiddle;
         this.iSecurityMiddle = iSecurityMiddle;
         this.iCategoryMiddle = iCategoryMiddle;
         this.iCreativeNoteMiddle = iCreativeNoteMiddle;
         this.iTaskMiddle = iTaskMiddle;
+        this.iUserEncodeKeyMiddle = iUserEncodeKeyMiddle;
     }
 
     @Override
@@ -102,13 +108,16 @@ public class NoteBService implements INoteBService {
 
         NoteView noteView = iNoteMiddle.getNoteDetail(noteId, false, userView.getUserId());
 
+        /**
+         * 读取userEncodeKey
+         */
         if (noteView.getEncrypt() != null && noteView.getEncrypt() == 1) {
             if (strAESKey == null) {
                 //查询秘钥错误
                 throw new Exception("10037");
             }
-            //用AES秘钥加密笔记内容的AES秘钥
             String data = noteView.getUserEncodeKey();
+            //用AES秘钥加密笔记内容的AES秘钥
             String outCode = GogoTools.encryptAESKey(data, strAESKey);
             noteView.setUserEncodeKey(outCode);
         } else {
@@ -300,8 +309,16 @@ public class NoteBService implements INoteBService {
         noteInfo.setEncrypt(encrypt);
 
         if (encrypt != null && encrypt == 1) {
-
-            noteInfo.setUserEncodeKey(strAESKey);
+            /**
+             * 把秘钥保存到userencodekey表
+             */
+            UserEncodeKey userEncodeKey = new UserEncodeKey();
+            userEncodeKey.setEncodeKey(strAESKey);
+            userEncodeKey.setEncodeKeyId(GogoTools.UUID32());
+            userEncodeKey.setUserId(userId);
+            userEncodeKey.setCreateTime(new Date());
+            userEncodeKey.setIndexId(noteInfo.getNoteId());
+            iUserEncodeKeyMiddle.createUserEncodeKey(userEncodeKey);
         }
         noteInfo.setCreateTime(new Date());
         noteInfo.setStatus(ESTags.ACTIVE.toString());
@@ -396,7 +413,30 @@ public class NoteBService implements INoteBService {
         if (encrypt != null) {
             qInEdit.put("encrypt", encrypt);
             if (encrypt == 1) {
-                qInEdit.put("userEncodeKey", strAESKey);
+                /**
+                 * 笔记加密，把key保存到user_encode_key表
+                 */
+                Map qIn2 = new HashMap();
+                qIn2.put("indexId", noteId);
+                UserEncodeKeyView userEncodeKeyView = iUserEncodeKeyMiddle.getUserEncodeKey(qIn2);
+                if (userEncodeKeyView != null) {
+                    /**
+                     * 修改key
+                     */
+                    qIn2.put("encodeKey", strAESKey);
+                    iUserEncodeKeyMiddle.updateUserEncodeKey(qIn2);
+                } else {
+                    /**
+                     * 新增key
+                     */
+                    UserEncodeKey userEncodeKey = new UserEncodeKey();
+                    userEncodeKey.setEncodeKeyId(GogoTools.UUID32());
+                    userEncodeKey.setEncodeKey(strAESKey);
+                    userEncodeKey.setUserId(userId);
+                    userEncodeKey.setCreateTime(new Date());
+                    userEncodeKey.setIndexId(noteId);
+                    iUserEncodeKeyMiddle.createUserEncodeKey(userEncodeKey);
+                }
             }
             cc++;
         }

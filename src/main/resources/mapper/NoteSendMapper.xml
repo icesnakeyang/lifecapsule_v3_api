@@ -10,11 +10,13 @@
         <result property="readTime" column="read_time"/>
         <result property="sendLoginName" column="send_login_name"/>
         <result property="receiveLoginName" column="receive_login_name"/>
-        <result property="userEncodeKey" column="user_encode_key"/>
+        <result property="userEncodeKey" column="encode_key"/>
         <result property="sendUserNickname" column="send_user_nickname"/>
         <result property="receiveUserNickname" column="receive_user_nickname"/>
         <result property="sendPhone" column="send_phone"/>
         <result property="sendEmail" column="send_email"/>
+        <result property="recipientId" column="recipient_id"/>
+        <result property="triggerType" column="trigger_type"/>
     </resultMap>
 
     <!--创建一个笔记发送记录-->
@@ -25,11 +27,11 @@
         (send_user_id, receive_user_id,
          send_time, read_time,
          send_log_id, send_phone, send_email,
-         title)
+         title, recipient_id, trigger_type)
         values (#{sendUserId}, #{receiveUserId},
                 #{sendTime}, #{readTime},
                 #{sendLogId}, #{sendPhone}, #{sendEmail},
-                #{title})
+                #{title}, #{recipientId}, #{triggerType})
     </insert>
 
     <insert id="createContentDetail" parameterType="cc.cdtime.lifecapsule_v3_api.meta.noteSendLog.entity.NoteSendLog">
@@ -38,7 +40,35 @@
         values (#{sendLogId}, #{noteContent})
     </insert>
 
+    <!--创建用户的秘钥记录-->
+    <insert id="createUserEncodeKey" parameterType="cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserEncodeKey">
+        insert into user_encode_key
+            (encode_key_id, user_id, create_time, encode_key, index_id)
+        values (#{encodeKeyId},
+                #{userId},
+                #{createTime},
+                #{encodeKey},
+                #{indexId})
+    </insert>
+
     <!--读取主动发送笔记记录列表-->
+    <select id="listNoteSendLog2" parameterType="map" resultMap="noteSendMap">
+        select * from note_send_log
+        where 1 = 1
+        <choose>
+            <when test="sendUserId!=null">
+                and send_user_id=#{sendUserId}
+            </when>
+        </choose>
+        <choose>
+            <when test="receiveUserId!=null">
+                and receive_user_id=#{receiveUserId}
+            </when>
+        </choose>
+        order by send_time desc
+        limit #{size} offset #{offset}
+    </select>
+
     <select id="listNoteSendLog" parameterType="map" resultMap="noteSendMap">
         select nsl.ids,
         send_user_id,
@@ -52,7 +82,9 @@
         ru.login_name as receive_login_name,
         ubsend.nickname as send_user_nickname,
         ubreceive.nickname as receive_user_nickname,
-        title
+        title,
+        trigger_type,
+        recipient_id
         from note_send_log nsl
         left join user_login_name su on send_user_id = su.user_id
         left join user_login_name ru on receive_user_id = ru.user_id
@@ -69,6 +101,13 @@
                 and receive_user_id=#{receiveUserId}
             </when>
         </choose>
+        <choose>
+            <when test="triggerType!=null">
+                and trigger_type=#{triggerType}
+            </when>
+        </choose>
+        order by send_time desc
+        limit #{size} offset #{offset}
     </select>
 
     <select id="totalNoteSendLog" parameterType="map" resultType="java.lang.Integer">
@@ -105,13 +144,16 @@
                content,
                send_phone,
                send_email,
-               title
+               title,
+               encode_key,
+               trigger_type
         from note_send_log nsl
                  left join user_login_name su on send_user_id = su.user_id
                  left join user_login_name ru on receive_user_id = ru.user_id
                  left join user_base ubsend on send_user_id = ubsend.user_id
                  left join user_base ubreceive on receive_user_id = ubreceive.user_id
                  left join content_detail cd on index_id = send_log_id
+                 left join user_encode_key uek on uek.index_id = send_log_id
         where send_log_id = #{sendLogId}
     </select>
 

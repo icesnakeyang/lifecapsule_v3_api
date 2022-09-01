@@ -12,4 +12,5 @@ public class UserEmailView {
     private String emailId;
     private Date createTime;
     private String status;
+    private String emailCode;
 }

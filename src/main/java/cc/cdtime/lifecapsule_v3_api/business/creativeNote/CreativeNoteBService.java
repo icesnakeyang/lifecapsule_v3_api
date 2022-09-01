@@ -317,7 +317,6 @@ public class CreativeNoteBService implements ICreativeNoteBService {
             }
 
             //保存用户的AES私钥
-            note.setUserEncodeKey(strAESKey);
             iNoteMiddle.createNoteInfo(note);
 
             out.put("note", note);

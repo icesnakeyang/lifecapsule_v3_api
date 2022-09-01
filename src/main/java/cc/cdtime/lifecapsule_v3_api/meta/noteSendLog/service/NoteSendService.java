@@ -1,11 +1,14 @@
 package cc.cdtime.lifecapsule_v3_api.meta.noteSendLog.service;
 
+import cc.cdtime.lifecapsule_v3_api.framework.tools.GogoTools;
 import cc.cdtime.lifecapsule_v3_api.meta.noteSendLog.dao.NoteSendDao;
 import cc.cdtime.lifecapsule_v3_api.meta.noteSendLog.entity.NoteSendLog;
 import cc.cdtime.lifecapsule_v3_api.meta.noteSendLog.entity.NoteSendLogView;
+import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserEncodeKey;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 
 @Service
@@ -20,6 +23,15 @@ public class NoteSendService implements INoteSendService {
     public void createNoteSendLog(NoteSendLog noteSendLog) throws Exception {
         noteSendDao.createNoteSendLog(noteSendLog);
         noteSendDao.createContentDetail(noteSendLog);
+        if (noteSendLog.getUserEncodeKey() != null) {
+            UserEncodeKey userEncodeKey = new UserEncodeKey();
+            userEncodeKey.setEncodeKey(noteSendLog.getUserEncodeKey());
+            userEncodeKey.setEncodeKeyId(GogoTools.UUID32());
+            userEncodeKey.setUserId(noteSendLog.getReceiveUserId());
+            userEncodeKey.setCreateTime(new Date());
+            userEncodeKey.setIndexId(noteSendLog.getSendLogId());
+            noteSendDao.createUserEncodeKey(userEncodeKey);
+        }
     }
 
     @Override

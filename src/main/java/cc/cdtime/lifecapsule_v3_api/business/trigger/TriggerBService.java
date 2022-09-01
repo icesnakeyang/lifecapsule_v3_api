@@ -114,7 +114,7 @@ public class TriggerBService implements ITriggerBService {
         }
         if (cc == 0) {
             //无效的触发条件
-            throw new Exception("10047");
+            throw new Exception("10048");
         }
 
         if (triggerId != null) {
@@ -206,7 +206,7 @@ public class TriggerBService implements ITriggerBService {
         }
         if (cc == 0) {
             //无效的触发条件
-            throw new Exception("10047");
+            throw new Exception("10048");
         }
 
         /**

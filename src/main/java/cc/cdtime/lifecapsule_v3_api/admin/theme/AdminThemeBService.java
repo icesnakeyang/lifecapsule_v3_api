@@ -54,6 +54,7 @@ public class AdminThemeBService implements IAdminThemeBService {
         String textLight = (String) in.get("textLight");
         String textHolder = (String) in.get("textHolder");
         String colorDanger = (String) in.get("colorDanger");
+        String colorDanger2 = (String) in.get("colorDanger2");
 
         Map qIn = new HashMap();
         qIn.put("token", token);
@@ -73,6 +74,7 @@ public class AdminThemeBService implements IAdminThemeBService {
         theme.setTextDark(textDark);
         theme.setTextHolder(textHolder);
         theme.setColorDanger(colorDanger);
+        theme.setColorDanger2(colorDanger2);
         iThemeMiddle.createTheme(theme);
     }
 
@@ -107,6 +109,7 @@ public class AdminThemeBService implements IAdminThemeBService {
         String textHolder = (String) in.get("textHolder");
         String themeName = (String) in.get("themeName");
         String colorDanger = (String) in.get("colorDanger");
+        String colorDanger2 = (String) in.get("colorDanger2");
 
         int cc = 0;
         Map qIn = new HashMap();
@@ -140,6 +143,10 @@ public class AdminThemeBService implements IAdminThemeBService {
         }
         if (colorDanger != null) {
             qIn.put("colorDanger", colorDanger);
+            cc++;
+        }
+        if (colorDanger2 != null) {
+            qIn.put("colorDanger2", colorDanger2);
             cc++;
         }
         if (cc == 0) {
@@ -166,6 +173,7 @@ public class AdminThemeBService implements IAdminThemeBService {
         String textLight = (String) in.get("textLight");
         String textHolder = (String) in.get("textHolder");
         String colorDanger = (String) in.get("colorDanger");
+        String colorDanger2 = (String) in.get("colorDanger2");
 
         Map qIn = new HashMap();
         qIn.put("token", token);
@@ -185,6 +193,7 @@ public class AdminThemeBService implements IAdminThemeBService {
         theme.setTextDark(textDark);
         theme.setTextHolder(textHolder);
         theme.setColorDanger(colorDanger);
+        theme.setColorDanger2(colorDanger2);
         iThemeMiddle.createTheme(theme);
     }
 
@@ -200,6 +209,7 @@ public class AdminThemeBService implements IAdminThemeBService {
         String textHolder = (String) in.get("textHolder");
         String themeName = (String) in.get("themeName");
         String colorDanger = (String) in.get("colorDanger");
+        String colorDanger2 = (String) in.get("colorDanger2");
 
         int cc = 0;
         Map qIn = new HashMap();
@@ -233,6 +243,10 @@ public class AdminThemeBService implements IAdminThemeBService {
         }
         if (colorDanger != null) {
             qIn.put("colorDanger", colorDanger);
+            cc++;
+        }
+        if (colorDanger2 != null) {
+            qIn.put("colorDanger2", colorDanger2);
             cc++;
         }
         if (cc == 0) {

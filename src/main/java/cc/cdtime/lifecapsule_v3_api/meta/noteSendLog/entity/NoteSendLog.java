@@ -19,4 +19,7 @@ public class NoteSendLog {
     private String sendPhone;
     private String sendEmail;
     private String title;
+    private String triggerType;
+    private String recipientId;
+    private String userEncodeKey;
 }

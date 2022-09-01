@@ -143,6 +143,7 @@ public class AppUserController {
             String token = httpServletRequest.getHeader("token");
             in.put("token", token);
             in.put("email", request.getEmail());
+            in.put("emailCode", request.getEmailCode());
 
             Map out = iAppUserBService.bindEmail(in);
             response.setData(out);

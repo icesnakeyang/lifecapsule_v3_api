@@ -16,7 +16,7 @@ public class AppNoteTriggerBService implements IAppNoteTriggerBService {
 
     @Override
     public Map listMyNoteTrigger(Map in) throws Exception {
-        Map out = iNoteTriggerBService.listMyNoteTrigger(in);
+        Map out = iNoteTriggerBService.listNoteTrigger(in);
         return out;
     }
 }

@@ -10,6 +10,7 @@ public enum ESTags {
     ACTIVE,
     TIMER_TYPE_PRIMARY,
     TIMER_TYPE_DATETIME,
+    INSTANT_MESSAGE,
     NO_TRIGGER,
     ANONYMOUS,
     ADMIN_ROOT,
@@ -58,5 +59,9 @@ public enum ESTags {
     /**
      * 已经email验证
      */
-    USER_NORMAL
+    USER_NORMAL,
+    /**
+     * 已经发送过了
+     */
+    SEND_COMPLETE
 }

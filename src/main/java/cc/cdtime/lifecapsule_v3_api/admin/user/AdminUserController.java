@@ -1,5 +1,7 @@
 package cc.cdtime.lifecapsule_v3_api.admin.user;
 
+import cc.cdtime.lifecapsule_v3_api.business.adminStatistic.IAdminStatisticBService;
+import cc.cdtime.lifecapsule_v3_api.framework.vo.AdminUserRequest;
 import cc.cdtime.lifecapsule_v3_api.framework.vo.Response;
 import cc.cdtime.lifecapsule_v3_api.framework.vo.UserAccountRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -16,9 +18,12 @@ import java.util.Map;
 @RequestMapping("/lifecapsule3_api/admin/users")
 public class AdminUserController {
     private final IAdminUserBService iAdminUserBService;
+    private final IAdminStatisticBService iAdminStatisticBService;
 
-    public AdminUserController(IAdminUserBService iAdminUserBService) {
+    public AdminUserController(IAdminUserBService iAdminUserBService,
+                               IAdminStatisticBService iAdminStatisticBService) {
         this.iAdminUserBService = iAdminUserBService;
+        this.iAdminStatisticBService = iAdminStatisticBService;
     }
 
     /**
@@ -75,7 +80,7 @@ public class AdminUserController {
             in.put("pageSize", request.getPageSize());
             in.put("searchKey", request.getSearchKey());
 
-                Map out = iAdminUserBService.listUserLoginLog(in);
+            Map out = iAdminUserBService.listUserLoginLog(in);
             response.setData(out);
         } catch (Exception ex) {
             try {
@@ -112,6 +117,39 @@ public class AdminUserController {
             } catch (Exception ex2) {
                 response.setCode(10001);
                 log.error("Admin loadUserStatistic error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
+     * 统计用户登录数据
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/loadUserLoginStatistic")
+    public Response loadUserLoginStatistic(@RequestBody AdminUserRequest request,
+                                           HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("startTime", request.getStartTime());
+            in.put("endTime", request.getEndTime());
+            in.put("pageIndex", request.getPageIndex());
+            in.put("pageSize", request.getPageSize());
+
+            Map out = iAdminStatisticBService.totalUserLogin(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("Admin loadUserLoginStatistic error:" + ex.getMessage());
             }
         }
         return response;

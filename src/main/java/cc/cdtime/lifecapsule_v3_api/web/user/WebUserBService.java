@@ -53,4 +53,23 @@ public class WebUserBService implements IWebUserBService {
         Map out = iUserAccountBService.signByToken(in);
         return out;
     }
+
+    @Override
+    public Map signInByNothing(Map in) throws Exception {
+        in.put("frontEnd", ESTags.WEB_CLIENT.toString());
+        Map out = iUserAccountBService.signInByNothing(in);
+        return out;
+    }
+
+    @Override
+    public Map bindEmail(Map in) throws Exception {
+        in.put("frontEnd", ESTags.WEB_CLIENT.toString());
+        Map out = iUserAccountBService.bindEmail(in);
+        return out;
+    }
+
+    @Override
+    public void saveUserNickname(Map in) throws Exception {
+        iUserAccountBService.saveProfile(in);
+    }
 }

@@ -21,6 +21,7 @@ public class Theme {
     private String colorLight;
     private String colorMedium;
     private String colorDanger;
+    private String colorDanger2;
     private String status;
     private String themeType;
 }

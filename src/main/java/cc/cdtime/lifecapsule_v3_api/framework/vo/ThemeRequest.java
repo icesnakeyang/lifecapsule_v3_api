@@ -13,4 +13,5 @@ public class ThemeRequest extends Request {
     private String textLight;
     private String textHolder;
     private String colorDanger;
+    private String colorDanger2;
 }

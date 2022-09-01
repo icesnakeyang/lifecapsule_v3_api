@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.admin.dao.AdminStatisticDao">
+    <!--配置表和对象的字段映射 -->
+    <resultMap id="adminStatisticMap" type="cc.cdtime.lifecapsule_v3_api.meta.admin.entity.AdminStatisticView">
+        <result property="userId" column="user_id"/>
+    </resultMap>
+
+    <!--统计用户登录次数-->
+    <select id="totalUserLogin" parameterType="map" resultMap="adminStatisticMap">
+        select count(*) as total, user_id
+        from user_login_log
+        where 1 = 1
+        <choose>
+            <when test="startTime!=null">
+                and login_time > #{startTime}
+            </when>
+        </choose>
+        <choose>
+            <when test="endTime!=null">
+                <![CDATA[
+          and login_time < #{endTime}
+        ]]>
+            </when>
+        </choose>
+        group by user_id
+        order by total desc
+        limit #{size} offset #{offset}
+    </select>
+</mapper>

@@ -65,7 +65,7 @@
                 and email = #{email}
             </when>
         </choose>
-        order by create_time desc
+        order by ub.create_time desc
         <choose>
             <when test="offset!=null">
                 limit #{size}
