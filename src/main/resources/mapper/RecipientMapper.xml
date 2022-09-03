@@ -40,6 +40,11 @@
             </when>
         </choose>
         <choose>
+            <when test="email!=null">
+                and email=#{email}
+            </when>
+        </choose>
+        <choose>
             <when test="offset!=null">
                 limit #{size} offset #{offset}
             </when>

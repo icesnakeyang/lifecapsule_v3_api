@@ -8,6 +8,7 @@ import cc.cdtime.lifecapsule_v3_api.middle.admin.IAdminUserMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.theme.IThemeMiddle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -89,7 +90,7 @@ public class AdminThemeBService implements IAdminThemeBService {
 
         qIn = new HashMap();
         qIn.put("themeType", ESTags.WEB_CLIENT);
-        Theme theme = iThemeMiddle.getTheme(themeId, false);
+        Theme theme = iThemeMiddle.getTheme(qIn, false);
 
         Map out = new HashMap();
         out.put("theme", theme);
@@ -174,6 +175,7 @@ public class AdminThemeBService implements IAdminThemeBService {
         String textHolder = (String) in.get("textHolder");
         String colorDanger = (String) in.get("colorDanger");
         String colorDanger2 = (String) in.get("colorDanger2");
+        String status = (String) in.get("status");
 
         Map qIn = new HashMap();
         qIn.put("token", token);
@@ -197,6 +199,7 @@ public class AdminThemeBService implements IAdminThemeBService {
         iThemeMiddle.createTheme(theme);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateAppTheme(Map in) throws Exception {
         String token = in.get("token").toString();
@@ -210,44 +213,128 @@ public class AdminThemeBService implements IAdminThemeBService {
         String themeName = (String) in.get("themeName");
         String colorDanger = (String) in.get("colorDanger");
         String colorDanger2 = (String) in.get("colorDanger2");
+        String status = (String) in.get("status");
+
+        Map qIn = new HashMap();
+        qIn.put("themeId", themeId);
+        Theme theme = iThemeMiddle.getTheme(qIn, false);
 
         int cc = 0;
-        Map qIn = new HashMap();
+        qIn = new HashMap();
         if (background != null) {
-            qIn.put("background", background);
-            cc++;
+            if (theme.getBackground() != null) {
+                if (!background.equals(theme.getBackground())) {
+                    qIn.put("background", background);
+                    cc++;
+                }
+            } else {
+                qIn.put("background", background);
+                cc++;
+            }
         }
         if (blockDark != null) {
-            qIn.put("blockDark", blockDark);
-            cc++;
+            if (theme.getBlockDark() != null) {
+                if (!blockDark.equals(theme.getBlockDark())) {
+                    qIn.put("blockDark", blockDark);
+                    cc++;
+                }
+            } else {
+                qIn.put("blockDark", blockDark);
+                cc++;
+            }
         }
         if (blockLight != null) {
-            qIn.put("blockLight", blockLight);
-            cc++;
+            if (theme.getBlockLight() != null) {
+                if (!blockLight.equals(theme.getBlockLight())) {
+                    qIn.put("blockLight", blockLight);
+                    cc++;
+                }
+            } else {
+                qIn.put("blockLight", blockLight);
+                cc++;
+            }
         }
         if (textDark != null) {
-            qIn.put("textDark", textDark);
-            cc++;
+            if (theme.getTextDark() != null) {
+                if (!textDark.equals(theme.getTextDark())) {
+                    qIn.put("textDark", textDark);
+                    cc++;
+                }
+            } else {
+                qIn.put("textDark", textDark);
+                cc++;
+            }
         }
         if (textLight != null) {
-            qIn.put("textLight", textLight);
-            cc++;
+            if (theme.getTextLight() != null) {
+                if (!textLight.equals(theme.getTextLight())) {
+                    qIn.put("textLight", textLight);
+                    cc++;
+                }
+            } else {
+                qIn.put("textLight", textLight);
+                cc++;
+            }
         }
         if (textHolder != null) {
-            qIn.put("textHolder", textHolder);
-            cc++;
+            if (theme.getTextHolder() != null) {
+                if (!textHolder.equals(theme.getTextHolder())) {
+                    qIn.put("textHolder", textHolder);
+                    cc++;
+                }
+            } else {
+                qIn.put("textHolder", textHolder);
+                cc++;
+            }
         }
         if (themeName != null) {
-            qIn.put("themeName", themeName);
-            cc++;
+            if (theme.getThemeName() != null) {
+                if (!themeName.equals(theme.getThemeName())) {
+                    qIn.put("themeName", themeName);
+                    cc++;
+                }
+            } else {
+                qIn.put("themeName", themeName);
+                cc++;
+            }
         }
         if (colorDanger != null) {
-            qIn.put("colorDanger", colorDanger);
-            cc++;
+            if (theme.getColorDanger() != null) {
+                if (!colorDanger.equals(theme.getColorDanger())) {
+                    qIn.put("colorDanger", colorDanger);
+                    cc++;
+                }
+            } else {
+                qIn.put("colorDanger", colorDanger);
+                cc++;
+            }
         }
         if (colorDanger2 != null) {
-            qIn.put("colorDanger2", colorDanger2);
-            cc++;
+            if (theme.getColorDanger2() != null) {
+                if (!colorDanger2.equals(theme.getColorDanger2())) {
+                    qIn.put("colorDanger2", colorDanger2);
+                    cc++;
+                }
+            } else {
+                qIn.put("colorDanger2", colorDanger2);
+                cc++;
+            }
+        }
+        if (status != null) {
+            if (theme.getStatus() != null) {
+                if (!status.equals(theme.getStatus())) {
+                    qIn.put("status", status);
+                    cc++;
+                    if(status.equals(ESTags.DEFAULT.toString())){
+                        Map qinThemeType=new HashMap();
+                        qinThemeType.put("themeType", theme.getThemeType());
+                        iThemeMiddle.setAllThemeStatusToActive(qinThemeType);
+                    }
+                }
+            } else {
+                qIn.put("status", status);
+                cc++;
+            }
         }
         if (cc == 0) {
             return;
@@ -289,7 +376,9 @@ public class AdminThemeBService implements IAdminThemeBService {
         qIn.put("token", token);
         AdminUserView adminUserView = iAdminUserMiddle.getAdminUser(qIn, false);
 
-        Theme theme = iThemeMiddle.getTheme(themeId, false);
+        qIn = new HashMap();
+        qIn.put("themeId", themeId);
+        Theme theme = iThemeMiddle.getTheme(qIn, false);
 
         Map out = new HashMap();
         out.put("theme", theme);

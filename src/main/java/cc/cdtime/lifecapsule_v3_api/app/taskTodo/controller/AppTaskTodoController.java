@@ -40,6 +40,7 @@ public class AppTaskTodoController {
             in.put("token", token);
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
+            in.put("hideComplete", request.getHideComplete());
 
             Map out = iAppTaskTodoBService.listMyTaskTodo(in);
             response.setData(out);

@@ -138,6 +138,7 @@ public class AdminThemeController {
             in.put("textHolder", request.getTextHolder());
             in.put("colorDanger", request.getColorDanger());
             in.put("colorDanger2", request.getColorDanger2());
+            in.put("status", request.getStatus());
 
             iAdminThemeBService.createAppTheme(in);
         } catch (Exception ex) {
@@ -214,6 +215,7 @@ public class AdminThemeController {
             in.put("textHolder", request.getTextHolder());
             in.put("colorDanger", request.getColorDanger());
             in.put("colorDanger2", request.getColorDanger2());
+            in.put("status", request.getStatus());
 
             iAdminThemeBService.updateAppTheme(in);
         } catch (Exception ex) {

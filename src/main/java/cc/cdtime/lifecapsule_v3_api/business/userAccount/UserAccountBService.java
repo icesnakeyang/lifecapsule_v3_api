@@ -344,72 +344,7 @@ public class UserAccountBService implements IUserAccountBService {
 
     @Override
     public Map signInByNothing(Map in) throws Exception {
-        String frontEnd = in.get("frontEnd").toString();
-        /**
-         * 直接生成一个临时账号
-         */
-
-        String userId = GogoTools.UUID32();
-        String token = GogoTools.UUID32();
-
-        /**
-         * 创建userBase表
-         */
-        UserBase userBase = new UserBase();
-        userBase.setUserId(userId);
-        userBase.setCreateTime(new Date());
-        //生成一个随机的用户昵称
-        userBase.setNickname(GogoTools.generateString(8));
-        iUserMiddle.createUserBase(userBase);
-
-        /**
-         * 创建默认笔记分类
-         */
-        Category category = new Category();
-        category.setCategoryId(GogoTools.UUID32());
-        category.setUserId(userId);
-        category.setCategoryName(ESTags.DEFAULT.toString());
-        category.setNoteType(ESTags.NORMAL.toString());
-        iCategoryMiddle.createCategory(category);
-
-        /**
-         * 创建用户登录信息
-         */
-        UserLogin userLogin = new UserLogin();
-        userLogin.setUserId(userId);
-        userLogin.setToken(token);
-        userLogin.setTokenTime(new Date());
-        iUserMiddle.createUserLogin(userLogin);
-
-        /**
-         * 创建一个主计时器
-         */
-        Map map = iTimerMiddle.createUserTimer(userId);
-
-
-        /**
-         * 创建用户登录日志
-         */
-        UserLoginLog userLoginLog = new UserLoginLog();
-        userLoginLog.setUserId(userId);
-        userLoginLog.setLoginTime(new Date());
-        userLoginLog.setFrontEnd(frontEnd);
-        iUserMiddle.createUserLoginLog(userLoginLog);
-
-        /**
-         * 返回临时用户信息
-         */
-        Map out = new HashMap();
-        out.put("token", token);
-        out.put("nickname", userBase.getNickname());
-        out.put("defaultCategoryId", category.getCategoryId());
-        out.put("defaultCategoryName", category.getCategoryName());
-        out.put("timerPrimary", map.get("timerTime"));
-
-        /**
-         * 用户状态为USER_GUEST
-         */
-        out.put("userStatus", ESTags.USER_GUEST);
+        Map out = registerUser(in);
         return out;
     }
 
@@ -503,7 +438,7 @@ public class UserAccountBService implements IUserAccountBService {
         qIn.put("token", token);
         UserView userView = iUserMiddle.getUser(qIn, false, true);
 
-        if(userView.getEmail()!=null){
+        if (userView.getEmail() != null) {
             //已经绑定email了
             throw new Exception("10046");
         }
@@ -551,6 +486,61 @@ public class UserAccountBService implements IUserAccountBService {
              */
             token = loginUser(userEmailView.getUserId(), in);
             out.put("token", token);
+        }
+
+        return out;
+    }
+
+    @Override
+    public Map signByEmail(Map in) throws Exception {
+        String email = in.get("email").toString();
+        String emailCode = in.get("emailCode").toString();
+
+        /**
+         * 查询email记录
+         */
+        Map qIn = new HashMap();
+        qIn.put("email", email);
+        UserEmailView userEmailView = iUserMiddle.getUserEmail(qIn, true, null);
+
+        /**
+         * todo 检查email的认证情况
+         */
+
+        if (!emailCode.equals("xxxxxx")) {
+            //email未认证成功
+            throw new Exception("10045");
+        }
+
+
+        /**
+         * 绑定email
+         */
+        Map out = new HashMap();
+        if (userEmailView == null) {
+            /**
+             * email还没有被绑定，创建一个新用户，直接添加到email表
+             */
+            Map newUserMap = registerUser(in);
+            String userId = newUserMap.get("userId").toString();
+
+            UserEmail userEmail = new UserEmail();
+            userEmail.setEmail(email);
+            userEmail.setEmailId(GogoTools.UUID32());
+            userEmail.setUserId(userId);
+            userEmail.setStatus(ESTags.DEFAULT.toString());
+            userEmail.setCreateTime(new Date());
+            iUserMiddle.createUserEmail(userEmail);
+            out.put("token", newUserMap.get("token"));
+        } else {
+            /**
+             * 如果email已经被绑定了，就切换到该email账号
+             */
+            /**
+             * todo
+             * 为了账户安全性，这里考虑再增加一些验证操作
+             */
+            out.put("token", loginUser(userEmailView.getUserId(), in));
         }
 
         return out;
@@ -626,7 +616,80 @@ public class UserAccountBService implements IUserAccountBService {
         return token;
     }
 
-    private void saveEmail(String email, String userId) throws Exception {
+    /**
+     * 创建一个新用户
+     *
+     * @param in
+     * @throws Exception
+     */
+    private Map registerUser(Map in) throws Exception {
+        String frontEnd = in.get("frontEnd").toString();
+        /**
+         * 直接生成一个临时账号
+         */
 
+        String userId = GogoTools.UUID32();
+        String token = GogoTools.UUID32();
+
+        /**
+         * 创建userBase表
+         */
+        UserBase userBase = new UserBase();
+        userBase.setUserId(userId);
+        userBase.setCreateTime(new Date());
+        //生成一个随机的用户昵称
+        userBase.setNickname(GogoTools.generateString(8));
+        iUserMiddle.createUserBase(userBase);
+
+        /**
+         * 创建默认笔记分类
+         */
+        Category category = new Category();
+        category.setCategoryId(GogoTools.UUID32());
+        category.setUserId(userId);
+        category.setCategoryName(ESTags.DEFAULT.toString());
+        category.setNoteType(ESTags.NORMAL.toString());
+        iCategoryMiddle.createCategory(category);
+
+        /**
+         * 创建用户登录信息
+         */
+        UserLogin userLogin = new UserLogin();
+        userLogin.setUserId(userId);
+        userLogin.setToken(token);
+        userLogin.setTokenTime(new Date());
+        iUserMiddle.createUserLogin(userLogin);
+
+        /**
+         * 创建一个主计时器
+         */
+        Map map = iTimerMiddle.createUserTimer(userId);
+
+
+        /**
+         * 创建用户登录日志
+         */
+        UserLoginLog userLoginLog = new UserLoginLog();
+        userLoginLog.setUserId(userId);
+        userLoginLog.setLoginTime(new Date());
+        userLoginLog.setFrontEnd(frontEnd);
+        iUserMiddle.createUserLoginLog(userLoginLog);
+
+        /**
+         * 返回临时用户信息
+         */
+        Map out = new HashMap();
+        out.put("token", token);
+        out.put("nickname", userBase.getNickname());
+        out.put("defaultCategoryId", category.getCategoryId());
+        out.put("defaultCategoryName", category.getCategoryName());
+        out.put("timerPrimary", map.get("timerTime"));
+        out.put("userId", userId);
+
+        /**
+         * 用户状态为USER_GUEST
+         */
+        out.put("userStatus", ESTags.USER_GUEST);
+        return out;
     }
 }

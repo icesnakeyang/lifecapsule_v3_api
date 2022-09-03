@@ -68,7 +68,7 @@ public class RecipientMiddle implements IRecipientMiddle {
             }
             throw new Exception("10016");
         }
-        if (userId != null) {
+        if (userId != null && recipientView.getUserId()!=null) {
             if (!recipientView.getUserId().equals(userId)) {
                 //要访问接收人不属于当前用户
                 throw new Exception("10021");

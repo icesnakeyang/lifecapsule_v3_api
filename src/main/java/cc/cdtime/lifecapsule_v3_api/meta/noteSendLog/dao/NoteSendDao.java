@@ -44,6 +44,8 @@ public interface NoteSendDao {
     Integer totalNoteSendLog(Map qIn);
 
     NoteSendLogView getNoteSendLog(String sendLogId);
+    NoteSendLogView getNoteSendContent(String sendLogId);
+    NoteSendLogView getNoteSendEncodeKey(String sendLogId);
 
     /**
      * 修改笔记发送日志

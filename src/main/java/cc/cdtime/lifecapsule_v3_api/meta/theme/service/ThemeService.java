@@ -21,8 +21,8 @@ public class ThemeService implements IThemeService {
     }
 
     @Override
-    public Theme getTheme(String themeId) throws Exception {
-        Theme theme = themeDao.getTheme(themeId);
+    public Theme getTheme(Map qIn) throws Exception {
+        Theme theme = themeDao.getTheme(qIn);
         return theme;
     }
 
@@ -35,5 +35,10 @@ public class ThemeService implements IThemeService {
     @Override
     public void updateTheme(Map qIn) throws Exception {
         themeDao.updateTheme(qIn);
+    }
+
+    @Override
+    public void setAllThemeStatusToActive(Map qIn) throws Exception {
+        themeDao.setAllThemeStatusToActive(qIn);
     }
 }

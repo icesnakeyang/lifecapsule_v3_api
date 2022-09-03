@@ -206,6 +206,13 @@ public class AppUserBService implements IAppUserBService {
         return out;
     }
 
+    @Override
+    public Map signByEmail(Map in) throws Exception {
+        in.put("frontEnd", ESTags.MOBILE_CLIENT.toString());
+        Map out = iUserAccountBService.signByEmail(in);
+        return out;
+    }
+
     private void verifyToken() throws Exception {
         /**
          * 校验token的有效期

@@ -430,6 +430,34 @@ public class AppUserController {
         return response;
     }
 
+    /**
+     * App用户通过email验证登录
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/signByEmail")
+    public Response signByEmail(@RequestBody UserAccountRequest request) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            in.put("email", request.getEmail());
+            in.put("emailCode", request.getEmailCode());
+
+            Map out=iAppUserBService.signByEmail(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("App user signByEmail error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
     @ResponseBody
     @GetMapping("/testFetch")
     public Response testFetch() {

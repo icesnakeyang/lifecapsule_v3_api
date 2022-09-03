@@ -22,8 +22,8 @@ public class ThemeMiddle implements IThemeMiddle {
     }
 
     @Override
-    public Theme getTheme(String themeId, Boolean returnNull) throws Exception {
-        Theme theme = iThemeService.getTheme(themeId);
+    public Theme getTheme(Map qIn, Boolean returnNull) throws Exception {
+        Theme theme = iThemeService.getTheme(qIn);
         if (theme == null) {
             if (returnNull) {
                 return null;
@@ -43,5 +43,10 @@ public class ThemeMiddle implements IThemeMiddle {
     @Override
     public void updateTheme(Map qIn) throws Exception {
         iThemeService.updateTheme(qIn);
+    }
+
+    @Override
+    public void setAllThemeStatusToActive(Map qIn) throws Exception {
+        iThemeService.setAllThemeStatusToActive(qIn);
     }
 }

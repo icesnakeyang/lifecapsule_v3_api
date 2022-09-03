@@ -1,6 +1,8 @@
 package cc.cdtime.lifecapsule_v3_api.middle.user;
 
 import cc.cdtime.lifecapsule_v3_api.framework.constant.ESTags;
+import cc.cdtime.lifecapsule_v3_api.framework.tools.GogoTools;
+import cc.cdtime.lifecapsule_v3_api.meta.category.entity.Category;
 import cc.cdtime.lifecapsule_v3_api.meta.email.entity.UserEmail;
 import cc.cdtime.lifecapsule_v3_api.meta.email.entity.UserEmailView;
 import cc.cdtime.lifecapsule_v3_api.meta.timer.entity.TimerView;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -141,7 +144,7 @@ public class UserMiddle implements IUserMiddle {
          */
         if (token != null) {
             userView = iUserLoginService.getUserLogin(qIn);
-            if (userId == null) {
+            if (userView!=null && userId == null) {
                 userId = userView.getUserId();
             }
         } else {

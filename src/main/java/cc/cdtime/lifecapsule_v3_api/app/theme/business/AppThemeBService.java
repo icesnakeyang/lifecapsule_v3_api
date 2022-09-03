@@ -21,4 +21,11 @@ public class AppThemeBService implements IAppThemeBService {
         Map out = iThemeBService.listTheme(in);
         return out;
     }
+
+    @Override
+    public Map getDefaultTheme(Map in) throws Exception {
+        in.put("themeType", ESTags.MOBILE_CLIENT.toString());
+        Map out = iThemeBService.getDefaultTheme(in);
+        return out;
+    }
 }

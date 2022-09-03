@@ -53,6 +53,37 @@ public class WebRecipientController {
     }
 
     /**
+     * 添加一个email为接收人
+     *
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/addEmailToRecipient")
+    public Response addEmailToRecipient(@RequestBody RecipientRequest request,
+                                          HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("email", request.getEmail());
+            in.put("noteId", request.getNoteId());
+
+            iWebRecipientBService.addEmailToRecipient(in);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("Web addEmailToRecipient error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
      * 读取我的一篇笔记的接收人列表
      *
      * @param request

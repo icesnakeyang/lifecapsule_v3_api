@@ -87,4 +87,6 @@ public interface IAppUserBService {
      * @throws Exception
      */
     Map getUserLoginByToken(Map in) throws Exception;
+
+    Map signByEmail(Map in) throws Exception;
 }

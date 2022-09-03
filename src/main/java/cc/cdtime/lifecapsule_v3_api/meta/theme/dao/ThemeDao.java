@@ -10,7 +10,14 @@ import java.util.Map;
 public interface ThemeDao {
     void createTheme(Theme theme);
 
-    Theme getTheme(String themeId);
+    /**
+     * 读取一个主题
+     *
+     * @param qIn themeId
+     *            defaultTheme
+     * @return
+     */
+    Theme getTheme(Map qIn);
 
     /**
      * 查询主题列表
@@ -33,4 +40,6 @@ public interface ThemeDao {
      *            themeId
      */
     void updateTheme(Map qIn);
+
+    void setAllThemeStatusToActive(Map qIn);
 }

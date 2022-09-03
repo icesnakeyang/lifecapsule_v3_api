@@ -3,6 +3,9 @@ package cc.cdtime.lifecapsule_v3_api.middle.noteSend;
 import cc.cdtime.lifecapsule_v3_api.meta.noteSendLog.entity.NoteSendLog;
 import cc.cdtime.lifecapsule_v3_api.meta.noteSendLog.entity.NoteSendLogView;
 import cc.cdtime.lifecapsule_v3_api.meta.noteSendLog.service.INoteSendService;
+import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
+import cc.cdtime.lifecapsule_v3_api.meta.user.service.IUserBaseService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -11,9 +14,12 @@ import java.util.Map;
 @Service
 public class NoteSendMiddle implements INoteSendMiddle {
     private final INoteSendService iNoteSendService;
+    private final IUserBaseService iUserBaseService;
 
-    public NoteSendMiddle(INoteSendService iNoteSendService) {
+    public NoteSendMiddle(INoteSendService iNoteSendService,
+                          IUserBaseService iUserBaseService) {
         this.iNoteSendService = iNoteSendService;
+        this.iUserBaseService = iUserBaseService;
     }
 
     @Override
@@ -50,6 +56,9 @@ public class NoteSendMiddle implements INoteSendMiddle {
                 throw new Exception("10040");
             }
         }
+
+        UserView userView = iUserBaseService.getUserBase(noteSendLogView.getSendUserId());
+        noteSendLogView.setSendUserNickname(userView.getNickname());
         return noteSendLogView;
     }
 

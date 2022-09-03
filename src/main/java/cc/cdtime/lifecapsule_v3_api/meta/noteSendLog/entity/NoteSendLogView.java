@@ -25,5 +25,13 @@ public class NoteSendLogView {
     private String title;
     private String recipientId;
     private String triggerType;
+    private String recipientName;
+    private String toName;
+    private String recipientTitle;
+    private String fromName;
+    private String description;
+    private String recipientPhone;
+    private String recipientEmail;
+    private String recipientRemark;
 
 }

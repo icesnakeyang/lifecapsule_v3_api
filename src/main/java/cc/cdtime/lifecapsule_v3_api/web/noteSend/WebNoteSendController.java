@@ -86,6 +86,72 @@ public class WebNoteSendController {
     }
 
     /**
+     * web端用户读取自己发送的记录列表
+     * 未读note数
+     *
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/listMyNoteSendOutLog")
+    public Response listMyNoteSendOutLog(@RequestBody NoteSendRequest request,
+                                      HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("pageIndex", request.getPageIndex());
+            in.put("pageSize", request.getPageSize());
+
+            Map out=iWebNoteSendBService.listMyNoteSendOutLog(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("Web listMyNoteSendOutLog error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
+     * Web端用户读取一个发送的笔记详情
+     *
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/getMyNoteSendOutLog")
+    public Response getMyNoteSendOutLog(@RequestBody NoteSendRequest request,
+                                     HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("sendLogId", request.getSendLogId());
+            in.put("encryptKey", request.getEncryptKey());
+            in.put("keyToken", request.getKeyToken());
+
+            Map out=iWebNoteSendBService.getMyNoteSendOutLog(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("Web getMyNoteSendOutLog error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
      * Web端用户读取一个发送的笔记详情
      *
      * @param request

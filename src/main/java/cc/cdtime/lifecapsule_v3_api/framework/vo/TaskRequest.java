@@ -7,6 +7,10 @@ public class TaskRequest extends Request {
     private String taskId;
     private String title;
     private Integer priority;
-    private Boolean complete;
+    /**
+     * 是否隐藏已完成任务
+     */
+    private Boolean hideComplete;
     private String content;
+    private Boolean complete;
 }

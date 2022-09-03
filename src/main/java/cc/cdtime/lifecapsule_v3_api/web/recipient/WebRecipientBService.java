@@ -1,6 +1,7 @@
 package cc.cdtime.lifecapsule_v3_api.web.recipient;
 
 import cc.cdtime.lifecapsule_v3_api.business.recipient.IRecipientBService;
+import cc.cdtime.lifecapsule_v3_api.framework.constant.ESTags;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -32,11 +33,17 @@ public class WebRecipientBService implements IWebRecipientBService {
 
     @Override
     public void deleteRecipient(Map in) throws Exception {
-       iRecipientBService.deleteRecipient(in);
+        iRecipientBService.deleteRecipient(in);
     }
 
     @Override
     public void saveRecipient(Map in) throws Exception {
         iRecipientBService.saveRecipient(in);
+    }
+
+    @Override
+    public void addEmailToRecipient(Map in) throws Exception {
+        in.put("frontEnd", ESTags.WEB_CLIENT.toString());
+        iRecipientBService.createNoteRecipient(in);
     }
 }

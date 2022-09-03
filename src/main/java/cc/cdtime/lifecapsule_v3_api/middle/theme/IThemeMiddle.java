@@ -8,7 +8,14 @@ import java.util.Map;
 public interface IThemeMiddle {
     void createTheme(Theme theme) throws Exception;
 
-    Theme getTheme(String themeId, Boolean returnNull) throws Exception;
+    /**
+     * 读取一个主题
+     *
+     * @param qIn themeId
+     *            defaultTheme
+     * @return
+     */
+    Theme getTheme(Map qIn, Boolean returnNull) throws Exception;
 
     /**
      * 查询主题列表
@@ -31,4 +38,6 @@ public interface IThemeMiddle {
      *            themeId
      */
     void updateTheme(Map qIn) throws Exception;
+
+    void setAllThemeStatusToActive(Map qIn) throws Exception;
 }

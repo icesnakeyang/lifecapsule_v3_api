@@ -38,6 +38,7 @@ public class WebTaskTodoController {
             in.put("token", token);
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
+            in.put("hideComplete", request.getHideComplete());
 
             Map out = iWebTaskTodoBService.listMyTaskTodo(in);
             response.setData(out);

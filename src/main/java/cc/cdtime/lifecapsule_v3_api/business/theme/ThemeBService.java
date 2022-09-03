@@ -1,5 +1,6 @@
 package cc.cdtime.lifecapsule_v3_api.business.theme;
 
+import cc.cdtime.lifecapsule_v3_api.framework.constant.ESTags;
 import cc.cdtime.lifecapsule_v3_api.meta.theme.entity.Theme;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
 import cc.cdtime.lifecapsule_v3_api.middle.theme.IThemeMiddle;
@@ -44,7 +45,23 @@ public class ThemeBService implements IThemeBService {
         qIn.put("token", token);
         UserView userView = iUserMiddle.getUser(qIn, false, true);
 
-        Theme theme = iThemeMiddle.getTheme(themeId, false);
+        qIn = new HashMap();
+        qIn.put("themeId", themeId);
+        Theme theme = iThemeMiddle.getTheme(qIn, false);
+
+        Map out = new HashMap();
+        out.put("theme", theme);
+
+        return out;
+    }
+
+    @Override
+    public Map getDefaultTheme(Map in) throws Exception {
+        String themeType = in.get("themeType").toString();
+        Map qIn = new HashMap();
+        qIn.put("defaultTheme", true);
+        qIn.put("themeType", themeType);
+        Theme theme = iThemeMiddle.getTheme(qIn, false);
 
         Map out = new HashMap();
         out.put("theme", theme);

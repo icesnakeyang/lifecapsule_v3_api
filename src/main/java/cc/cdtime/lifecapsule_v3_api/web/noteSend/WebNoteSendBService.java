@@ -49,4 +49,16 @@ public class WebNoteSendBService implements IWebNoteSendBService {
         }
         return out;
     }
+
+    @Override
+    public Map listMyNoteSendOutLog(Map in) throws Exception {
+        Map out = iNoteSendBService.listNoteSendLogSend(in);
+        return out;
+    }
+
+    @Override
+    public Map getMyNoteSendOutLog(Map in) throws Exception {
+        Map out = iNoteSendBService.getNoteSendLogSender(in);
+        return out;
+    }
 }

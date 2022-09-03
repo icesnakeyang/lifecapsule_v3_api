@@ -5,9 +5,11 @@ import cc.cdtime.lifecapsule_v3_api.framework.tools.GogoTools;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
 import cc.cdtime.lifecapsule_v3_api.meta.noteSendLog.entity.NoteSendLog;
 import cc.cdtime.lifecapsule_v3_api.meta.noteSendLog.entity.NoteSendLogView;
+import cc.cdtime.lifecapsule_v3_api.meta.recipient.entity.RecipientView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
 import cc.cdtime.lifecapsule_v3_api.middle.note.INoteMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.noteSend.INoteSendMiddle;
+import cc.cdtime.lifecapsule_v3_api.middle.recipient.IRecipientMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.security.ISecurityMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.user.IUserMiddle;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,15 +26,18 @@ public class NoteSendBService implements INoteSendBService {
     private final INoteMiddle iNoteMiddle;
     private final INoteSendMiddle iNoteSendMiddle;
     private final ISecurityMiddle iSecurityMiddle;
+    private final IRecipientMiddle iRecipientMiddle;
 
     public NoteSendBService(IUserMiddle iUserMiddle,
                             INoteMiddle iNoteMiddle,
                             INoteSendMiddle iNoteSendMiddle,
-                            ISecurityMiddle iSecurityMiddle) {
+                            ISecurityMiddle iSecurityMiddle,
+                            IRecipientMiddle iRecipientMiddle) {
         this.iUserMiddle = iUserMiddle;
         this.iNoteMiddle = iNoteMiddle;
         this.iNoteSendMiddle = iNoteSendMiddle;
         this.iSecurityMiddle = iSecurityMiddle;
+        this.iRecipientMiddle = iRecipientMiddle;
     }
 
     @Override
@@ -210,6 +215,9 @@ public class NoteSendBService implements INoteSendBService {
         //我发送的笔记列表
         qIn = new HashMap();
         qIn.put("sendUserId", userView.getUserId());
+        Integer offset = (pageIndex - 1) * pageSize;
+        qIn.put("offset", offset);
+        qIn.put("size", pageSize);
         ArrayList<NoteSendLogView> views = iNoteSendMiddle.listNoteSendLog(qIn);
         Integer total = iNoteSendMiddle.totalNoteSendLog(qIn);
         out.put("sendNoteList", views);
@@ -246,6 +254,9 @@ public class NoteSendBService implements INoteSendBService {
 
         //我收到的笔记列表
         NoteSendLogView noteSendLogView = iNoteSendMiddle.getNoteSendLog(sendLogId, false, userView.getUserId());
+        /**
+         * 把用户秘钥加密发送回前端
+         */
         if (noteSendLogView.getTriggerType() != null) {
             if (noteSendLogView.getTriggerType().equals(ESTags.TIMER_TYPE_PRIMARY.toString()) ||
                     noteSendLogView.getTriggerType().equals(ESTags.TIMER_TYPE_DATETIME.toString())) {
@@ -256,6 +267,67 @@ public class NoteSendBService implements INoteSendBService {
                 }
             }
         }
+
+
+        out.put("noteSendLog", noteSendLogView);
+
+        return out;
+    }
+
+    @Override
+    public Map getNoteSendLogSender(Map in) throws Exception {
+        String token = in.get("token").toString();
+        String sendLogId = (String) in.get("sendLogId");
+
+        String encryptKey = (String) in.get("encryptKey");
+        String keyToken = (String) in.get("keyToken");
+
+        /**
+         * 获取用户临时上传的加密笔记AES秘钥的AES秘钥
+         */
+        String strAESKey = null;
+        if (keyToken != null) {
+            strAESKey = iSecurityMiddle.takeNoteAES(keyToken, encryptKey);
+        }
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        UserView userView = iUserMiddle.getUser(qIn, false, true);
+
+        Map out = new HashMap();
+
+        NoteSendLogView noteSendLogView = iNoteSendMiddle.getNoteSendLog(sendLogId, false, userView.getUserId());
+        if (!noteSendLogView.getSendUserId().equals(userView.getUserId())) {
+            //不是发送人，不能查看发送笔记
+            throw new Exception("10049");
+        }
+
+        /**
+         * 把用户秘钥加密发送回前端
+         */
+        if (noteSendLogView.getTriggerType() != null) {
+            if (noteSendLogView.getTriggerType().equals(ESTags.TIMER_TYPE_PRIMARY.toString()) ||
+                    noteSendLogView.getTriggerType().equals(ESTags.TIMER_TYPE_DATETIME.toString())) {
+                if (noteSendLogView.getUserEncodeKey() != null) {
+                    //用AES秘钥加密笔记内容的AES秘钥
+                    String outCode = GogoTools.encryptAESKey(noteSendLogView.getUserEncodeKey(), strAESKey);
+                    noteSendLogView.setUserEncodeKey(outCode);
+                }
+            }
+        }
+
+        if (noteSendLogView.getRecipientId() != null) {
+            RecipientView recipientView = iRecipientMiddle.getRecipient(noteSendLogView.getRecipientId(), false);
+            noteSendLogView.setRecipientTitle(recipientView.getTitle());
+            noteSendLogView.setToName(recipientView.getToName());
+            noteSendLogView.setFromName(recipientView.getFromName());
+            noteSendLogView.setDescription(recipientView.getDescription());
+            noteSendLogView.setRecipientName(recipientView.getRecipientName());
+            noteSendLogView.setRecipientPhone(recipientView.getPhone());
+            noteSendLogView.setRecipientEmail(recipientView.getEmail());
+            noteSendLogView.setRecipientRemark(recipientView.getRecipientRemark());
+        }
+
         out.put("noteSendLog", noteSendLogView);
 
         return out;

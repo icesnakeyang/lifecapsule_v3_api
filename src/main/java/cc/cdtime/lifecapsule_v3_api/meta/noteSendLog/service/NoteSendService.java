@@ -49,6 +49,14 @@ public class NoteSendService implements INoteSendService {
     @Override
     public NoteSendLogView getNoteSendLog(String sendLogId) throws Exception {
         NoteSendLogView noteSendLogView = noteSendDao.getNoteSendLog(sendLogId);
+        NoteSendLogView noteSendLogContentView = noteSendDao.getNoteSendContent(sendLogId);
+        if (noteSendLogContentView != null) {
+            noteSendLogView.setContent(noteSendLogContentView.getContent());
+            NoteSendLogView noteSendLogKey=noteSendDao.getNoteSendEncodeKey(sendLogId);
+            if(noteSendLogKey!=null){
+                noteSendLogView.setUserEncodeKey(noteSendLogKey.getUserEncodeKey());
+            }
+        }
         return noteSendLogView;
     }
 

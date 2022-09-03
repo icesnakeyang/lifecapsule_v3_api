@@ -25,4 +25,12 @@ public interface IWebRecipientBService {
     void deleteRecipient(Map in) throws Exception;
 
     void saveRecipient(Map in) throws Exception;
+
+    /**
+     * 添加一个email为接收人
+     *
+     * @param in
+     * @throws Exception
+     */
+    void addEmailToRecipient(Map in) throws Exception;
 }

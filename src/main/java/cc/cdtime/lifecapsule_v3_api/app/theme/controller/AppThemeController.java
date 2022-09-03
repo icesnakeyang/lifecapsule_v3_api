@@ -41,4 +41,26 @@ public class AppThemeController {
         }
         return response;
     }
+
+    /**
+     * 读取手机端默认主题
+     */
+    @ResponseBody
+    @GetMapping("/getDefaultTheme")
+    public Response getDefaultTheme() {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            Map out = iAppThemeBService.getDefaultTheme(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("App getDefaultTheme error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
 }

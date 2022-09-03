@@ -38,12 +38,18 @@
     </insert>
 
     <!--读取一个主题-->
-    <select id="getTheme" parameterType="java.lang.String" resultMap="themeMap">
+    <select id="getTheme" parameterType="map" resultMap="themeMap">
         select * from theme
         where 1=1
         <choose>
             <when test="themeId!=null">
                 and theme_id=#{themeId}
+            </when>
+        </choose>
+        <choose>
+            <when test="defaultTheme">
+                and theme_type=#{themeType}
+                and status='DEFAULT'
             </when>
         </choose>
     </select>
@@ -87,10 +93,20 @@
             <if test="colorDanger2!=null">
                 color_danger2=#{colorDanger2},
             </if>
+            <if test="status!=null">
+                status=#{status},
+            </if>
             <if test="themeName!=null">
                 theme_name=#{themeName}
             </if>
         </set>
         where theme_id=#{themeId}
+    </update>
+
+    <update id="setAllThemeStatusToActive" parameterType="map">
+        update theme
+        set status='ACTIVE'
+        where status = 'DEFAULT'
+          and theme_type = #{themeType}
     </update>
 </mapper>

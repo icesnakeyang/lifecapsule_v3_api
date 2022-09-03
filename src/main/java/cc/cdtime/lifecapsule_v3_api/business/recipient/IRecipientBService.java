@@ -24,4 +24,5 @@ public interface IRecipientBService {
     void addContactToRecipient(Map in) throws Exception;
 
 
+    void addEmailToRecipient(Map in) throws Exception;
 }

@@ -50,7 +50,7 @@ public class QuartzService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    @Scheduled(cron = "*/10 * * * * ?")
+//    @Scheduled(cron = "*/10 * * * * ?")
     public void primaryTimerJob() throws Exception {
 
         log.info("primary timer trigger");
@@ -114,7 +114,7 @@ public class QuartzService {
      * @throws Exception
      */
     @Transactional(rollbackFor = Exception.class)
-    @Scheduled(cron = "*/10 * * * * ?")
+//    @Scheduled(cron = "*/10 * * * * ?")
     public void specificTimeJob() throws Exception {
         log.info("specific time trigger");
         log.info("primary timer trigger");

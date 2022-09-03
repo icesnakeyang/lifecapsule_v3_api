@@ -29,6 +29,7 @@ public class TaskTodoBService implements ITaskTodoBService {
         String token = in.get("token").toString();
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
+        Boolean hideComplete = (Boolean) in.get("hideComplete");
 
         Map qIn = new HashMap();
         qIn.put("token", token);
@@ -39,6 +40,9 @@ public class TaskTodoBService implements ITaskTodoBService {
         Integer offset = (pageIndex - 1) * pageSize;
         qIn.put("offset", offset);
         qIn.put("size", pageSize);
+        if (hideComplete) {
+            qIn.put("complete", false);
+        }
         ArrayList<TaskTodoView> taskTodoViews = iTaskTodoMiddle.listTaskTodo(qIn);
         Integer totalTaskTodo = iTaskTodoMiddle.totalTaskTodo(qIn);
 

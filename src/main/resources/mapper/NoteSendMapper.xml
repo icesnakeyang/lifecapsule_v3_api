@@ -17,6 +17,9 @@
         <result property="sendEmail" column="send_email"/>
         <result property="recipientId" column="recipient_id"/>
         <result property="triggerType" column="trigger_type"/>
+        <result property="recipientName" column="recipient_name"/>
+        <result property="toName" column="to_name"/>
+        <result property="recipientTitle" column="recipient_title"/>
     </resultMap>
 
     <!--创建一个笔记发送记录-->
@@ -82,14 +85,18 @@
         ru.login_name as receive_login_name,
         ubsend.nickname as send_user_nickname,
         ubreceive.nickname as receive_user_nickname,
-        title,
+        nr.title           as recipient_title,
+        nsl.title,
         trigger_type,
-        recipient_id
+        nsl.recipient_id,
+        recipient_name,
+        to_name
         from note_send_log nsl
         left join user_login_name su on send_user_id = su.user_id
         left join user_login_name ru on receive_user_id = ru.user_id
         left join user_base ubsend on send_user_id = ubsend.user_id
         left join user_base ubreceive on receive_user_id = ubreceive.user_id
+        left join note_recipient nr on nsl.recipient_id = nr.recipient_id
         where 1 = 1
         <choose>
             <when test="sendUserId!=null">
@@ -130,7 +137,7 @@
         </choose>
     </select>
 
-    <select id="getNoteSendLog" parameterType="java.lang.String" resultMap="noteSendMap">
+    <select id="getNoteSendLog2" parameterType="java.lang.String" resultMap="noteSendMap">
         select nsl.ids,
                send_user_id,
                receive_user_id,
@@ -155,6 +162,21 @@
                  left join content_detail cd on index_id = send_log_id
                  left join user_encode_key uek on uek.index_id = send_log_id
         where send_log_id = #{sendLogId}
+    </select>
+    <select id="getNoteSendLog" parameterType="java.lang.String" resultMap="noteSendMap">
+        select *
+        from note_send_log
+        where send_log_id = #{sendLogId}
+    </select>
+    <select id="getNoteSendContent" parameterType="java.lang.String" resultMap="noteSendMap">
+        select *
+        from content_detail
+        where index_id = #{sendLogId}
+    </select>
+    <select id="getNoteSendEncodeKey" parameterType="java.lang.String" resultMap="noteSendMap">
+        select *
+        from user_encode_key
+        where index_id = #{sendLogId}
     </select>
 
     <update id="updateNoteSendLog" parameterType="map">
