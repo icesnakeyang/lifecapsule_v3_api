@@ -31,4 +31,9 @@ public class UserEncodeKeyService implements IUserEncodeKeyService {
     public void updateUserEncodeKey(Map qIn) throws Exception {
         userEncodeKeyDao.updateUserEncodeKey(qIn);
     }
+
+    @Override
+    public void deleteUserEncodeKey(String indexId) throws Exception {
+        userEncodeKeyDao.deleteUserEncodeKey(indexId);
+    }
 }

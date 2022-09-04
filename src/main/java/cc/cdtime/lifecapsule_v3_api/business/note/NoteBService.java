@@ -312,13 +312,7 @@ public class NoteBService implements INoteBService {
             /**
              * 把秘钥保存到userencodekey表
              */
-            UserEncodeKey userEncodeKey = new UserEncodeKey();
-            userEncodeKey.setEncodeKey(strAESKey);
-            userEncodeKey.setEncodeKeyId(GogoTools.UUID32());
-            userEncodeKey.setUserId(userId);
-            userEncodeKey.setCreateTime(new Date());
-            userEncodeKey.setIndexId(noteInfo.getNoteId());
-            iUserEncodeKeyMiddle.createUserEncodeKey(userEncodeKey);
+            noteInfo.setUserEncodeKey(strAESKey);
         }
         noteInfo.setCreateTime(new Date());
         noteInfo.setStatus(ESTags.ACTIVE.toString());

@@ -18,4 +18,5 @@ public class NoteInfo {
     private Integer encrypt;
     private String categoryId;
     private String content;
+    private String userEncodeKey;
 }

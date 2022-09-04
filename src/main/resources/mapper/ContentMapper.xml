@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.content.dao.ContentDao">
+    <!--配置表和对象的字段映射 -->
+    <resultMap id="contentMap" type="cc.cdtime.lifecapsule_v3_api.meta.content.entity.Content">
+        <result property="userId" column="user_id"/>
+    </resultMap>
+
+    <insert id="createContent" parameterType="cc.cdtime.lifecapsule_v3_api.meta.content.entity.Content">
+        insert into content_detail
+            (index_id, content)
+        values (#{indexId}, #{content})
+    </insert>
+
+    <select id="getContent" parameterType="java.lang.String" resultMap="contentMap">
+        select *
+        from content_detail
+        where index_id = #{indexId}
+    </select>
+
+    <update id="updateContent" parameterType="map">
+        update content_detail
+        set content=#{content}
+        where index_id = #{indexId}
+    </update>
+
+    <delete id="deleteContent" parameterType="java.lang.String">
+        delete
+        from content_detail
+        where index_id = #{indexId}
+    </delete>
+</mapper>

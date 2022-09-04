@@ -16,20 +16,12 @@ public interface INoteService {
     void createNoteInfo(NoteInfo noteInfo) throws Exception;
 
     /**
-     * 查询一条笔记简要信息
+     * 查询一条笔记信息
      *
      * @param noteId
      * @return
      */
-    NoteView getNoteTiny(String noteId) throws Exception;
-
-    /**
-     * 查询一条笔记详细信息
-     *
-     * @param noteId
-     * @return
-     */
-    NoteView getNoteDetail(String noteId) throws Exception;
+    NoteView getNoteInfo(String noteId) throws Exception;
 
     /**
      * 查询笔记列表
@@ -41,7 +33,7 @@ public interface INoteService {
      *            size
      * @return
      */
-    ArrayList<NoteView> listNote(Map qIn) throws Exception;
+    ArrayList<NoteView> listNoteInfo(Map qIn) throws Exception;
 
     /**
      * 统计笔记数量
@@ -51,7 +43,7 @@ public interface INoteService {
      *            keyword
      * @return
      */
-    Integer totalNote(Map qIn) throws Exception;
+    Integer totalNoteInfo(Map qIn) throws Exception;
 
     /**
      * 修改笔记
@@ -69,7 +61,7 @@ public interface INoteService {
      *
      * @param noteId
      */
-    void deleteNote(String noteId) throws Exception;
+    void deleteNoteInfo(String noteId) throws Exception;
 
     /**
      * 查询创建了触发器的笔记列表

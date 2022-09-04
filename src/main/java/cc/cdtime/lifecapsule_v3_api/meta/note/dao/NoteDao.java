@@ -17,27 +17,12 @@ public interface NoteDao {
     void createNoteInfo(NoteInfo noteInfo);
 
     /**
-     * 创建笔记的内容详情记录
-     *
-     * @param noteInfo
-     */
-    void createNoteDetail(NoteInfo noteInfo);
-
-    /**
      * 查询一条笔记简要信息
      *
      * @param noteId
      * @return
      */
-    NoteView getNoteTiny(String noteId);
-
-    /**
-     * 查询一条笔记详细信息
-     *
-     * @param noteId
-     * @return
-     */
-    NoteView getNoteDetail(String noteId);
+    NoteView getNoteInfo(String noteId);
 
     /**
      * 查询笔记列表
@@ -49,7 +34,7 @@ public interface NoteDao {
      *            size
      * @return
      */
-    ArrayList<NoteView> listNote(Map qIn);
+    ArrayList<NoteView> listNoteInfo(Map qIn);
 
     /**
      * 统计笔记数量
@@ -59,7 +44,7 @@ public interface NoteDao {
      *            keyword
      * @return
      */
-    Integer totalNote(Map qIn);
+    Integer totalNoteInfo(Map qIn);
 
     /**
      * 修改笔记
@@ -85,7 +70,7 @@ public interface NoteDao {
      *
      * @param noteId
      */
-    void deleteNote(String noteId);
+    void deleteNoteInfo(String noteId);
 
     void deleteNoteDetail(String noteId);
 

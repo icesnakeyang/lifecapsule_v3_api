@@ -17,5 +17,11 @@ public interface IUserEncodeKeyService {
      */
     UserEncodeKeyView getUserEncodeKey(Map qIn) throws Exception;
 
+    /**
+     * @param qIn encodeKey
+     *            indexId
+     */
     void updateUserEncodeKey(Map qIn) throws Exception;
+
+    void deleteUserEncodeKey(String indexId) throws Exception;
 }

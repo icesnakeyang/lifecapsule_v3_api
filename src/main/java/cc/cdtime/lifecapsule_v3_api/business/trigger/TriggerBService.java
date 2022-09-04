@@ -163,6 +163,7 @@ public class TriggerBService implements ITriggerBService {
      * @param in
      * @throws Exception
      */
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Map saveNoteRecipientTrigger(Map in) throws Exception {
         String token = in.get("token").toString();
@@ -264,7 +265,6 @@ public class TriggerBService implements ITriggerBService {
             triggerMap.put("triggerType", trigger.getTriggerType());
             triggerMap.put("triggerTime", trigger.getTriggerTime());
         }
-
 
         Map out = new HashMap();
         out.put("trigger", triggerMap);

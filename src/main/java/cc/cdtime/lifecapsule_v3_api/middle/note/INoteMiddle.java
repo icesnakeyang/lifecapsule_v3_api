@@ -15,20 +15,14 @@ public interface INoteMiddle {
     void createNoteInfo(NoteInfo noteInfo) throws Exception;
 
     /**
-     * 查询一条笔记简要信息
-     *
-     * @param noteId
-     * @return
-     */
-    NoteView getNoteTiny(String noteId, Boolean returnNull, String userId) throws Exception;
-
-    /**
-     * 查询一条笔记详细信息
+     * 查询一条笔记详情
      *
      * @param noteId
      * @return
      */
     NoteView getNoteDetail(String noteId, Boolean returnNull, String userId) throws Exception;
+
+    NoteView getNoteTiny(String noteId, Boolean returnNull, String userId) throws Exception;
 
     /**
      * 查询笔记列表
@@ -60,6 +54,7 @@ public interface INoteMiddle {
      *            userEncodeKey
      *            categoryId
      *            content
+     *            noteId
      */
     void updateNoteInfo(Map qIn) throws Exception;
 

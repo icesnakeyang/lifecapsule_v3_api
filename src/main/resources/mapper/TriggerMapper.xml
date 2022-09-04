@@ -26,6 +26,12 @@
                 #{triggerType}, #{status}, #{recipientId})
     </insert>
 
+    <insert id="createContentDetail" parameterType="cc.cdtime.lifecapsule_v3_api.meta.trigger.entity.NoteTrigger">
+        insert into content_detail
+            (index_id, content)
+        values (#{triggerId}, #{noteContent})
+    </insert>
+
     <!--查询一个触发器-->
     <select id="getTrigger" parameterType="map" resultMap="triggerMap">
         select *

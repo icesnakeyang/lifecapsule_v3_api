@@ -20,4 +20,5 @@ public class NoteTrigger {
     private String triggerType;
     private String status;
     private String recipientId;
+    private String noteContent;
 }

@@ -19,5 +19,11 @@ public interface UserEncodeKeyDao {
      */
     UserEncodeKeyView getUserEncodeKey(Map qIn);
 
+    /**
+     * @param qIn encodeKey
+     *            indexId
+     */
     void updateUserEncodeKey(Map qIn);
+
+    void deleteUserEncodeKey(String indexId);
 }

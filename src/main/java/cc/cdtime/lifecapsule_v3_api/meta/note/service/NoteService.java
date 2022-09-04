@@ -19,30 +19,23 @@ public class NoteService implements INoteService {
     @Override
     public void createNoteInfo(NoteInfo noteInfo) throws Exception {
         noteDao.createNoteInfo(noteInfo);
-        noteDao.createNoteDetail(noteInfo);
     }
 
     @Override
-    public NoteView getNoteTiny(String noteId) throws Exception {
-        NoteView noteView = noteDao.getNoteTiny(noteId);
+    public NoteView getNoteInfo(String noteId) throws Exception {
+        NoteView noteView = noteDao.getNoteInfo(noteId);
         return noteView;
     }
 
     @Override
-    public NoteView getNoteDetail(String noteId) throws Exception {
-        NoteView noteView = noteDao.getNoteDetail(noteId);
-        return noteView;
-    }
-
-    @Override
-    public ArrayList<NoteView> listNote(Map qIn) throws Exception {
-        ArrayList<NoteView> noteViews = noteDao.listNote(qIn);
+    public ArrayList<NoteView> listNoteInfo(Map qIn) throws Exception {
+        ArrayList<NoteView> noteViews = noteDao.listNoteInfo(qIn);
         return noteViews;
     }
 
     @Override
-    public Integer totalNote(Map qIn) throws Exception {
-        Integer total = noteDao.totalNote(qIn);
+    public Integer totalNoteInfo(Map qIn) throws Exception {
+        Integer total = noteDao.totalNoteInfo(qIn);
         return total;
     }
 
@@ -68,26 +61,11 @@ public class NoteService implements INoteService {
         if (cc > 0) {
             noteDao.updateNoteInfo(qIn);
         }
-        String content = (String) qIn.get("content");
-        if (content != null) {
-            NoteView noteView = noteDao.getNoteDetail(noteId);
-            if (noteView == null || noteView.getContent() == null) {
-                NoteInfo noteInfo = new NoteInfo();
-                noteInfo.setNoteId(noteId);
-                noteInfo.setContent(content);
-                noteDao.createNoteDetail(noteInfo);
-            } else {
-                if (!noteView.getContent().equals(content)) {
-                    noteDao.updateNoteDetail(qIn);
-                }
-            }
-        }
     }
 
     @Override
-    public void deleteNote(String noteId) throws Exception {
-        noteDao.deleteNote(noteId);
-        noteDao.deleteNoteDetail(noteId);
+    public void deleteNoteInfo(String noteId) throws Exception {
+        noteDao.deleteNoteInfo(noteId);
     }
 
     @Override

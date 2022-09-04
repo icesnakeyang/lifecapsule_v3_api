@@ -19,6 +19,7 @@ public class TriggerService implements ITriggerService {
     @Override
     public void createTrigger(NoteTrigger trigger) throws Exception {
         triggerDao.createTrigger(trigger);
+        triggerDao.createContentDetail(trigger);
     }
 
     @Override

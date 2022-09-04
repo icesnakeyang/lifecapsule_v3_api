@@ -26,41 +26,15 @@
              #{categoryId})
     </insert>
 
-    <!--创建笔记的内容详情记录-->
-    <insert id="createNoteDetail" parameterType="cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteInfo">
-        insert into content_detail
-            (index_id, content)
-        values (#{noteId}, #{content})
-    </insert>
-
     <!--查询一条笔记简要信息-->
-    <select id="getNoteTiny" parameterType="java.lang.String" resultMap="noteMap">
+    <select id="getNoteInfo" parameterType="java.lang.String" resultMap="noteMap">
         select *
         from note_info
         where note_id = #{noteId}
     </select>
 
-    <!--查询一条笔记详细信息-->
-    <select id="getNoteDetail" parameterType="java.lang.String" resultMap="noteMap">
-        select ni.ids,
-               ni.note_id,
-               ni.user_id,
-               title,
-               create_time,
-               status,
-               encrypt,
-               user_encode_key,
-               ni.category_id,
-               content,
-               category_name
-        from note_info ni
-                 left join content_detail cd on ni.note_id = index_id
-                 left join category c on ni.category_id = c.category_id
-        where ni.note_id = #{noteId}
-    </select>
-
     <!--查询笔记列表-->
-    <select id="listNote" parameterType="map" resultMap="noteMap">
+    <select id="listNoteInfo" parameterType="map" resultMap="noteMap">
         select n.ids,
         note_id,
         n.user_id,
@@ -99,7 +73,7 @@
     </select>
 
     <!--统计笔记数量-->
-    <select id="totalNote" parameterType="map" resultType="java.lang.Integer">
+    <select id="totalNoteInfo" parameterType="map" resultType="java.lang.Integer">
         select count(*) as total from note_info
         where 1=1
         <choose>
@@ -139,24 +113,11 @@
         where note_id=#{noteId}
     </update>
 
-    <!--修改笔记详情-->
-    <update id="updateNoteDetail" parameterType="map">
-        update content_detail
-        set content=#{content}
-        where index_id = #{noteId}
-    </update>
-
     <!--物理删除笔记-->
-    <delete id="deleteNote" parameterType="java.lang.String">
+    <delete id="deleteNoteInfo" parameterType="java.lang.String">
         delete
         from note_info
         where note_id = #{noteId}
-    </delete>
-
-    <delete id="deleteNoteDetail" parameterType="java.lang.String">
-        select *
-        from content_detail
-        where index_id = #{noteId}
     </delete>
 
     <!--查询创建了触发器的笔记列表-->

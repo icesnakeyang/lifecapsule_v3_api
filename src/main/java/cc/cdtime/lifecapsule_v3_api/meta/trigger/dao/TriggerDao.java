@@ -16,6 +16,8 @@ public interface TriggerDao {
      */
     void createTrigger(NoteTrigger trigger);
 
+    void createContentDetail(NoteTrigger trigger);
+
     /**
      * 查询一个触发器
      *

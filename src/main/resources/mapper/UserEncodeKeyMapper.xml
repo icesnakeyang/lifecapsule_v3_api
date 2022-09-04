@@ -38,4 +38,10 @@
         set encode_key=#{encodeKey}
         where index_id = #{indexId}
     </update>
+
+    <delete id="deleteUserEncodeKey" parameterType="java.lang.String">
+        delete
+        from user_encode_key
+        where index_id = #{indexId}
+    </delete>
 </mapper>
