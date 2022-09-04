@@ -432,9 +432,6 @@ public class AppUserController {
 
     /**
      * App用户通过email验证登录
-     *
-     * @param httpServletRequest
-     * @return
      */
     @ResponseBody
     @PostMapping("/signByEmail")

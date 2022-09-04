@@ -269,4 +269,29 @@ public class WebUserController {
         }
         return response;
     }
+
+    /**
+     * App用户通过email验证登录
+     */
+    @ResponseBody
+    @PostMapping("/signByEmail")
+    public Response signByEmail(@RequestBody UserAccountRequest request) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            in.put("email", request.getEmail());
+            in.put("emailCode", request.getEmailCode());
+
+            Map out=iWebUserBService.signByEmail(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("Web user signByEmail error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
 }

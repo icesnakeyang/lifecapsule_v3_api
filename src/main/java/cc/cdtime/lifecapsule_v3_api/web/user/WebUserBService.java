@@ -72,4 +72,11 @@ public class WebUserBService implements IWebUserBService {
     public void saveUserNickname(Map in) throws Exception {
         iUserAccountBService.saveProfile(in);
     }
+
+    @Override
+    public Map signByEmail(Map in) throws Exception {
+        in.put("frontEnd", ESTags.WEB_CLIENT.toString());
+        Map out = iUserAccountBService.signByEmail(in);
+        return out;
+    }
 }
