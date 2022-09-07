@@ -84,10 +84,20 @@
     </select>
 
     <!--删除一个接收人-->
-    <delete id="deleteNoteRecipient" parameterType="java.lang.String">
+    <delete id="deleteNoteRecipient" parameterType="map">
         delete
         from note_recipient
-        where recipient_id = #{recipientId}
+        where 1=1
+        <choose>
+            <when test="recipientId!=null">
+                and recipient_id = #{recipientId}
+            </when>
+        </choose>
+        <choose>
+            <when test="noteId!=null">
+                and note_id=#{noteId}
+            </when>
+        </choose>
     </delete>
 
     <!--修改一个接收人-->

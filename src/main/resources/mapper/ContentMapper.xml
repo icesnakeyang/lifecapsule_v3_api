@@ -4,6 +4,7 @@
     <!--配置表和对象的字段映射 -->
     <resultMap id="contentMap" type="cc.cdtime.lifecapsule_v3_api.meta.content.entity.Content">
         <result property="userId" column="user_id"/>
+        <result property="indexId" column="index_id"/>
     </resultMap>
 
     <insert id="createContent" parameterType="cc.cdtime.lifecapsule_v3_api.meta.content.entity.Content">

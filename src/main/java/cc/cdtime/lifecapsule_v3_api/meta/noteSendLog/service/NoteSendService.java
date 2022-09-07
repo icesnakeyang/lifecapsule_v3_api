@@ -22,16 +22,6 @@ public class NoteSendService implements INoteSendService {
     @Override
     public void createNoteSendLog(NoteSendLog noteSendLog) throws Exception {
         noteSendDao.createNoteSendLog(noteSendLog);
-        noteSendDao.createContentDetail(noteSendLog);
-        if (noteSendLog.getUserEncodeKey() != null) {
-            UserEncodeKey userEncodeKey = new UserEncodeKey();
-            userEncodeKey.setEncodeKey(noteSendLog.getUserEncodeKey());
-            userEncodeKey.setEncodeKeyId(GogoTools.UUID32());
-            userEncodeKey.setUserId(noteSendLog.getReceiveUserId());
-            userEncodeKey.setCreateTime(new Date());
-            userEncodeKey.setIndexId(noteSendLog.getSendLogId());
-            noteSendDao.createUserEncodeKey(userEncodeKey);
-        }
     }
 
     @Override
@@ -49,14 +39,6 @@ public class NoteSendService implements INoteSendService {
     @Override
     public NoteSendLogView getNoteSendLog(String sendLogId) throws Exception {
         NoteSendLogView noteSendLogView = noteSendDao.getNoteSendLog(sendLogId);
-        NoteSendLogView noteSendLogContentView = noteSendDao.getNoteSendContent(sendLogId);
-        if (noteSendLogContentView != null) {
-            noteSendLogView.setContent(noteSendLogContentView.getContent());
-            NoteSendLogView noteSendLogKey=noteSendDao.getNoteSendEncodeKey(sendLogId);
-            if(noteSendLogKey!=null){
-                noteSendLogView.setUserEncodeKey(noteSendLogKey.getUserEncodeKey());
-            }
-        }
         return noteSendLogView;
     }
 
@@ -68,6 +50,5 @@ public class NoteSendService implements INoteSendService {
     @Override
     public void deleteNoteSendLog(String sendLogId) throws Exception {
         noteSendDao.deleteNoteSendLog(sendLogId);
-        noteSendDao.deleteNoteSendContent(sendLogId);
     }
 }

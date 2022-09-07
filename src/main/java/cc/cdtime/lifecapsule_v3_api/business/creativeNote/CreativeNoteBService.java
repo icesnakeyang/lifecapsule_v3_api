@@ -8,12 +8,14 @@ import cc.cdtime.lifecapsule_v3_api.meta.creativeNote.entity.CreativeNote;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteInfo;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
 import cc.cdtime.lifecapsule_v3_api.meta.task.entity.Task;
+import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserEncodeKeyView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
 import cc.cdtime.lifecapsule_v3_api.middle.category.ICategoryMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.creativeNote.ICreativeNoteMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.note.INoteMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.security.ISecurityMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.task.ITaskMiddle;
+import cc.cdtime.lifecapsule_v3_api.middle.user.IUserEncodeKeyMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.user.IUserMiddle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,19 +34,22 @@ public class CreativeNoteBService implements ICreativeNoteBService {
     private final INoteMiddle iNoteMiddle;
     private final ITaskMiddle iTaskMiddle;
     private final ICategoryMiddle iCategoryMiddle;
+    private final IUserEncodeKeyMiddle iUserEncodeKeyMiddle;
 
     public CreativeNoteBService(ICreativeNoteMiddle iCreativeNoteMiddle,
                                 IUserMiddle iUserMiddle,
                                 ISecurityMiddle iSecurityMiddle,
                                 INoteMiddle iNoteMiddle,
                                 ITaskMiddle iTaskMiddle,
-                                ICategoryMiddle iCategoryMiddle) {
+                                ICategoryMiddle iCategoryMiddle,
+                                IUserEncodeKeyMiddle iUserEncodeKeyMiddle) {
         this.iCreativeNoteMiddle = iCreativeNoteMiddle;
         this.iUserMiddle = iUserMiddle;
         this.iSecurityMiddle = iSecurityMiddle;
         this.iNoteMiddle = iNoteMiddle;
         this.iTaskMiddle = iTaskMiddle;
         this.iCategoryMiddle = iCategoryMiddle;
+        this.iUserEncodeKeyMiddle = iUserEncodeKeyMiddle;
     }
 
     @Override
@@ -118,6 +123,12 @@ public class CreativeNoteBService implements ICreativeNoteBService {
 
         //用AES秘钥加密笔记内容的AES秘钥
         String data = noteView.getUserEncodeKey();
+        if (data == null) {
+            qIn = new HashMap();
+            qIn.put("indexId", creativeNotes.get(0).getCreativeNoteId());
+            UserEncodeKeyView userEncodeKeyView = iUserEncodeKeyMiddle.getUserEncodeKey(qIn);
+            data = userEncodeKeyView.getEncodeKey();
+        }
         String outCode = GogoTools.encryptAESKey(data, strAESKey);
         noteView.setUserEncodeKey(outCode);
 
@@ -183,7 +194,6 @@ public class CreativeNoteBService implements ICreativeNoteBService {
              */
             qIn = new HashMap();
             qIn.put("noteId", noteView.getNoteId());
-            qIn.put("userEncodeKey", strAESKey);
             qIn.put("title", noteTitle);
             iNoteMiddle.updateNoteInfo(qIn);
 
@@ -198,6 +208,7 @@ public class CreativeNoteBService implements ICreativeNoteBService {
                     qIn = new HashMap();
                     qIn.put("content", detail1);
                     qIn.put("creativeNoteId", creativeNote.getCreativeNoteId());
+                    qIn.put("userEncodeKey", strAESKey);
                     iCreativeNoteMiddle.updateCreativeNoteDetail(qIn);
                 }
                 if (creativeNote.getCreativeType().equals(ESTags.CREATIVE2.toString())) {
@@ -207,6 +218,7 @@ public class CreativeNoteBService implements ICreativeNoteBService {
                     qIn = new HashMap();
                     qIn.put("content", detail2);
                     qIn.put("creativeNoteId", creativeNote.getCreativeNoteId());
+                    qIn.put("userEncodeKey", strAESKey);
                     iCreativeNoteMiddle.updateCreativeNoteDetail(qIn);
                 }
                 if (creativeNote.getCreativeType().equals(ESTags.CREATIVE3.toString())) {
@@ -216,6 +228,7 @@ public class CreativeNoteBService implements ICreativeNoteBService {
                     qIn = new HashMap();
                     qIn.put("content", detail3);
                     qIn.put("creativeNoteId", creativeNote.getCreativeNoteId());
+                    qIn.put("userEncodeKey", strAESKey);
                     iCreativeNoteMiddle.updateCreativeNoteDetail(qIn);
                 }
             }
@@ -327,16 +340,19 @@ public class CreativeNoteBService implements ICreativeNoteBService {
             creativeNote.setCreativeType(ESTags.CREATIVE1.toString());
             creativeNote.setCreativeNoteId(GogoTools.UUID32());
             creativeNote.setContent(detail1);
+            creativeNote.setUserEncodeKey(strAESKey);
             iCreativeNoteMiddle.createCreativeNote(creativeNote);
             //我的感受
             creativeNote.setCreativeType(ESTags.CREATIVE2.toString());
             creativeNote.setCreativeNoteId(GogoTools.UUID32());
             creativeNote.setContent(detail2);
+            creativeNote.setUserEncodeKey(strAESKey);
             iCreativeNoteMiddle.createCreativeNote(creativeNote);
             //今天要做的事情
             creativeNote.setCreativeType(ESTags.CREATIVE3.toString());
             creativeNote.setCreativeNoteId(GogoTools.UUID32());
             creativeNote.setContent(detail3);
+            creativeNote.setUserEncodeKey(strAESKey);
             iCreativeNoteMiddle.createCreativeNote(creativeNote);
 
             /**

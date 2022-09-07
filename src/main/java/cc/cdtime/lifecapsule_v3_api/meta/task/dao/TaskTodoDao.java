@@ -16,8 +16,6 @@ public interface TaskTodoDao {
      */
     void createTaskTodo(TaskTodo taskTodo);
 
-    void createTaskTodoContent(TaskTodo taskTodo);
-
     /**
      * 查询待办任务列表
      *
@@ -48,8 +46,6 @@ public interface TaskTodoDao {
      */
     void updateTaskTodo(Map qIn);
 
-    void updateTaskTodoContent(Map qIn);
-
     /**
      * 查询一个代办任务
      *
@@ -59,8 +55,4 @@ public interface TaskTodoDao {
     TaskTodoView getTaskTodo(String taskId);
 
     void deleteTaskTodo(String taskId);
-
-    void deleteTaskTodoContent(String taskId);
-
-    TaskTodoView getTaskTodoContent(String taskId);
 }

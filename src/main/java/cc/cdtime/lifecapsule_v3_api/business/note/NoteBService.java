@@ -6,17 +6,16 @@ import cc.cdtime.lifecapsule_v3_api.meta.category.entity.Category;
 import cc.cdtime.lifecapsule_v3_api.meta.category.entity.CategoryView;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteInfo;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
-import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserEncodeKey;
-import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserEncodeKeyView;
+import cc.cdtime.lifecapsule_v3_api.meta.recipient.entity.RecipientView;
+import cc.cdtime.lifecapsule_v3_api.meta.trigger.entity.TriggerView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
 import cc.cdtime.lifecapsule_v3_api.middle.category.ICategoryMiddle;
-import cc.cdtime.lifecapsule_v3_api.middle.creativeNote.ICreativeNoteMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.note.INoteMiddle;
+import cc.cdtime.lifecapsule_v3_api.middle.recipient.IRecipientMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.security.ISecurityMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.task.ITaskMiddle;
-import cc.cdtime.lifecapsule_v3_api.middle.user.IUserEncodeKeyMiddle;
+import cc.cdtime.lifecapsule_v3_api.middle.trigger.ITriggerMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.user.IUserMiddle;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,24 +30,24 @@ public class NoteBService implements INoteBService {
     private final INoteMiddle iNoteMiddle;
     private final ISecurityMiddle iSecurityMiddle;
     private final ICategoryMiddle iCategoryMiddle;
-    private final ICreativeNoteMiddle iCreativeNoteMiddle;
     private final ITaskMiddle iTaskMiddle;
-    private final IUserEncodeKeyMiddle iUserEncodeKeyMiddle;
+    private final IRecipientMiddle iRecipientMiddle;
+    private final ITriggerMiddle iTriggerMiddle;
 
     public NoteBService(IUserMiddle iUserMiddle,
                         INoteMiddle iNoteMiddle,
                         ISecurityMiddle iSecurityMiddle,
                         ICategoryMiddle iCategoryMiddle,
-                        ICreativeNoteMiddle iCreativeNoteMiddle,
                         ITaskMiddle iTaskMiddle,
-                        IUserEncodeKeyMiddle iUserEncodeKeyMiddle) {
+                        IRecipientMiddle iRecipientMiddle,
+                        ITriggerMiddle iTriggerMiddle) {
         this.iUserMiddle = iUserMiddle;
         this.iNoteMiddle = iNoteMiddle;
         this.iSecurityMiddle = iSecurityMiddle;
         this.iCategoryMiddle = iCategoryMiddle;
-        this.iCreativeNoteMiddle = iCreativeNoteMiddle;
         this.iTaskMiddle = iTaskMiddle;
-        this.iUserEncodeKeyMiddle = iUserEncodeKeyMiddle;
+        this.iRecipientMiddle = iRecipientMiddle;
+        this.iTriggerMiddle = iTriggerMiddle;
     }
 
     @Override
@@ -217,6 +216,7 @@ public class NoteBService implements INoteBService {
         return out;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteNote(Map in) throws Exception {
         String token = in.get("token").toString();
@@ -230,13 +230,17 @@ public class NoteBService implements INoteBService {
 
         iNoteMiddle.deleteNote(noteId);
 
-        /**
-         * 如果删除的是行动笔记，则需要删除对应的creativeNote和task
-         */
-        iCreativeNoteMiddle.deleteCreativeNote(noteView.getNoteId());
         qIn = new HashMap();
         qIn.put("noteId", noteId);
         iTaskMiddle.deleteTask(qIn);
+
+        /**
+         * 一并删除接收人，触发器
+         */
+        qIn = new HashMap();
+        qIn.put("noteId", noteId);
+        iRecipientMiddle.deleteNoteRecipient(qIn);
+        iTriggerMiddle.deleteTrigger(qIn);
     }
 
     @Override
@@ -407,30 +411,7 @@ public class NoteBService implements INoteBService {
         if (encrypt != null) {
             qInEdit.put("encrypt", encrypt);
             if (encrypt == 1) {
-                /**
-                 * 笔记加密，把key保存到user_encode_key表
-                 */
-                Map qIn2 = new HashMap();
-                qIn2.put("indexId", noteId);
-                UserEncodeKeyView userEncodeKeyView = iUserEncodeKeyMiddle.getUserEncodeKey(qIn2);
-                if (userEncodeKeyView != null) {
-                    /**
-                     * 修改key
-                     */
-                    qIn2.put("encodeKey", strAESKey);
-                    iUserEncodeKeyMiddle.updateUserEncodeKey(qIn2);
-                } else {
-                    /**
-                     * 新增key
-                     */
-                    UserEncodeKey userEncodeKey = new UserEncodeKey();
-                    userEncodeKey.setEncodeKeyId(GogoTools.UUID32());
-                    userEncodeKey.setEncodeKey(strAESKey);
-                    userEncodeKey.setUserId(userId);
-                    userEncodeKey.setCreateTime(new Date());
-                    userEncodeKey.setIndexId(noteId);
-                    iUserEncodeKeyMiddle.createUserEncodeKey(userEncodeKey);
-                }
+                qInEdit.put("encodeKey", strAESKey);
             }
             cc++;
         }

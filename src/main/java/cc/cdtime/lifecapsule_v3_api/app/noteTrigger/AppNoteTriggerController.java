@@ -36,6 +36,8 @@ public class AppNoteTriggerController {
         try {
             String token = httpServletRequest.getHeader("token");
             in.put("token", token);
+            in.put("pageIndex", request.getPageIndex());
+            in.put("pageSize", request.getPageSize());
 
             Map out = iAppNoteTriggerBService.listMyNoteTrigger(in);
             response.setData(out);

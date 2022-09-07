@@ -40,8 +40,14 @@ public class RecipientService implements IRecipientService {
     }
 
     @Override
-    public void deleteNoteRecipient(String recipientId) throws Exception {
-        recipientDao.deleteNoteRecipient(recipientId);
+    public void deleteNoteRecipient(Map qIn) throws Exception {
+        String noteId=(String)qIn.get("noteId");
+        String recipientId=(String)qIn.get("recipientId");
+        if(noteId==null && recipientId==null){
+            //删除接收人失败，必须指定一个删除条件
+            throw new Exception("10052");
+        }
+        recipientDao.deleteNoteRecipient(qIn);
     }
 
     @Override

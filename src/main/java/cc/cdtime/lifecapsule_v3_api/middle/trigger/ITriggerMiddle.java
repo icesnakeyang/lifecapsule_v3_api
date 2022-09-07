@@ -49,7 +49,9 @@ public interface ITriggerMiddle {
     /**
      * 物理删除触发器
      *
-     * @param triggerId
+     * @param qIn triggerId
+     *            noteId
+     *            recipientId
      */
-    void deleteTrigger(String triggerId) throws Exception;
+    void deleteTrigger(Map qIn) throws Exception;
 }

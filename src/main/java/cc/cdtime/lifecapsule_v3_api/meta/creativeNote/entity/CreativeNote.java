@@ -12,4 +12,6 @@ public class CreativeNote {
     private String noteId;
     private String creativeType;
     private String content;
+    private String title;
+    private String userEncodeKey;
 }

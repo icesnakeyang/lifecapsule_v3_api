@@ -153,7 +153,9 @@ public class RecipientBService implements IRecipientBService {
         qIn.put("token", token);
         UserView userView = iUserMiddle.getUser(qIn, false, true);
 
-        iRecipientMiddle.deleteNoteRecipient(recipientId);
+        qIn = new HashMap();
+        qIn.put("recipientId", recipientId);
+        iRecipientMiddle.deleteNoteRecipient(qIn);
     }
 
     @Override
@@ -261,13 +263,17 @@ public class RecipientBService implements IRecipientBService {
             qIn.put("recipientId", recipientId);
             TriggerView triggerView = iTriggerMiddle.getTrigger(qIn, true, userView.getUserId());
             if (triggerView != null && triggerView.getTriggerId() != null) {
-                iTriggerMiddle.deleteTrigger(triggerView.getTriggerId());
+                qIn = new HashMap();
+                qIn.put("triggerId", triggerView.getTriggerId());
+                iTriggerMiddle.deleteTrigger(qIn);
             }
         }
         /**
          * 删除接收人
          */
-        iRecipientMiddle.deleteNoteRecipient(recipientId);
+        qIn = new HashMap();
+        qIn.put("recipientId", recipientId);
+        iRecipientMiddle.deleteNoteRecipient(qIn);
     }
 
     @Override

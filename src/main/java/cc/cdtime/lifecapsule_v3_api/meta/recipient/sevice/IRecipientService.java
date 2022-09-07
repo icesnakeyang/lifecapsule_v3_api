@@ -36,9 +36,10 @@ public interface IRecipientService {
     /**
      * 删除一个接收人
      *
-     * @param recipientId
+     * @param qIn recipientId
+     *            noteId
      */
-    void deleteNoteRecipient(String recipientId) throws Exception;
+    void deleteNoteRecipient(Map qIn) throws Exception;
 
     /**
      * 修改接收人

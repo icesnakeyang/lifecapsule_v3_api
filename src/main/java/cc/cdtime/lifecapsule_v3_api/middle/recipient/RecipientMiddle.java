@@ -78,8 +78,8 @@ public class RecipientMiddle implements IRecipientMiddle {
     }
 
     @Override
-    public void deleteNoteRecipient(String recipientId) throws Exception {
-        iRecipientService.deleteNoteRecipient(recipientId);
+    public void deleteNoteRecipient(Map qIn) throws Exception {
+        iRecipientService.deleteNoteRecipient(qIn);
     }
 
     @Override

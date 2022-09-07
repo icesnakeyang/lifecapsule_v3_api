@@ -22,14 +22,6 @@ public interface ICreativeNoteService {
     ArrayList<CreativeNote> listCreativeNote(Map qIn) throws Exception;
 
     /**
-     * 更新防拖延笔记的内容
-     *
-     * @param qIn content
-     *            creativeNoteId
-     */
-    void updateCreativeNoteDetail(Map qIn) throws Exception;
-
-    /**
      * 物理删除一个防拖延笔记
      *
      * @param noteId

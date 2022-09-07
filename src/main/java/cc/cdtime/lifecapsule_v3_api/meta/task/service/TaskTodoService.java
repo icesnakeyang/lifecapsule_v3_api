@@ -19,7 +19,6 @@ public class TaskTodoService implements ITaskTodoService {
     @Override
     public void createTaskTodo(TaskTodo taskTodo) throws Exception {
         taskTodoDao.createTaskTodo(taskTodo);
-        taskTodoDao.createTaskTodoContent(taskTodo);
     }
 
     @Override
@@ -36,31 +35,7 @@ public class TaskTodoService implements ITaskTodoService {
 
     @Override
     public void updateTaskTodo(Map qIn) throws Exception {
-        int cc = 0;
-        String taskId = qIn.get("taskId").toString();
-        if (qIn.get("title") != null) {
-            cc++;
-        }
-        if (qIn.get("complete") != null) {
-            cc++;
-        }
-        if (qIn.get("priority") != null) {
-            cc++;
-        }
-        if (cc > 0) {
-            taskTodoDao.updateTaskTodo(qIn);
-        }
-        TaskTodoView v1 = taskTodoDao.getTaskTodoContent(taskId);
-        String content = (String) qIn.get("content");
-        if (v1 == null) {
-            TaskTodo taskTodo = new TaskTodo();
-            taskTodo.setTaskId(taskId);
-            taskTodo.setContent(content);
-            taskTodoDao.createTaskTodoContent(taskTodo);
-        } else {
-            int aa = 0;
-            taskTodoDao.updateTaskTodoContent(qIn);
-        }
+        taskTodoDao.updateTaskTodo(qIn);
     }
 
     @Override
@@ -72,6 +47,5 @@ public class TaskTodoService implements ITaskTodoService {
     @Override
     public void deleteTaskTodo(String taskId) throws Exception {
         taskTodoDao.deleteTaskTodo(taskId);
-        taskTodoDao.deleteTaskTodoContent(taskId);
     }
 }

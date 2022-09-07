@@ -29,16 +29,18 @@ public interface IRecipientMiddle {
      * @return
      */
     RecipientView getRecipient(String recipientId, Boolean returnNull) throws Exception;
-    RecipientView getRecipientTiny(String recipientId,Boolean returnNull, String userId) throws Exception;
+
+    RecipientView getRecipientTiny(String recipientId, Boolean returnNull, String userId) throws Exception;
 
     RecipientView getRecipient(String recipientId, Boolean returnNull, String userId) throws Exception;
 
     /**
      * 删除一个接收人
      *
-     * @param recipientId
+     * @param qIn recipientId
+     *            noteId
      */
-    void deleteNoteRecipient(String recipientId) throws Exception;
+    void deleteNoteRecipient(Map qIn) throws Exception;
 
     /**
      * 修改接收人

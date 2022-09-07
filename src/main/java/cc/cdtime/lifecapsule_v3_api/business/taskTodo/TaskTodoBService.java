@@ -7,6 +7,7 @@ import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
 import cc.cdtime.lifecapsule_v3_api.middle.task.ITaskTodoMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.user.IUserMiddle;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,8 +41,10 @@ public class TaskTodoBService implements ITaskTodoBService {
         Integer offset = (pageIndex - 1) * pageSize;
         qIn.put("offset", offset);
         qIn.put("size", pageSize);
-        if (hideComplete) {
-            qIn.put("complete", false);
+        if(hideComplete!=null) {
+            if (hideComplete) {
+                qIn.put("complete", false);
+            }
         }
         ArrayList<TaskTodoView> taskTodoViews = iTaskTodoMiddle.listTaskTodo(qIn);
         Integer totalTaskTodo = iTaskTodoMiddle.totalTaskTodo(qIn);
@@ -53,6 +56,7 @@ public class TaskTodoBService implements ITaskTodoBService {
         return out;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveTaskTodo(Map in) throws Exception {
         String token = in.get("token").toString();
@@ -79,7 +83,6 @@ public class TaskTodoBService implements ITaskTodoBService {
             iTaskTodoMiddle.createTaskTodo(taskTodo);
         } else {
             //修改
-            TaskTodoView taskTodoView = iTaskTodoMiddle.getTaskTodo(taskId, false, userView.getUserId());
             qIn = new HashMap();
             qIn.put("taskId", taskId);
             qIn.put("priority", priority);

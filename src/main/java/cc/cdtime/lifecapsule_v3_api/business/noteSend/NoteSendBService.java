@@ -2,6 +2,7 @@ package cc.cdtime.lifecapsule_v3_api.business.noteSend;
 
 import cc.cdtime.lifecapsule_v3_api.framework.constant.ESTags;
 import cc.cdtime.lifecapsule_v3_api.framework.tools.GogoTools;
+import cc.cdtime.lifecapsule_v3_api.meta.email.entity.UserEmailView;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
 import cc.cdtime.lifecapsule_v3_api.meta.noteSendLog.entity.NoteSendLog;
 import cc.cdtime.lifecapsule_v3_api.meta.noteSendLog.entity.NoteSendLogView;
@@ -43,8 +44,7 @@ public class NoteSendBService implements INoteSendBService {
     @Override
     public void sendNote(Map in) throws Exception {
         String token = in.get("token").toString();
-        String phone = (String) in.get("phone");
-        String email = (String) in.get("email");
+        String email = in.get("email").toString();
         String noteContent = (String) in.get("noteContent");
         String title = (String) in.get("title");
 
@@ -52,36 +52,25 @@ public class NoteSendBService implements INoteSendBService {
         qIn.put("token", token);
         UserView userView = iUserMiddle.getUser(qIn, false, true);
 
-        UserView receiver = null;
-        qIn = new HashMap();
-        if (phone != null) {
-            qIn.put("phone", phone);
-            receiver = iUserMiddle.getUser(qIn, true, false);
-            if (receiver == null) {
-                qIn = new HashMap();
-                qIn.put("loginName", phone);
-                receiver = iUserMiddle.getUser(qIn, true, false);
-            }
-        } else {
-            if (email != null) {
-                qIn.put("email", email);
-                receiver = iUserMiddle.getUser(qIn, true, false);
-                if (receiver == null) {
-                    qIn = new HashMap();
-                    qIn.put("loginName", email);
-                    receiver = iUserMiddle.getUser(qIn, true, false);
-                }
-            }
-        }
+        /**
+         * todo
+         * 直接发送email
+         */
+
+        /**
+         * 如果email用户已经注册，则读取该用户
+         */
+        qIn=new HashMap();
+        qIn.put("email", email);
+        UserEmailView userEmailView=iUserMiddle.getUserEmail(qIn, true, null);
 
         NoteSendLog noteSendLog = new NoteSendLog();
         noteSendLog.setSendLogId(GogoTools.UUID32());
         noteSendLog.setSendTime(new Date());
         noteSendLog.setSendUserId(userView.getUserId());
-        if (receiver != null) {
-            noteSendLog.setReceiveUserId(receiver.getUserId());
+        if (userEmailView != null) {
+            noteSendLog.setReceiveUserId(userEmailView.getUserId());
         }
-        noteSendLog.setSendPhone(phone);
         noteSendLog.setSendEmail(email);
         noteSendLog.setNoteContent(noteContent);
         noteSendLog.setTitle(title);

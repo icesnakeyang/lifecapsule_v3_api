@@ -13,16 +13,8 @@
             useGeneratedKeys="true"
             parameterType="cc.cdtime.lifecapsule_v3_api.meta.creativeNote.entity.CreativeNote">
         insert into creative_note
-            (creative_note_id, note_id, creative_type)
-        values (#{creativeNoteId}, #{noteId}, #{creativeType})
-    </insert>
-
-    <!--创建笔记详情-->
-    <insert id="createContent"
-            parameterType="cc.cdtime.lifecapsule_v3_api.meta.creativeNote.entity.CreativeNote">
-        insert into content_detail
-            (index_id, content)
-        values (#{creativeNoteId}, #{content})
+            (creative_note_id, note_id, creative_type, title)
+        values (#{creativeNoteId}, #{noteId}, #{creativeType}, #{title})
     </insert>
 
     <!--读取防拖延笔记列表-->
@@ -42,22 +34,10 @@
         </choose>
     </select>
 
-    <!--更新防拖延笔记的内容-->
-    <update id="updateCreativeNoteDetail" parameterType="map">
-        update content_detail
-        set content=#{content}
-        where index_id = #{creativeNoteId}
-    </update>
-
     <!--物理删除一个防拖延笔记-->
     <delete id="deleteCreativeNote" parameterType="java.lang.String">
         delete
         from creative_note
         where note_id = #{noteId}
-    </delete>
-    <delete id="deleteCreativeNoteContent" parameterType="java.lang.String">
-        delete
-        from content_detail
-        where index_id = #{noteId}
     </delete>
 </mapper>

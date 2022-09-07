@@ -31,14 +31,16 @@ public interface RecipientDao {
      * @return
      */
     RecipientView getRecipient(String recipientId);
+
     RecipientView getRecipientTiny(String recipientId);
 
     /**
      * 删除一个接收人
      *
-     * @param recipientId
+     * @param qIn recipientId
+     *            noteId
      */
-    void deleteNoteRecipient(String recipientId);
+    void deleteNoteRecipient(Map qIn);
 
     /**
      * 修改接收人

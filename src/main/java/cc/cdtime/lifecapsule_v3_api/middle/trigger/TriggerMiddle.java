@@ -86,9 +86,7 @@ public class TriggerMiddle implements ITriggerMiddle {
     }
 
     @Override
-    public void deleteTrigger(String triggerId) throws Exception {
-        iTriggerService.deleteTrigger(triggerId);
-        iContentService.deleteContent(triggerId);
-        iUserEncodeKeyService.deleteUserEncodeKey(triggerId);
+    public void deleteTrigger(Map qIn) throws Exception {
+        iTriggerService.deleteTrigger(qIn);
     }
 }

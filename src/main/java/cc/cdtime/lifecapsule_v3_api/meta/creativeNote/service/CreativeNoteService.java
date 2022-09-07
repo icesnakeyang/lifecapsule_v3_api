@@ -19,7 +19,6 @@ public class CreativeNoteService implements ICreativeNoteService{
     @Override
     public void createCreativeNote(CreativeNote creativeNote) throws Exception {
         creativeNoteDao.createCreativeNote(creativeNote);
-        creativeNoteDao.createContent(creativeNote);
     }
 
     @Override
@@ -29,13 +28,7 @@ public class CreativeNoteService implements ICreativeNoteService{
     }
 
     @Override
-    public void updateCreativeNoteDetail(Map qIn) throws Exception {
-        creativeNoteDao.updateCreativeNoteDetail(qIn);
-    }
-
-    @Override
     public void deleteCreativeNote(String noteId) throws Exception {
         creativeNoteDao.deleteCreativeNote(noteId);
-        creativeNoteDao.deleteCreativeNoteContent(noteId);
     }
 }

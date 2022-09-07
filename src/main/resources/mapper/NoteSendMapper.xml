@@ -37,23 +37,6 @@
                 #{title}, #{recipientId}, #{triggerType})
     </insert>
 
-    <insert id="createContentDetail" parameterType="cc.cdtime.lifecapsule_v3_api.meta.noteSendLog.entity.NoteSendLog">
-        insert into content_detail
-            (index_id, content)
-        values (#{sendLogId}, #{noteContent})
-    </insert>
-
-    <!--创建用户的秘钥记录-->
-    <insert id="createUserEncodeKey" parameterType="cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserEncodeKey">
-        insert into user_encode_key
-            (encode_key_id, user_id, create_time, encode_key, index_id)
-        values (#{encodeKeyId},
-                #{userId},
-                #{createTime},
-                #{encodeKey},
-                #{indexId})
-    </insert>
-
     <!--读取主动发送笔记记录列表-->
     <select id="listNoteSendLog2" parameterType="map" resultMap="noteSendMap">
         select * from note_send_log
@@ -168,16 +151,6 @@
         from note_send_log
         where send_log_id = #{sendLogId}
     </select>
-    <select id="getNoteSendContent" parameterType="java.lang.String" resultMap="noteSendMap">
-        select *
-        from content_detail
-        where index_id = #{sendLogId}
-    </select>
-    <select id="getNoteSendEncodeKey" parameterType="java.lang.String" resultMap="noteSendMap">
-        select *
-        from user_encode_key
-        where index_id = #{sendLogId}
-    </select>
 
     <update id="updateNoteSendLog" parameterType="map">
         update note_send_log
@@ -190,11 +163,5 @@
         delete
         from note_send_log
         where send_log_id = #{sendLogId}
-    </delete>
-    <!--物理删除发送笔记的内容-->
-    <delete id="deleteNoteSendContent" parameterType="map">
-        delete
-        from content_detail
-        where index_id = #{sendLogId}
     </delete>
 </mapper>

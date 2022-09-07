@@ -40,7 +40,18 @@ public class TriggerService implements ITriggerService {
     }
 
     @Override
-    public void deleteTrigger(String triggerId) throws Exception {
-        triggerDao.deleteTrigger(triggerId);
+    public void deleteTrigger(Map qIn) throws Exception {
+        String triggerId = (String) qIn.get("triggerId");
+        String noteId = (String) qIn.get("noteId");
+        String recipientId = (String) qIn.get("recipientId");
+        if (triggerId == null) {
+            if (noteId == null) {
+                if (recipientId == null) {
+                    //删除触发器失败，必须指定一个删除条件
+                    throw new Exception("10051");
+                }
+            }
+        }
+        triggerDao.deleteTrigger(qIn);
     }
 }

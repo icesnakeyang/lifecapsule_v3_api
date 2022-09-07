@@ -52,7 +52,9 @@ public interface TriggerDao {
     /**
      * 物理删除触发器
      *
-     * @param triggerId
+     * @param qIn triggerId
+     *            noteId
+     *            recipientId
      */
-    void deleteTrigger(String triggerId);
+    void deleteTrigger(Map qIn);
 }

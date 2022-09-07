@@ -19,15 +19,6 @@
                 #{priority}, #{createTime}, #{taskId})
     </insert>
 
-    <!--创建任务内容-->
-    <insert id="createTaskTodoContent"
-            useGeneratedKeys="true"
-            parameterType="cc.cdtime.lifecapsule_v3_api.meta.task.entity.TaskTodo">
-        insert into content_detail
-            (index_id, content)
-        values (#{taskId}, #{content})
-    </insert>
-
     <!--查询待办任务列表-->
     <select id="listTaskTodo" parameterType="map" resultMap="taskTodoMap">
         select * from task_todo
@@ -94,28 +85,9 @@
         where task_id=#{taskId}
     </update>
 
-    <!--修改任务内容-->
-    <update id="updateTaskTodoContent" parameterType="map">
-        update content_detail
-        set content=#{content}
-        where index_id = #{taskId}
-    </update>
-
     <delete id="deleteTaskTodo" parameterType="java.lang.String">
         delete
         from task_todo
         where task_id = #{taskId}
     </delete>
-
-    <delete id="deleteTaskTodoContent" parameterType="map">
-        delete
-        from content_detail
-        where index_id = #{taskId}
-    </delete>
-
-    <select id="getTaskTodoContent" parameterType="java.lang.String" resultMap="taskTodoMap">
-        select *
-        from content_detail
-        where index_id = #{taskId}
-    </select>
 </mapper>
