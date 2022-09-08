@@ -18,4 +18,5 @@ public class NoteView {
     private String content;
     private String categoryName;
     private String noteType;
+    private String nickname;
 }

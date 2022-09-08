@@ -39,14 +39,16 @@
         note_id,
         n.user_id,
         title,
-        create_time,
+        n.create_time,
         status,
         encrypt,
         n.category_id,
         category_name,
-        note_type
+        note_type,
+        nickname
         from note_info n
         left join category c on n.category_id = c.category_id
+        left join user_base ub on c.user_id=ub.user_id
         where 1 = 1
         <choose>
             <when test="userId!=null">

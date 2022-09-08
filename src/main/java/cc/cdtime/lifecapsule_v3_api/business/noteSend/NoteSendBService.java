@@ -113,7 +113,6 @@ public class NoteSendBService implements INoteSendBService {
         //我收到的笔记总数
         qIn = new HashMap();
         qIn.put("receiveUserId", userView.getUserId());
-        qIn.put("noteId", noteId);
         Integer totalReceive = iNoteSendMiddle.totalNoteSendLog(qIn);
         out.put("totalReceive", totalReceive);
         //收到未读总数

@@ -198,6 +198,8 @@ public class AppNoteSendController {
             String token = httpServletRequest.getHeader("token");
             in.put("token", token);
             in.put("sendLogId", request.getSendLogId());
+            in.put("encryptKey", request.getEncryptKey());
+            in.put("keyToken", request.getKeyToken());
 
             Map out=iAppNoteSendBService.getMyReceiveNote(in);
             response.setData(out);
