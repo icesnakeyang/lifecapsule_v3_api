@@ -7,15 +7,18 @@ import cc.cdtime.lifecapsule_v3_api.meta.category.entity.CategoryView;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteInfo;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
 import cc.cdtime.lifecapsule_v3_api.meta.recipient.entity.RecipientView;
+import cc.cdtime.lifecapsule_v3_api.meta.tag.entity.TagView;
 import cc.cdtime.lifecapsule_v3_api.meta.trigger.entity.TriggerView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
 import cc.cdtime.lifecapsule_v3_api.middle.category.ICategoryMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.note.INoteMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.recipient.IRecipientMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.security.ISecurityMiddle;
+import cc.cdtime.lifecapsule_v3_api.middle.tag.ITagMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.task.ITaskMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.trigger.ITriggerMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.user.IUserMiddle;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +36,7 @@ public class NoteBService implements INoteBService {
     private final ITaskMiddle iTaskMiddle;
     private final IRecipientMiddle iRecipientMiddle;
     private final ITriggerMiddle iTriggerMiddle;
+    private final ITagMiddle iTagMiddle;
 
     public NoteBService(IUserMiddle iUserMiddle,
                         INoteMiddle iNoteMiddle,
@@ -40,7 +44,8 @@ public class NoteBService implements INoteBService {
                         ICategoryMiddle iCategoryMiddle,
                         ITaskMiddle iTaskMiddle,
                         IRecipientMiddle iRecipientMiddle,
-                        ITriggerMiddle iTriggerMiddle) {
+                        ITriggerMiddle iTriggerMiddle,
+                        ITagMiddle iTagMiddle) {
         this.iUserMiddle = iUserMiddle;
         this.iNoteMiddle = iNoteMiddle;
         this.iSecurityMiddle = iSecurityMiddle;
@@ -48,6 +53,7 @@ public class NoteBService implements INoteBService {
         this.iTaskMiddle = iTaskMiddle;
         this.iRecipientMiddle = iRecipientMiddle;
         this.iTriggerMiddle = iTriggerMiddle;
+        this.iTagMiddle = iTagMiddle;
     }
 
     @Override
@@ -78,7 +84,6 @@ public class NoteBService implements INoteBService {
         }
         ArrayList<NoteView> noteViews = iNoteMiddle.listNote(qIn);
         Integer total = iNoteMiddle.totalNote(qIn);
-
         Map out = new HashMap();
         out.put("noteList", noteViews);
         out.put("totalNote", total);
@@ -123,8 +128,16 @@ public class NoteBService implements INoteBService {
             noteView.setUserEncodeKey(null);
         }
 
+        /**
+         * 读取笔记标签
+         */
+        qIn = new HashMap();
+        qIn.put("noteId", noteView.getNoteId());
+        ArrayList<TagView> tagViews = iTagMiddle.listNoteTag(qIn);
+
         Map out = new HashMap();
         out.put("note", noteView);
+        out.put("noteTagList", tagViews);
 
         return out;
     }
@@ -264,6 +277,32 @@ public class NoteBService implements INoteBService {
         out.put("note", note);
 
         return out;
+    }
+
+    @Override
+    public void replyNote(Map in) throws Exception {
+        String token = in.get("token").toString();
+        String title = in.get("title").toString();
+        String content = in.get("content").toString();
+        String pid = (String) in.get("pid");
+        String sengLogId = (String) in.get("sendLogId");
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        UserView userView = iUserMiddle.getUser(qIn, false, true);
+
+        if (pid != null) {
+            /**
+             * 回复自己的笔记
+             * 直接创建一个笔记，指定pid
+             */
+        } else {
+            /**
+             * 回复别人的笔记
+             * 创建笔记，类型为回复，指定sendLogId
+             */
+
+        }
     }
 
     private String createNote(Map in) throws Exception {

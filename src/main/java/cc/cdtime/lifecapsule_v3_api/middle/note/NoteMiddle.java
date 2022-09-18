@@ -87,6 +87,8 @@ public class NoteMiddle implements INoteMiddle {
             if (userEncodeKeyView.getEncodeKey() != null) {
                 noteView.setUserEncodeKey(userEncodeKeyView.getEncodeKey());
             }
+        }else{
+
         }
         return noteView;
     }

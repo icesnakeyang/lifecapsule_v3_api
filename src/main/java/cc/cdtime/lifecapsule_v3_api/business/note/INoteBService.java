@@ -22,9 +22,12 @@ public interface INoteBService {
 
     /**
      * 查询笔记的简要信息，不包含笔记内容
+     *
      * @param in
      * @return
      * @throws Exception
      */
     Map getNoteTiny(Map in) throws Exception;
+
+    void replyNote(Map in) throws Exception;
 }

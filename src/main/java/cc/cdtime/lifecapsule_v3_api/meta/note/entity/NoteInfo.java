@@ -19,4 +19,8 @@ public class NoteInfo {
     private String categoryId;
     private String content;
     private String userEncodeKey;
+    /**
+     * 父笔记Id
+     */
+    private String pid;
 }

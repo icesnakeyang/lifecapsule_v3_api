@@ -19,4 +19,5 @@ public class NoteView {
     private String categoryName;
     private String noteType;
     private String nickname;
+    private String pid;
 }

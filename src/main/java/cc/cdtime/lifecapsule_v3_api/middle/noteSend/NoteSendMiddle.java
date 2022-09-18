@@ -110,11 +110,6 @@ public class NoteSendMiddle implements INoteSendMiddle {
             noteSendLogView.setUserEncodeKey(userEncodeKeyView.getEncodeKey());
         }
 
-        /**
-         * 读取发送用户信息
-         */
-        UserView userView = iUserBaseService.getUserBase(noteSendLogView.getSendUserId());
-        noteSendLogView.setSendUserNickname(userView.getNickname());
         return noteSendLogView;
     }
 

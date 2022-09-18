@@ -6,22 +6,22 @@ import java.util.Date;
 
 @Data
 public class NoteSendLogView {
-    private Integer ids;
+        private Integer ids;
     private String sendLogId;
-    private String noteId;
+    //    private String noteId;
     private String sendUserId;
     private String receiveUserId;
     private Date sendTime;
-    private String sendLoginName;
-    private String receiveLoginName;
-    private String noteTitle;
+    //    private String sendLoginName;
+//    private String receiveLoginName;
+//    private String noteTitle;
     private String content;
     private String userEncodeKey;
     private String sendUserNickname;
-    private String receiveUserNickname;
+    //    private String receiveUserNickname;
     private Date readTime;
-    private String sendPhone;
-    private String sendEmail;
+    //    private String sendPhone;
+    private String toEmail;
     private String title;
     private String recipientId;
     private String triggerType;
@@ -30,8 +30,8 @@ public class NoteSendLogView {
     private String recipientTitle;
     private String fromName;
     private String description;
-    private String recipientPhone;
     private String recipientEmail;
     private String recipientRemark;
+    private String refPid;
 
 }

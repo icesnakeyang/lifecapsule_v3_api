@@ -542,4 +542,34 @@ public class AppNoteController {
         }
         return response;
     }
+
+    /**
+     * app端用户回复一篇笔记
+     * 可以是自己的，和别人发送的
+     *
+     * @param
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/replyNote")
+    public Response replyNote(@RequestBody CategoryRequest request,
+                                     HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("categoryId", request.getCategoryId());
+            iAppNoteBService.replyNote(in);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("App replyNote error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
 }

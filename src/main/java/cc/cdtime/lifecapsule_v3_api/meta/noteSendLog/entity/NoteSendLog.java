@@ -16,10 +16,10 @@ public class NoteSendLog {
     private Date sendTime;
     private Date readTime;
     private String noteContent;
-    private String sendPhone;
-    private String sendEmail;
+    private String toEmail;
     private String title;
     private String triggerType;
     private String recipientId;
     private String userEncodeKey;
+    private String refPid;
 }

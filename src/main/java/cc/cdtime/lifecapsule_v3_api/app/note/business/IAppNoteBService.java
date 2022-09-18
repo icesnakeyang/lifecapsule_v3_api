@@ -131,4 +131,6 @@ public interface IAppNoteBService {
      * @throws Exception
      */
     Map getMyNoteTiny(Map in) throws Exception;
+
+    void replyNote(Map in) throws Exception;
 }

@@ -60,9 +60,9 @@ public class NoteSendBService implements INoteSendBService {
         /**
          * 如果email用户已经注册，则读取该用户
          */
-        qIn=new HashMap();
+        qIn = new HashMap();
         qIn.put("email", email);
-        UserEmailView userEmailView=iUserMiddle.getUserEmail(qIn, true, null);
+        UserEmailView userEmailView = iUserMiddle.getUserEmail(qIn, true, null);
 
         NoteSendLog noteSendLog = new NoteSendLog();
         noteSendLog.setSendLogId(GogoTools.UUID32());
@@ -71,7 +71,7 @@ public class NoteSendBService implements INoteSendBService {
         if (userEmailView != null) {
             noteSendLog.setReceiveUserId(userEmailView.getUserId());
         }
-        noteSendLog.setSendEmail(email);
+        noteSendLog.setToEmail(email);
         noteSendLog.setNoteContent(noteContent);
         noteSendLog.setTitle(title);
         noteSendLog.setTriggerType(ESTags.INSTANT_MESSAGE.toString());
@@ -157,24 +157,36 @@ public class NoteSendBService implements INoteSendBService {
         ArrayList<NoteSendLogView> views = iNoteSendMiddle.listNoteSendLog(qIn);
         Integer total = iNoteSendMiddle.totalNoteSendLog(qIn);
         ArrayList logs = new ArrayList();
-//        for(int i=0;i<views.size();i++){
-//            Map log=new HashMap();
-//            log.put("title", views.get(i).getTitle());
-//            log.put("sendUserId", views.get(i).getSendUserId());
-//            qIn=new HashMap();
-//            qIn.put("userId", views.get(i).getSendUserId());
-//            UserView sender=iUserMiddle.getUser(qIn, false,false);
-//            log.put("sendUserId", sender.getUserId());
-//            log.put("sendUserNickname", sender.getNickname());
-//            log.put("sendUserEmail", sender.getEmail());
-//            log.put("sendTime", views.get(i).getSendTime());
-//            log.put("readTime", views.get(i).getReadTime());
-//            logs.add(log);
-//        }
-        out.put("receiveNoteList", views);
+        for (int i = 0; i < views.size(); i++) {
+            Map log = new HashMap();
+            log.put("title", views.get(i).getTitle());
+            log.put("sendUserId", views.get(i).getSendUserId());
+            qIn = new HashMap();
+            qIn.put("userId", views.get(i).getSendUserId());
+            UserView sender = iUserMiddle.getUserTiny(qIn, false, false);
+            log.put("sendUserId", sender.getUserId());
+            log.put("sendUserNickname", sender.getNickname());
+            log.put("sendTime", views.get(i).getSendTime());
+            log.put("readTime", views.get(i).getReadTime());
+            log.put("sendLogId", views.get(i).getSendLogId());
+            log.put("ids", views.get(i).getIds());
+            log.put("triggerType", views.get(i).getTriggerType());
+            if (views.get(i).getTriggerType() != null) {
+                if (views.get(i).getTriggerType().equals(ESTags.REPLY_SEND_LOG.toString())) {
+                    //读取上级笔记信息
+                    if (views.get(i).getRefPid() != null) {
+                        NoteSendLogView noteSendLogView = iNoteSendMiddle.getNoteSendLog(views.get(i).getRefPid(), false, null);
+                        log.put("reTitle", noteSendLogView.getTitle());
+                    }
+                }
+            }
+            logs.add(log);
+        }
+        out.put("receiveNoteList", logs);
         out.put("totalReceiveNote", total);
         //收到未读总数
         qIn.put("unread", true);
+        qIn.put("receiveUserId", userView.getUserId());
         Integer totalReceiveUnread = iNoteSendMiddle.totalNoteSendLog(qIn);
         out.put("totalReceiveNoteUnread", totalReceiveUnread);
 
@@ -238,10 +250,18 @@ public class NoteSendBService implements INoteSendBService {
         qIn.put("token", token);
         UserView userView = iUserMiddle.getUser(qIn, false, true);
 
-        Map out = new HashMap();
+        Map noteMap = new HashMap();
 
         //我收到的笔记列表
         NoteSendLogView noteSendLogView = iNoteSendMiddle.getNoteSendLog(sendLogId, false, userView.getUserId());
+
+        noteMap.put("sendLogId", noteSendLogView.getSendLogId());
+        noteMap.put("sendUserId", noteSendLogView.getSendUserId());
+        noteMap.put("sendTime", noteSendLogView.getSendTime());
+        noteMap.put("content", noteSendLogView.getContent());
+        noteMap.put("title", noteSendLogView.getTitle());
+        noteMap.put("triggerType", noteSendLogView.getTriggerType());
+        noteMap.put("readTime", noteSendLogView.getReadTime());
         /**
          * 把用户秘钥加密发送回前端
          */
@@ -251,15 +271,28 @@ public class NoteSendBService implements INoteSendBService {
                 if (noteSendLogView.getUserEncodeKey() != null) {
                     //用AES秘钥加密笔记内容的AES秘钥
                     String outCode = GogoTools.encryptAESKey(noteSendLogView.getUserEncodeKey(), strAESKey);
-                    noteSendLogView.setUserEncodeKey(outCode);
+                    noteMap.put("userEncodeKey", outCode);
+                }
+            } else {
+                if (noteSendLogView.getTriggerType().equals(ESTags.INSTANT_MESSAGE.toString())) {
+                    /**
+                     * 即时发送信息
+                     */
+
                 }
             }
         }
 
+        /**
+         * 读取发送用户信息
+         */
+        qIn = new HashMap();
+        qIn.put("userId", noteSendLogView.getSendUserId());
+        UserView senderView = iUserMiddle.getUser(qIn, false, false);
+        noteMap.put("fromEmail", senderView.getEmail());
+        noteMap.put("sendUserNickname", senderView.getNickname());
 
-        out.put("noteSendLog", noteSendLogView);
-
-        return out;
+        return noteMap;
     }
 
     @Override
@@ -311,7 +344,6 @@ public class NoteSendBService implements INoteSendBService {
             noteSendLogView.setFromName(recipientView.getFromName());
             noteSendLogView.setDescription(recipientView.getDescription());
             noteSendLogView.setRecipientName(recipientView.getRecipientName());
-            noteSendLogView.setRecipientPhone(recipientView.getPhone());
             noteSendLogView.setRecipientEmail(recipientView.getEmail());
             noteSendLogView.setRecipientRemark(recipientView.getRecipientRemark());
         }

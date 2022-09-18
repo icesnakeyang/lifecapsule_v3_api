@@ -92,9 +92,11 @@ public class ContactBService implements IContactBService {
 
         qIn = new HashMap();
         qIn.put("userId", userView.getUserId());
-        Integer offset = (pageIndex - 1) * pageSize;
-        qIn.put("offset", offset);
-        qIn.put("size", pageSize);
+        if(pageIndex!=null) {
+            Integer offset = (pageIndex - 1) * pageSize;
+            qIn.put("offset", offset);
+            qIn.put("size", pageSize);
+        }
         ArrayList<ContactView> contactViews = iContactMiddle.listContact(qIn);
         Integer totalContact = iContactMiddle.totalContact(qIn);
 

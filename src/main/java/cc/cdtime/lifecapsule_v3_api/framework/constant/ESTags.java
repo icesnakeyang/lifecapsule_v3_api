@@ -63,5 +63,21 @@ public enum ESTags {
     /**
      * 已经发送过了
      */
-    SEND_COMPLETE
+    SEND_COMPLETE,
+    /**
+     * 笔记
+     */
+    MY_NOTE_INFO,
+    /**
+     * 发送的笔记
+     */
+    NOTE_SEND_LOG,
+    /**
+     * 论坛里的笔记
+     */
+    FORUM_NOTE,
+    /**
+     * 回复发送给我的笔记
+     */
+    REPLY_SEND_LOG
 }

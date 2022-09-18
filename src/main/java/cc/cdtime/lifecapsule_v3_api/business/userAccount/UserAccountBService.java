@@ -491,6 +491,13 @@ public class UserAccountBService implements IUserAccountBService {
         return out;
     }
 
+    /**
+     * 通过email登录
+     * 需要通过email code验证
+     * 如果email没有使用过，就返回错误
+     * 如果email使用过了，就返回该email绑定的账号token
+     */
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Map signByEmail(Map in) throws Exception {
         String email = in.get("email").toString();
@@ -519,19 +526,21 @@ public class UserAccountBService implements IUserAccountBService {
         Map out = new HashMap();
         if (userEmailView == null) {
             /**
-             * email还没有被绑定，创建一个新用户，直接添加到email表
+             * 未使用的过的email，只能通过bind绑定到当前账号，不能在登录时创建，以免游客登录后，丢失未绑定账号的数据
              */
-            Map newUserMap = registerUser(in);
-            String userId = newUserMap.get("userId").toString();
-
-            UserEmail userEmail = new UserEmail();
-            userEmail.setEmail(email);
-            userEmail.setEmailId(GogoTools.UUID32());
-            userEmail.setUserId(userId);
-            userEmail.setStatus(ESTags.DEFAULT.toString());
-            userEmail.setCreateTime(new Date());
-            iUserMiddle.createUserEmail(userEmail);
-            out.put("token", newUserMap.get("token"));
+//            Map newUserMap = registerUser(in);
+//            String userId = newUserMap.get("userId").toString();
+//
+//            UserEmail userEmail = new UserEmail();
+//            userEmail.setEmail(email);
+//            userEmail.setEmailId(GogoTools.UUID32());
+//            userEmail.setUserId(userId);
+//            userEmail.setStatus(ESTags.DEFAULT.toString());
+//            userEmail.setCreateTime(new Date());
+//            iUserMiddle.createUserEmail(userEmail);
+//            out.put("token", newUserMap.get("token"));
+            //email还没有注册，需要绑定后才能登录
+            throw new Exception("10053");
         } else {
             /**
              * 如果email已经被绑定了，就切换到该email账号
