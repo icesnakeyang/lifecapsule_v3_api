@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.tag.dao.TagDao">
+    <!--配置表和对象的字段映射 -->
+    <resultMap id="tagMap" type="cc.cdtime.lifecapsule_v3_api.meta.tag.entity.TagView">
+        <result property="tagId" column="tag_id"/>
+        <result property="tagName" column="tag_name"/>
+        <result property="tagHot" column="tag_hot"/>
+        <result property="noteId" column="note_id"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <!--在标签库里添加一个新标签-->
+    <insert id="createTagBase" parameterType="cc.cdtime.lifecapsule_v3_api.meta.tag.entity.TagBase">
+        insert into tag_base
+            (tag_id, tag_name)
+        values (#{tagId}, #{tagName})
+    </insert>
+
+    <!--给笔记添加一个标签-->
+    <insert id="createTagNote" parameterType="cc.cdtime.lifecapsule_v3_api.meta.tag.entity.TagNote">
+        insert into tag_note
+            (tag_id, note_id, create_time)
+        values (#{tagId}, #{noteId}, #{createTime})
+    </insert>
+
+    <!--修改标签热度-->
+    <update id="updateTagBase" parameterType="map">
+        update tag_base
+        set tag_hot=#{tagHot}
+        where tag_id = #{tagId}
+    </update>
+
+    <!--从标签库里物理删除一个标签-->
+    <delete id="deleteTagBase" parameterType="map">
+        delete
+        from tag_base
+        where tag_id = #{tagId}
+           or tag_name = #{tagName}
+    </delete>
+
+    <!--删除一个笔记的一个标签，或者删除一个笔记的所有标签-->
+    <delete id="deleteTagNote" parameterType="map">
+        delete from tag_note
+        where 1=1
+        <choose>
+            <when test="tagId!=null">
+                and tag_id=#{tagId}
+            </when>
+        </choose>
+        <choose>
+            <when test="noteId!=null">
+                and note_id=#{noteId}
+            </when>
+        </choose>
+    </delete>
+
+    <!--根据标签名称查询标签库记录-->
+    <select id="getTagBase" parameterType="java.lang.String" resultMap="tagMap">
+        select *
+        from tag_base
+        where tag_name = #{tagName}
+    </select>
+
+    <select id="getTagNote" parameterType="map" resultMap="tagMap">
+        select tn.ids,
+               tn.tag_id,
+               note_id,
+               create_time,
+               tag_name,
+               tag_hot
+        from tag_note tn
+                 left join tag_base tb on tn.tag_id = tb.tag_id
+    </select>
+
+    <!--查询一个笔记的标签列表-->
+    <select id="listNoteTag" parameterType="map" resultMap="tagMap">
+        select tn.ids,
+        tn.tag_id,
+        note_id,
+        create_time,
+        tag_name,
+        tag_hot
+        from tag_note tn
+        left join tag_base tb on tn.tag_id = tb.tag_id
+        where 1=1
+        <choose>
+            <when test="noteId!=null">
+                and note_id = #{noteId}
+            </when>
+        </choose>
+        <choose>
+            <when test="tagName!=null">
+                and tag_name = #{tagName}
+            </when>
+        </choose>
+    </select>
+
+    <select id="listTagNote2" parameterType="map" resultMap="tagMap">
+        <!--        select tn.ids,-->
+        <!--        tn.tag_id,-->
+        <!--        note_id,-->
+        <!--        create_time,-->
+        <!--        tag_name,-->
+        <!--        tag_hot-->
+        <!--        from tag_note tn-->
+        <!--        left join tag_base tb on tn.tag_id = tb.tag_id-->
+        <!--        where 1 = 1-->
+        <!--        <choose>-->
+        <!--            <when test="tagId!=null">-->
+        <!--                and tn.tag_id = #{tagId}-->
+        <!--            </when>-->
+        <!--        </choose>-->
+        <!--        <choose>-->
+        <!--            <when test="tagName!=null">-->
+        <!--                and tag_name = #{tagName}-->
+        <!--            </when>-->
+        <!--        </choose>-->
+        <!--        <choose>-->
+        <!--            <when test="noteId!=null">-->
+        <!--                and note_id = #{noteId}-->
+        <!--            </when>-->
+        <!--        </choose>-->
+        <!--        order by tag_hot desc-->
+        <!--        limit #{size} offset #{offset}-->
+    </select>
+</mapper>
