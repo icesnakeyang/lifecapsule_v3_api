@@ -10,7 +10,8 @@
         <result property="triggerTime" column="trigger_time"/>
         <result property="actTimes" column="act_times"/>
         <result property="triggerType" column="trigger_type"/>
-        <result property="recipientId" column="recipient_id"/>
+        <result property="toEmail" column="to_email"/>
+        <result property="fromName" column="from_name"/>
     </resultMap>
 
     <!--创建一个触发器-->
@@ -18,35 +19,21 @@
             useGeneratedKeys="true"
             parameterType="cc.cdtime.lifecapsule_v3_api.meta.trigger.entity.NoteTrigger">
         insert into note_trigger
-        (trigger_id, note_id, remark,
-         trigger_time, create_time, user_id,
-         trigger_type, status, recipient_id)
-        values (#{triggerId}, #{noteId}, #{remark},
-                #{triggerTime}, #{createTime}, #{userId},
-                #{triggerType}, #{status}, #{recipientId})
-    </insert>
-
-    <insert id="createContentDetail" parameterType="cc.cdtime.lifecapsule_v3_api.meta.trigger.entity.NoteTrigger">
-        insert into content_detail
-            (index_id, content)
-        values (#{triggerId}, #{noteContent})
+        (trigger_id, trigger_time, create_time, user_id,
+         trigger_type, status,
+         title, to_email, note_id, from_name,
+         to_user_id, ref_pid)
+        values (#{triggerId}, #{triggerTime}, #{createTime}, #{userId},
+                #{triggerType}, #{status},
+                #{title}, #{toEmail}, #{noteId}, #{fromName},
+                #{toUserId}, #{refPid})
     </insert>
 
     <!--查询一个触发器-->
-    <select id="getTrigger" parameterType="map" resultMap="triggerMap">
+    <select id="getTrigger" parameterType="java.lang.String" resultMap="triggerMap">
         select *
         from note_trigger
-        where 1=1
-        <choose>
-            <when test="triggerId!=null">
-                and trigger_id = #{triggerId}
-            </when>
-        </choose>
-        <choose>
-            <when test="recipientId!=null">
-                and recipient_id = #{recipientId}
-            </when>
-        </choose>
+        where trigger_id = #{triggerId}
     </select>
 
     <!--查询触发器列表-->
@@ -54,9 +41,28 @@
         select * from note_trigger
         where 1=1
         <choose>
-            <when test="noteId!=null">
-                and note_id=#{noteId}
+            <when test="userId!=null">
+                and user_id=#{userId}
             </when>
+        </choose>
+        <choose>
+            <when test="status!=null">
+                and status=#{status}
+            </when>
+        </choose>
+        order by create_time desc
+        limit #{size} offset #{offset}
+    </select>
+
+    <select id="totalTrigger" parameterType="map" resultType="java.lang.Integer">
+        select count(*) as total from note_trigger
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+        <choose>
             <when test="status!=null">
                 and status=#{status}
             </when>
@@ -79,6 +85,12 @@
             <if test="status!=null">
                 status=#{status},
             </if>
+            <if test="title!=null">
+                title=#{title},
+            </if>
+            <if test="toEmail!=null">
+                to_email=#{toEmail},
+            </if>
             <if test="actTimes!=null">
                 act_times=#{actTimes}
             </if>
@@ -87,24 +99,9 @@
     </update>
 
     <!--物理删除触发器-->
-    <delete id="deleteTrigger" parameterType="map">
+    <delete id="deleteTrigger" parameterType="java.lang.String">
         delete
         from note_trigger
-        where 1=1
-        <choose>
-            <when test="triggerId!=null">
-                and trigger_id = #{triggerId}
-            </when>
-        </choose>
-        <choose>
-            <when test="noteId!=null">
-                and note_id=#{noteId}
-            </when>
-        </choose>
-        <choose>
-            <when test="recipientId!=null">
-                and recipient_id=#{recipientId}
-            </when>
-        </choose>
+        where trigger_id = #{triggerId}
     </delete>
 </mapper>

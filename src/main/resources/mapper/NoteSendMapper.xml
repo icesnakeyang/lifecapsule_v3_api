@@ -22,6 +22,8 @@
         <result property="recipientTitle" column="recipient_title"/>
         <result property="receiveUserName" column="receive_user_name"/>
         <result property="refPid" column="ref_pid"/>
+        <result property="fromName" column="from_name"/>
+        <result property="triggerId" column="trigger_id"/>
     </resultMap>
 
     <!--创建一个笔记发送记录-->
@@ -33,12 +35,12 @@
          send_time,
          send_log_id, to_email,
          title, recipient_id, trigger_type,
-         ref_pid)
+         ref_pid, trigger_id, from_name)
         values (#{sendUserId}, #{receiveUserId},
                 #{sendTime},
                 #{sendLogId}, #{toEmail},
                 #{title}, #{recipientId}, #{triggerType},
-                #{refPid})
+                #{refPid}, #{triggerId}, #{fromName})
     </insert>
 
     <!--读取主动发送笔记记录列表-->

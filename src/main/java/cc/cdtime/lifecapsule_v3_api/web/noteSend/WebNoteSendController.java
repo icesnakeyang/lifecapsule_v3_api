@@ -21,38 +21,6 @@ public class WebNoteSendController {
     }
 
     /**
-     * Web端用户发送笔记给其他用户
-     *
-     * @param request
-     * @param httpServletRequest
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/webSendNote")
-    public Response webSendNote(@RequestBody NoteSendRequest request,
-                             HttpServletRequest httpServletRequest) {
-        Response response = new Response();
-        Map in = new HashMap();
-        try {
-            String token = httpServletRequest.getHeader("token");
-            in.put("token", token);
-            in.put("email", request.getEmail());
-            in.put("noteContent", request.getNoteContent());
-            in.put("title", request.getTitle());
-
-            iWebNoteSendBService.webSendNote(in);
-        } catch (Exception ex) {
-            try {
-                response.setCode(Integer.parseInt(ex.getMessage()));
-            } catch (Exception ex2) {
-                response.setCode(10001);
-                log.error("Web webSendNote error:" + ex.getMessage());
-            }
-        }
-        return response;
-    }
-
-    /**
      * web端用户读取自己接收的记录列表
      * 未读note数
      *

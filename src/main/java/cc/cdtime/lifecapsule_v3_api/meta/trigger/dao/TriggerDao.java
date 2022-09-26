@@ -16,25 +16,26 @@ public interface TriggerDao {
      */
     void createTrigger(NoteTrigger trigger);
 
-    void createContentDetail(NoteTrigger trigger);
-
     /**
      * 查询一个触发器
      *
-     * @param qIn triggerId
-     *            recipientId
+     * @param triggerId
      * @return
      */
-    TriggerView getTrigger(Map qIn);
+    TriggerView getTrigger(String triggerId);
 
     /**
      * 查询触发器列表
      *
-     * @param qIn noteId
+     * @param qIn userId
      *            status
+     *            size
+     *            offset
      * @return
      */
     ArrayList<TriggerView> listTrigger(Map qIn);
+
+    Integer totalTrigger(Map qIn);
 
     /**
      * 修改一个笔记触发条件
@@ -52,9 +53,7 @@ public interface TriggerDao {
     /**
      * 物理删除触发器
      *
-     * @param qIn triggerId
-     *            noteId
-     *            recipientId
+     * @param triggerId
      */
-    void deleteTrigger(Map qIn);
+    void deleteTrigger(String triggerId);
 }

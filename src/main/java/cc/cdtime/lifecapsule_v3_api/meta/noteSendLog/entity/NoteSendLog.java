@@ -22,4 +22,6 @@ public class NoteSendLog {
     private String recipientId;
     private String userEncodeKey;
     private String refPid;
+    private String triggerId;
+    private String fromName;
 }

@@ -39,27 +39,6 @@ public class NoteSendMiddle implements INoteSendMiddle {
     @Override
     public void createNoteSendLog(NoteSendLog noteSendLog) throws Exception {
         iNoteSendService.createNoteSendLog(noteSendLog);
-
-        /**
-         * 创建接收人的笔记内容
-         */
-        Content content = new Content();
-        content.setContent(noteSendLog.getNoteContent());
-        content.setIndexId(noteSendLog.getSendLogId());
-        iContentService.createContent(content);
-
-        /**
-         * 创建接收人的笔记内容秘钥
-         */
-        if (noteSendLog.getUserEncodeKey() != null) {
-            UserEncodeKey userEncodeKey = new UserEncodeKey();
-            userEncodeKey.setEncodeKey(noteSendLog.getUserEncodeKey());
-            userEncodeKey.setUserId(noteSendLog.getReceiveUserId());
-            userEncodeKey.setEncodeKeyId(GogoTools.UUID32());
-            userEncodeKey.setCreateTime(new Date());
-            userEncodeKey.setIndexId(noteSendLog.getSendLogId());
-            iUserEncodeKeyService.createUserEncodeKey(userEncodeKey);
-        }
     }
 
     @Override
@@ -95,7 +74,7 @@ public class NoteSendMiddle implements INoteSendMiddle {
         /**
          * 读取内容详情
          */
-        Content content = iContentService.getContent(sendLogId);
+        Content content = iContentService.getContent(noteSendLogView.getTriggerId());
         if (content != null) {
             noteSendLogView.setContent(content.getContent());
         }
@@ -104,7 +83,7 @@ public class NoteSendMiddle implements INoteSendMiddle {
          * 读取解密秘钥
          */
         Map qIn = new HashMap();
-        qIn.put("indexId", sendLogId);
+        qIn.put("indexId", noteSendLogView.getTriggerId());
         UserEncodeKeyView userEncodeKeyView = iUserEncodeKeyService.getUserEncodeKey(qIn);
         if (userEncodeKeyView != null) {
             noteSendLogView.setUserEncodeKey(userEncodeKeyView.getEncodeKey());

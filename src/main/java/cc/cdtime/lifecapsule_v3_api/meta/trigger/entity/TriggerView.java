@@ -17,4 +17,11 @@ public class TriggerView {
     private String triggerType;
     private String status;
     private String recipientId;
+    private String toEmail;
+    private String title;
+    private String noteContent;
+    private String userEncodeKey;
+    private String fromName;
+    private String toUserId;
+    private String refPid;
 }

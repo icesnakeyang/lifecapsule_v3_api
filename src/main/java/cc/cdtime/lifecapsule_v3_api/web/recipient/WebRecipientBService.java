@@ -32,11 +32,6 @@ public class WebRecipientBService implements IWebRecipientBService {
     }
 
     @Override
-    public void deleteRecipient(Map in) throws Exception {
-        iRecipientBService.deleteRecipient(in);
-    }
-
-    @Override
     public void saveRecipient(Map in) throws Exception {
         iRecipientBService.saveRecipient(in);
     }

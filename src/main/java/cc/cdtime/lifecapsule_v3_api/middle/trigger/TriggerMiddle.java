@@ -9,12 +9,14 @@ import cc.cdtime.lifecapsule_v3_api.meta.trigger.entity.NoteTrigger;
 import cc.cdtime.lifecapsule_v3_api.meta.trigger.entity.TriggerView;
 import cc.cdtime.lifecapsule_v3_api.meta.trigger.service.ITriggerService;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserEncodeKey;
+import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserEncodeKeyView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.service.IUserEncodeKeyService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -38,24 +40,24 @@ public class TriggerMiddle implements ITriggerMiddle {
     @Override
     public void createTrigger(NoteTrigger trigger) throws Exception {
         iTriggerService.createTrigger(trigger);
-        NoteView noteView = iNoteService.getNoteInfo(trigger.getNoteId());
-        Content content = iContentService.getContent(noteView.getNoteId());
         Content content2 = new Content();
-        content2.setContent(content.getContent());
+        content2.setContent(trigger.getNoteContent());
         content2.setIndexId(trigger.getTriggerId());
         iContentService.createContent(content2);
-        UserEncodeKey userEncodeKey = new UserEncodeKey();
-        userEncodeKey.setEncodeKey(noteView.getUserEncodeKey());
-        userEncodeKey.setEncodeKeyId(GogoTools.UUID32());
-        userEncodeKey.setUserId(trigger.getUserId());
-        userEncodeKey.setCreateTime(new Date());
-        userEncodeKey.setIndexId(trigger.getTriggerId());
-        iUserEncodeKeyService.createUserEncodeKey(userEncodeKey);
+        if (trigger.getUserEncodeKey() != null) {
+            UserEncodeKey userEncodeKey = new UserEncodeKey();
+            userEncodeKey.setEncodeKey(trigger.getUserEncodeKey());
+            userEncodeKey.setEncodeKeyId(GogoTools.UUID32());
+            userEncodeKey.setUserId(trigger.getUserId());
+            userEncodeKey.setCreateTime(new Date());
+            userEncodeKey.setIndexId(trigger.getTriggerId());
+            iUserEncodeKeyService.createUserEncodeKey(userEncodeKey);
+        }
     }
 
     @Override
-    public TriggerView getTrigger(Map qIn, Boolean returnNull, String userId) throws Exception {
-        TriggerView triggerView = iTriggerService.getTrigger(qIn);
+    public TriggerView getTrigger(String triggerId, Boolean returnNull, String userId) throws Exception {
+        TriggerView triggerView = iTriggerService.getTrigger(triggerId);
         if (triggerView == null) {
             if (returnNull) {
                 return null;
@@ -71,6 +73,13 @@ public class TriggerMiddle implements ITriggerMiddle {
                 throw new Exception("10015");
             }
         }
+        TriggerView triggerView1 = loadContent(triggerId);
+        if (triggerView1.getNoteContent() != null) {
+            triggerView.setNoteContent(triggerView1.getNoteContent());
+            if (triggerView1.getUserEncodeKey() != null) {
+                triggerView.setUserEncodeKey(triggerView1.getUserEncodeKey());
+            }
+        }
         return triggerView;
     }
 
@@ -81,12 +90,35 @@ public class TriggerMiddle implements ITriggerMiddle {
     }
 
     @Override
+    public Integer totalTrigger(Map qIn) throws Exception {
+        Integer total = iTriggerService.totalTrigger(qIn);
+        return total;
+    }
+
+    @Override
     public void updateNoteTrigger(Map qIn) throws Exception {
         iTriggerService.updateNoteTrigger(qIn);
     }
 
     @Override
-    public void deleteTrigger(Map qIn) throws Exception {
-        iTriggerService.deleteTrigger(qIn);
+    public void deleteTrigger(String triggerId) throws Exception {
+        iTriggerService.deleteTrigger(triggerId);
+        iContentService.deleteContent(triggerId);
+        iUserEncodeKeyService.deleteUserEncodeKey(triggerId);
+    }
+
+    private TriggerView loadContent(String triggerId) throws Exception {
+        TriggerView triggerView = new TriggerView();
+        Content content = iContentService.getContent(triggerId);
+        if (content != null) {
+            triggerView.setNoteContent(content.getContent());
+            Map qIn = new HashMap();
+            qIn.put("indexId", triggerId);
+            UserEncodeKeyView userEncodeKeyView = iUserEncodeKeyService.getUserEncodeKey(qIn);
+            if (userEncodeKeyView != null) {
+                triggerView.setUserEncodeKey(userEncodeKeyView.getEncodeKey());
+            }
+        }
+        return triggerView;
     }
 }

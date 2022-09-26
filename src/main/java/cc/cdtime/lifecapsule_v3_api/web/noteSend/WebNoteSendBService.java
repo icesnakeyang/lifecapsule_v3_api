@@ -22,11 +22,6 @@ public class WebNoteSendBService implements IWebNoteSendBService {
     }
 
     @Override
-    public void webSendNote(Map in) throws Exception {
-        iNoteSendBService.sendNote(in);
-    }
-
-    @Override
     public Map listMyNoteReceiveLog(Map in) throws Exception {
         Map out = iNoteSendBService.listNoteReceiveLog(in);
         return out;

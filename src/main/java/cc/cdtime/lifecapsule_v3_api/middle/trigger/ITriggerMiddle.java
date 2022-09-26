@@ -18,20 +18,23 @@ public interface ITriggerMiddle {
     /**
      * 查询一个触发器
      *
-     * @param qIn triggerId
-     *            recipientId
+     * @param triggerId
      * @return
      */
-    TriggerView getTrigger(Map qIn, Boolean returnNull, String userId) throws Exception;
+    TriggerView getTrigger(String triggerId, Boolean returnNull, String userId) throws Exception;
 
     /**
      * 查询触发器列表
      *
-     * @param qIn noteId
+     * @param qIn userId
      *            status
+     *            size
+     *            offset
      * @return
      */
     ArrayList<TriggerView> listTrigger(Map qIn) throws Exception;
+
+    Integer totalTrigger(Map qIn) throws Exception;
 
     /**
      * 修改一个笔记触发条件
@@ -49,9 +52,7 @@ public interface ITriggerMiddle {
     /**
      * 物理删除触发器
      *
-     * @param qIn triggerId
-     *            noteId
-     *            recipientId
+     * @param triggerId
      */
-    void deleteTrigger(Map qIn) throws Exception;
+    void deleteTrigger(String triggerId) throws Exception;
 }

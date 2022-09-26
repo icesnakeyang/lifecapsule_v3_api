@@ -33,5 +33,6 @@ public class NoteSendLogView {
     private String recipientEmail;
     private String recipientRemark;
     private String refPid;
+    private String triggerId;
 
 }

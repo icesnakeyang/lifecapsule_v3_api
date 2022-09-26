@@ -13,8 +13,6 @@ public interface IRecipientBService {
 
     Map getRecipient(Map in) throws Exception;
 
-    void deleteRecipient(Map in) throws Exception;
-
     /**
      * 把一个联系人添加到接收人里
      *

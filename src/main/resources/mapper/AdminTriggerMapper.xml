@@ -9,6 +9,11 @@
         <result property="noteId" column="note_id"/>
         <result property="triggerTime" column="trigger_time"/>
         <result property="actTimes" column="act_times"/>
+        <result property="toEmail" column="to_email"/>
+        <result property="triggerType" column="trigger_type"/>
+        <result property="fromName" column="from_name"/>
+        <result property="toUserId" column="to_user_id"/>
+        <result property="refPid" column="ref_pid"/>
     </resultMap>
 
     <!--管理后台读取所有触发器-->
@@ -16,7 +21,7 @@
         select *
         from note_trigger
         where 1 = 1
-        and recipient_id is not null
+
         <choose>
             <when test="triggerType!=null">
                 and trigger_type = #{triggerType}

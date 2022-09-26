@@ -26,6 +26,10 @@ public class AppNoteController {
     }
 
     /**
+     * 笔记编辑基础操作，增删改查/////////////////////////////////////////////////////////////////////////
+     */
+
+    /**
      * App用户查询自己的笔记列表
      *
      * @param request
@@ -58,6 +62,7 @@ public class AppNoteController {
         }
         return response;
     }
+
     /**
      * App用户统计自己的笔记数量
      *
@@ -68,7 +73,7 @@ public class AppNoteController {
     @ResponseBody
     @PostMapping("/totalMyNote")
     public Response totalMyNote(@RequestBody NoteRequest request,
-                               HttpServletRequest httpServletRequest) {
+                                HttpServletRequest httpServletRequest) {
         Response response = new Response();
         Map in = new HashMap();
         try {
@@ -134,7 +139,7 @@ public class AppNoteController {
     @ResponseBody
     @PostMapping("/getMyNoteTiny")
     public Response getMyNoteTiny(@RequestBody NoteRequest request,
-                              HttpServletRequest httpServletRequest) {
+                                  HttpServletRequest httpServletRequest) {
         Response response = new Response();
         Map in = new HashMap();
         try {
@@ -179,8 +184,9 @@ public class AppNoteController {
             in.put("encryptKey", request.getEncryptKey());
             in.put("encrypt", request.getEncrypt());
             in.put("categoryId", request.getCategoryId());
+            in.put("tagList", request.getTagList());
 
-            Map out=iAppNoteBService.saveMyNote(in);
+            Map out = iAppNoteBService.saveMyNote(in);
             response.setData(out);
         } catch (Exception ex) {
             try {
@@ -223,353 +229,5 @@ public class AppNoteController {
         }
         return response;
 
-    }
-
-    /**
-     * 用户查看接收人列表
-     *
-     * @param request
-     * @param httpServletRequest
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/listRecipient")
-    public Response listRecipient(@RequestBody NoteRequest request,
-                                  HttpServletRequest httpServletRequest) {
-        Response response = new Response();
-        Map in = new HashMap();
-        try {
-            String token = httpServletRequest.getHeader("token");
-            in.put("token", token);
-            in.put("triggerId", request.getTriggerId());
-            in.put("noteId", request.getNoteId());
-
-            Map out = iAppNoteBService.listRecipient(in);
-            response.setData(out);
-        } catch (Exception ex) {
-            try {
-                response.setCode(Integer.parseInt(ex.getMessage()));
-            } catch (Exception ex2) {
-                response.setCode(10001);
-                log.error("User listRecipient error:" + ex.getMessage());
-            }
-        }
-        return response;
-    }
-
-    /**
-     * 用户查看笔记的触发器
-     *
-     * @param request
-     * @param httpServletRequest
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/listNoteTrigger")
-    public Response listNoteTrigger(@RequestBody NoteRequest request,
-                                    HttpServletRequest httpServletRequest) {
-        Response response = new Response();
-        Map in = new HashMap();
-        try {
-            String token = httpServletRequest.getHeader("token");
-            in.put("token", token);
-            in.put("noteId", request.getNoteId());
-
-            Map out = iAppNoteBService.listNoteTrigger(in);
-            response.setData(out);
-        } catch (Exception ex) {
-            try {
-                response.setCode(Integer.parseInt(ex.getMessage()));
-            } catch (Exception ex2) {
-                response.setCode(10001);
-                log.error("User listNoteTrigger error:" + ex.getMessage());
-            }
-        }
-        return response;
-    }
-
-    /**
-     * 用户保存笔记的触发器
-     *
-     * @param request
-     * @param httpServletRequest
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/saveNoteTrigger")
-    public Response saveNoteTrigger(@RequestBody NoteRequest request,
-                                    HttpServletRequest httpServletRequest) {
-        Response response = new Response();
-        Map in = new HashMap();
-        try {
-            String token = httpServletRequest.getHeader("token");
-            in.put("token", token);
-            in.put("noteId", request.getNoteId());
-            in.put("remark", request.getRemark());
-            in.put("triggerType", request.getTriggerType());
-            in.put("triggerTime", request.getTriggerTime());
-            in.put("triggerId", request.getTriggerId());
-
-            Map out = iAppNoteBService.saveNoteTrigger(in);
-            response.setData(out);
-        } catch (Exception ex) {
-            try {
-                response.setCode(Integer.parseInt(ex.getMessage()));
-            } catch (Exception ex2) {
-                response.setCode(10001);
-                log.error("User createNoteTrigger error:" + ex.getMessage());
-            }
-        }
-        return response;
-    }
-
-    /**
-     * 用户创建一个笔记的接收人
-     *
-     * @param request
-     * @param httpServletRequest
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/createNoteRecipient")
-    public Response createNoteRecipient(@RequestBody NoteRequest request,
-                                        HttpServletRequest httpServletRequest) {
-        Response response = new Response();
-        Map in = new HashMap();
-        try {
-            String token = httpServletRequest.getHeader("token");
-            in.put("token", token);
-            in.put("noteId", request.getNoteId());
-            in.put("triggerId", request.getTriggerId());
-            in.put("name", request.getName());
-            in.put("phone", request.getPhone());
-            in.put("email", request.getEmail());
-            in.put("remark", request.getRemark());
-
-            iAppNoteBService.createNoteRecipient(in);
-        } catch (Exception ex) {
-            try {
-                response.setCode(Integer.parseInt(ex.getMessage()));
-            } catch (Exception ex2) {
-                response.setCode(10001);
-                log.error("User createNoteRecipient error:" + ex.getMessage());
-            }
-        }
-        return response;
-    }
-
-    /**
-     * 用户删除笔记的接收人
-     *
-     * @param request
-     * @param httpServletRequest
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/deleteNoteRecipient")
-    public Response deleteNoteRecipient(@RequestBody NoteRequest request,
-                                        HttpServletRequest httpServletRequest) {
-        Response response = new Response();
-        Map in = new HashMap();
-        try {
-            String token = httpServletRequest.getHeader("token");
-            in.put("token", token);
-            in.put("ids", request.getIds());
-
-            iAppNoteBService.deleteNoteRecipient(in);
-        } catch (Exception ex) {
-            try {
-                response.setCode(Integer.parseInt(ex.getMessage()));
-            } catch (Exception ex2) {
-                response.setCode(10001);
-                log.error("User deleteNoteRecipient error:" + ex.getMessage());
-            }
-        }
-        return response;
-    }
-
-    /**
-     * 查询当前用户的所有笔记分类列表
-     *
-     * @param
-     * @param httpServletRequest
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/listMyCategory")
-    public Response listMyCategory(@RequestBody CategoryRequest request,
-                                   HttpServletRequest httpServletRequest) {
-        Response response = new Response();
-        Map in = new HashMap();
-        try {
-            String token = httpServletRequest.getHeader("token");
-            in.put("token", token);
-            in.put("pageIndex", request.getPageIndex());
-            in.put("pageSize", request.getPageSize());
-            in.put("categoryId", request.getCategoryId());
-
-            Map out = iAppNoteBService.listMyCategory(in);
-            response.setData(out);
-        } catch (Exception ex) {
-            try {
-                response.setCode(Integer.parseInt(ex.getMessage()));
-            } catch (Exception ex2) {
-                response.setCode(10001);
-                log.error("User listMyCategory error:" + ex.getMessage());
-            }
-        }
-        return response;
-    }
-
-    /**
-     * 查询当前用户的一个笔记分类详情
-     *
-     * @param
-     * @param httpServletRequest
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/getMyCategory")
-    public Response getMyCategory(@RequestBody CategoryRequest request,
-                                   HttpServletRequest httpServletRequest) {
-        Response response = new Response();
-        Map in = new HashMap();
-        try {
-            String token = httpServletRequest.getHeader("token");
-            in.put("token", token);
-            in.put("categoryId", request.getCategoryId());
-
-            Map out = iAppNoteBService.getMyCategory(in);
-            response.setData(out);
-        } catch (Exception ex) {
-            try {
-                response.setCode(Integer.parseInt(ex.getMessage()));
-            } catch (Exception ex2) {
-                response.setCode(10001);
-                log.error("App getMyCategory error:" + ex.getMessage());
-            }
-        }
-        return response;
-    }
-
-    /**
-     * 获取用户的默认笔记分类详情
-     *
-     * @param
-     * @param httpServletRequest
-     * @return
-     */
-    @ResponseBody
-    @GetMapping("/getMyDefaultCategory")
-    public Response getMyDefaultCategory(HttpServletRequest httpServletRequest) {
-        Response response = new Response();
-        Map in = new HashMap();
-        try {
-            String token = httpServletRequest.getHeader("token");
-            in.put("token", token);
-
-            Map out = iAppNoteBService.getMyDefaultCategory(in);
-            response.setData(out);
-        } catch (Exception ex) {
-            try {
-                response.setCode(Integer.parseInt(ex.getMessage()));
-            } catch (Exception ex2) {
-                response.setCode(10001);
-                log.error("App getMyDefaultCategory error:" + ex.getMessage());
-            }
-        }
-        return response;
-    }
-
-    /**
-     * 用户创建或者修改自己的笔记分类
-     *
-     * @param
-     * @param httpServletRequest
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/saveMyCategory")
-    public Response saveMyCategory(@RequestBody CategoryRequest request,
-                                   HttpServletRequest httpServletRequest) {
-        Response response = new Response();
-        Map in = new HashMap();
-        try {
-            String token = httpServletRequest.getHeader("token");
-            in.put("token", token);
-            in.put("categoryName", request.getCategoryName());
-            in.put("remark", request.getRemark());
-            in.put("categoryId", request.getCategoryId());
-
-            iAppNoteBService.saveMyCategory(in);
-        } catch (Exception ex) {
-            try {
-                response.setCode(Integer.parseInt(ex.getMessage()));
-            } catch (Exception ex2) {
-                response.setCode(10001);
-                log.error("App saveMyCategory error:" + ex.getMessage());
-            }
-        }
-        return response;
-    }
-
-    /**
-     * 用户删除一个笔记分类
-     * 如果该分类下有笔记，就自动转到NORMAL分类里
-     *
-     * @param
-     * @param httpServletRequest
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/deleteMyCategory")
-    public Response deleteMyCategory(@RequestBody CategoryRequest request,
-                                     HttpServletRequest httpServletRequest) {
-        Response response = new Response();
-        Map in = new HashMap();
-        try {
-            String token = httpServletRequest.getHeader("token");
-            in.put("token", token);
-            in.put("categoryId", request.getCategoryId());
-            iAppNoteBService.deleteMyCategory(in);
-        } catch (Exception ex) {
-            try {
-                response.setCode(Integer.parseInt(ex.getMessage()));
-            } catch (Exception ex2) {
-                response.setCode(10001);
-                log.error("App deleteMyCategory error:" + ex.getMessage());
-            }
-        }
-        return response;
-    }
-
-    /**
-     * app端用户回复一篇笔记
-     * 可以是自己的，和别人发送的
-     *
-     * @param
-     * @param httpServletRequest
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/replyNote")
-    public Response replyNote(@RequestBody CategoryRequest request,
-                                     HttpServletRequest httpServletRequest) {
-        Response response = new Response();
-        Map in = new HashMap();
-        try {
-            String token = httpServletRequest.getHeader("token");
-            in.put("token", token);
-            in.put("categoryId", request.getCategoryId());
-            iAppNoteBService.replyNote(in);
-        } catch (Exception ex) {
-            try {
-                response.setCode(Integer.parseInt(ex.getMessage()));
-            } catch (Exception ex2) {
-                response.setCode(10001);
-                log.error("App replyNote error:" + ex.getMessage());
-            }
-        }
-        return response;
     }
 }

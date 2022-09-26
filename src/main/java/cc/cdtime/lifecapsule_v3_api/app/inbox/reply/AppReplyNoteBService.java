@@ -1,7 +1,6 @@
-package cc.cdtime.lifecapsule_v3_api.app.reply;
+package cc.cdtime.lifecapsule_v3_api.app.inbox.reply;
 
-import cc.cdtime.lifecapsule_v3_api.business.reply.IReplyNoteBService;
-import org.springframework.beans.factory.annotation.Autowired;
+import cc.cdtime.lifecapsule_v3_api.business.inbox.reply.IReplyNoteBService;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -15,7 +14,7 @@ public class AppReplyNoteBService implements IAppReplyNoteBService {
     }
 
     @Override
-    public void createReplyNote(Map in) throws Exception {
-        iReplyNoteBService.createReplyNote(in);
+    public void replyReceiveNote(Map in) throws Exception {
+        iReplyNoteBService.replyReceiveNote(in);
     }
 }

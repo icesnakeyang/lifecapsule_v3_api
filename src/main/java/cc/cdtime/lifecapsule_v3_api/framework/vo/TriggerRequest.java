@@ -5,12 +5,14 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class TriggerRequest {
+public class TriggerRequest extends Request{
     private String noteId;
     private String triggerId;
-    private String recipientId;
-    private String remark;
-    private String triggerType;
-    private Date triggerTime;
+    private String toEmail;
+    private String title;
+    private Date sendTime;
+    private String keyToken;
+    private String encryptKey;
+    private String noteContent;
     private String fromName;
 }

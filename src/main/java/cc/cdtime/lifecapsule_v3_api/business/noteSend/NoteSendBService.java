@@ -7,14 +7,18 @@ import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
 import cc.cdtime.lifecapsule_v3_api.meta.noteSendLog.entity.NoteSendLog;
 import cc.cdtime.lifecapsule_v3_api.meta.noteSendLog.entity.NoteSendLogView;
 import cc.cdtime.lifecapsule_v3_api.meta.recipient.entity.RecipientView;
+import cc.cdtime.lifecapsule_v3_api.meta.trigger.entity.NoteTrigger;
+import cc.cdtime.lifecapsule_v3_api.meta.trigger.entity.TriggerView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
 import cc.cdtime.lifecapsule_v3_api.middle.note.INoteMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.noteSend.INoteSendMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.recipient.IRecipientMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.security.ISecurityMiddle;
+import cc.cdtime.lifecapsule_v3_api.middle.trigger.ITriggerMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.user.IUserMiddle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,21 +32,24 @@ public class NoteSendBService implements INoteSendBService {
     private final INoteSendMiddle iNoteSendMiddle;
     private final ISecurityMiddle iSecurityMiddle;
     private final IRecipientMiddle iRecipientMiddle;
+    private final ITriggerMiddle iTriggerMiddle;
 
     public NoteSendBService(IUserMiddle iUserMiddle,
                             INoteMiddle iNoteMiddle,
                             INoteSendMiddle iNoteSendMiddle,
                             ISecurityMiddle iSecurityMiddle,
-                            IRecipientMiddle iRecipientMiddle) {
+                            IRecipientMiddle iRecipientMiddle,
+                            ITriggerMiddle iTriggerMiddle) {
         this.iUserMiddle = iUserMiddle;
         this.iNoteMiddle = iNoteMiddle;
         this.iNoteSendMiddle = iNoteSendMiddle;
         this.iSecurityMiddle = iSecurityMiddle;
         this.iRecipientMiddle = iRecipientMiddle;
+        this.iTriggerMiddle = iTriggerMiddle;
     }
 
     @Override
-    public void sendNote(Map in) throws Exception {
+    public void sendNoteInstant(Map in) throws Exception {
         String token = in.get("token").toString();
         String email = in.get("email").toString();
         String noteContent = (String) in.get("noteContent");
@@ -77,6 +84,8 @@ public class NoteSendBService implements INoteSendBService {
         noteSendLog.setTriggerType(ESTags.INSTANT_MESSAGE.toString());
         iNoteSendMiddle.createNoteSendLog(noteSendLog);
     }
+
+
 
     @Override
     public Map searchUser(Map in) throws Exception {

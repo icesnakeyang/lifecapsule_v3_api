@@ -21,4 +21,10 @@ public class NoteTrigger {
     private String status;
     private String recipientId;
     private String noteContent;
+    private String userEncodeKey;
+    private String title;
+    private String toEmail;
+    private String fromName;
+    private String toUserId;
+    private String refPid;
 }

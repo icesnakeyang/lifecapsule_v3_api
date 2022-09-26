@@ -51,6 +51,7 @@ public class QuartzService {
 
     /**
      * 每小时检查一次所有的倒计时发送的笔记
+     *
      * @throws Exception
      */
     @Transactional(rollbackFor = Exception.class)
@@ -113,9 +114,9 @@ public class QuartzService {
                                         /**
                                          * 读取笔记
                                          */
-                                        NoteView noteView=iNoteMiddle.getNoteDetail(recipientView.getNoteId(), true, null);
-                                        if(noteView!=null){
-                                            if(noteView.getUserId().equals(timerView.getUserId())){
+                                        NoteView noteView = iNoteMiddle.getNoteDetail(recipientView.getNoteId(), true, null);
+                                        if (noteView != null) {
+                                            if (noteView.getUserId().equals(timerView.getUserId())) {
                                                 /**
                                                  * 笔记是当前触发用户的，发送
                                                  */
@@ -235,6 +236,76 @@ public class QuartzService {
                 }
             } catch (Exception ex) {
                 log.error("send trigger log error:" + ex.getMessage());
+            }
+        }
+    }
+
+    /**
+     * 发送即时消息
+     *
+     * @throws Exception
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Scheduled(cron = "0 */1 * * * ?")
+    public void instantMessageJob() throws Exception {
+        log.info("Send instant message");
+        Map qIn = new HashMap();
+        qIn.put("triggerType", ESTags.INSTANT_MESSAGE);
+        qIn.put("status", ESTags.ACTIVE.toString());
+        ArrayList<TriggerView> triggerViews = iAdminTriggerMiddle.adminListTrigger(qIn);
+        for (int i = 0; i < triggerViews.size(); i++) {
+            TriggerView triggerView = triggerViews.get(i);
+            /**
+             *
+             */
+            try {
+                String toUserId = null;
+                /**
+                 * 获取接收用户id，如果没有接收人id，就不发送
+                 */
+                if (triggerView.getToUserId() != null) {
+                    toUserId = triggerView.getToUserId();
+                } else {
+                    if (triggerView.getToEmail() != null) {
+                        qIn = new HashMap();
+                        qIn.put("email", triggerView.getToEmail());
+                        UserEmailView userEmailView = iUserMiddle.getUserEmail(qIn, true, null);
+                        if (userEmailView != null) {
+                            toUserId = userEmailView.getUserId();
+                        }
+                    }
+                }
+                if (toUserId != null) {
+                    NoteSendLog noteSendLog = new NoteSendLog();
+                    noteSendLog.setSendLogId(GogoTools.UUID32());
+                    noteSendLog.setSendTime(new Date());
+                    noteSendLog.setReceiveUserId(toUserId);
+                    noteSendLog.setSendUserId(triggerView.getUserId());
+                    noteSendLog.setTriggerType(triggerView.getTriggerType());
+                    noteSendLog.setTriggerId(triggerView.getTriggerId());
+                    noteSendLog.setToEmail(triggerView.getToEmail());
+                    noteSendLog.setTitle(triggerView.getTitle());
+                    noteSendLog.setFromName(triggerView.getFromName());
+                    noteSendLog.setRefPid(triggerView.getRefPid());
+                    iNoteSendMiddle.createNoteSendLog(noteSendLog);
+
+                    /**
+                     * 把trigger设置为已发送状态
+                     */
+                    qIn = new HashMap();
+                    int actTimes = 1;
+                    if (triggerView.getActTimes() != null) {
+                        actTimes += triggerView.getActTimes();
+                    }
+                    qIn.put("actTimes", actTimes);
+                    qIn.put("status", ESTags.SEND_COMPLETE.toString());
+                    qIn.put("triggerId", triggerView.getTriggerId());
+                    iAdminTriggerMiddle.updateNoteTrigger(qIn);
+
+                    log.info("send instant message success --" + noteSendLog.getTitle());
+                }
+            } catch (Exception ex) {
+                log.error("send instant message error:" + ex.getMessage());
             }
         }
     }

@@ -41,8 +41,8 @@ public class TagService implements ITagService {
     @Override
     public void deleteTagNote(Map qIn) throws Exception {
         String tagId = (String) qIn.get("tagId");
-        String tagName = (String) qIn.get("tagName");
-        if (tagId == null && tagName == null) {
+        String noteId = (String) qIn.get("noteId");
+        if (tagId == null && noteId == null) {
             /**
              * 标签Id或者笔记Id至少要指定一个
              */

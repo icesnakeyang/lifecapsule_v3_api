@@ -2,6 +2,7 @@ package cc.cdtime.lifecapsule_v3_api.framework.vo;
 
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -25,4 +26,5 @@ public class NoteRequest extends Request {
     private String phone;
     private String email;
     private Integer ids;
+    private ArrayList tagList;
 }

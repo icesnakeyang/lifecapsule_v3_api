@@ -19,12 +19,11 @@ public class TriggerService implements ITriggerService {
     @Override
     public void createTrigger(NoteTrigger trigger) throws Exception {
         triggerDao.createTrigger(trigger);
-        triggerDao.createContentDetail(trigger);
     }
 
     @Override
-    public TriggerView getTrigger(Map qIn) throws Exception {
-        TriggerView triggerView = triggerDao.getTrigger(qIn);
+    public TriggerView getTrigger(String triggerId) throws Exception {
+        TriggerView triggerView = triggerDao.getTrigger(triggerId);
         return triggerView;
     }
 
@@ -35,23 +34,18 @@ public class TriggerService implements ITriggerService {
     }
 
     @Override
+    public Integer totalTrigger(Map qIn) throws Exception {
+        Integer total = triggerDao.totalTrigger(qIn);
+        return total;
+    }
+
+    @Override
     public void updateNoteTrigger(Map qIn) throws Exception {
         triggerDao.updateNoteTrigger(qIn);
     }
 
     @Override
-    public void deleteTrigger(Map qIn) throws Exception {
-        String triggerId = (String) qIn.get("triggerId");
-        String noteId = (String) qIn.get("noteId");
-        String recipientId = (String) qIn.get("recipientId");
-        if (triggerId == null) {
-            if (noteId == null) {
-                if (recipientId == null) {
-                    //删除触发器失败，必须指定一个删除条件
-                    throw new Exception("10051");
-                }
-            }
-        }
-        triggerDao.deleteTrigger(qIn);
+    public void deleteTrigger(String triggerId) throws Exception {
+        triggerDao.deleteTrigger(triggerId);
     }
 }

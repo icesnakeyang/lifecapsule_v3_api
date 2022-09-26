@@ -146,36 +146,6 @@ public class WebRecipientController {
     }
 
     /**
-     * 用户删除一个笔记的接收人
-     *
-     * @param request
-     * @param httpServletRequest
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/delete_recipient")
-    public Response deleteRecipient(@RequestBody RecipientRequest request,
-                                    HttpServletRequest httpServletRequest) {
-        Response response = new Response();
-        Map in = new HashMap();
-        try {
-            String token = httpServletRequest.getHeader("token");
-            in.put("token", token);
-            in.put("recipientId", request.getRecipientId());
-
-            iWebRecipientBService.deleteRecipient(in);
-        } catch (Exception ex) {
-            try {
-                response.setCode(Integer.parseInt(ex.getMessage()));
-            } catch (Exception ex2) {
-                response.setCode(10001);
-                log.error("Web deleteRecipient error:" + ex.getMessage());
-            }
-        }
-        return response;
-    }
-
-    /**
      * web端用户修改一个接收人信息
      *
      * @param request

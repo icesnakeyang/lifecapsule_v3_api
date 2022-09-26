@@ -1,8 +1,10 @@
 package cc.cdtime.lifecapsule_v3_api.business.noteTrigger;
 
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
+import cc.cdtime.lifecapsule_v3_api.meta.trigger.entity.TriggerView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
 import cc.cdtime.lifecapsule_v3_api.middle.note.INoteMiddle;
+import cc.cdtime.lifecapsule_v3_api.middle.trigger.ITriggerMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.user.IUserMiddle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,11 +17,14 @@ import java.util.Map;
 public class NoteTriggerBService implements INoteTriggerBService {
     private final IUserMiddle iUserMiddle;
     private final INoteMiddle iNoteMiddle;
+    private final ITriggerMiddle iTriggerMiddle;
 
     public NoteTriggerBService(IUserMiddle iUserMiddle,
-                               INoteMiddle iNoteMiddle) {
+                               INoteMiddle iNoteMiddle,
+                               ITriggerMiddle iTriggerMiddle) {
         this.iUserMiddle = iUserMiddle;
         this.iNoteMiddle = iNoteMiddle;
+        this.iTriggerMiddle = iTriggerMiddle;
     }
 
     @Override
@@ -36,12 +41,11 @@ public class NoteTriggerBService implements INoteTriggerBService {
         Integer offset=(pageIndex-1)*pageSize;
         qIn.put("offset", offset);
         qIn.put("size", pageSize);
-        ArrayList<NoteView> noteViews = iNoteMiddle.listNoteTrigger(userView.getUserId());
-        for (int i = 0; i < noteViews.size(); i++) {
+        qIn.put("userId", userView.getUserId());
+        ArrayList<TriggerView> triggerViews = iTriggerMiddle.listTrigger(qIn);
 
-        }
         Map out = new HashMap();
-        out.put("noteList", noteViews);
+        out.put("triggerList", triggerViews);
 
         return out;
     }

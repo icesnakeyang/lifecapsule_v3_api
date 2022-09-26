@@ -7,6 +7,8 @@ import cc.cdtime.lifecapsule_v3_api.meta.category.entity.CategoryView;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteInfo;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
 import cc.cdtime.lifecapsule_v3_api.meta.recipient.entity.RecipientView;
+import cc.cdtime.lifecapsule_v3_api.meta.tag.entity.TagBase;
+import cc.cdtime.lifecapsule_v3_api.meta.tag.entity.TagNote;
 import cc.cdtime.lifecapsule_v3_api.meta.tag.entity.TagView;
 import cc.cdtime.lifecapsule_v3_api.meta.trigger.entity.TriggerView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
@@ -22,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.HTML;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -153,6 +156,7 @@ public class NoteBService implements INoteBService {
         String encryptKey = (String) in.get("encryptKey");
         String keyToken = (String) in.get("keyToken");
         String categoryId = (String) in.get("categoryId");
+        ArrayList tagList = (ArrayList) in.get("tagList");
 
         /**
          * 根据keyToken读取私钥
@@ -190,11 +194,68 @@ public class NoteBService implements INoteBService {
 
         } else {
             /**
+             * 检查note是否当前用户的
+             */
+            NoteView noteView = iNoteMiddle.getNoteTiny(noteId, false, userView.getUserId());
+            /**
              * 修改
              */
             in.put("strAESKey", strAESKey);
             updateNote(in);
         }
+
+        /**
+         * 保存tagList
+         */
+        if (tagList != null && tagList.size() > 0) {
+            /**
+             * 删除掉原来所有tag，再添加tag
+             */
+            qIn = new HashMap();
+            qIn.put("noteId", noteId);
+            iTagMiddle.deleteTagNote(qIn);
+            for (int i = 0; i < tagList.size(); i++) {
+                Map tagMap = (Map) tagList.get(i);
+                if (tagMap != null) {
+                    String tagName = (String) tagMap.get("tagName");
+                    if (tagName != null) {
+                        /**
+                         * 新增加的tag
+                         * 1、检查tagName是否存在，不存在就创建tagBase
+                         * 2、获得tagId，创建到tagNote
+                         */
+                        TagView tagView = iTagMiddle.getTagBase(tagName, true);
+                        if (tagView == null) {
+                            TagBase tagBase = new TagBase();
+                            tagBase.setTagName(tagName);
+                            tagBase.setTagId(GogoTools.UUID32());
+                            iTagMiddle.createTagBase(tagBase);
+                            TagNote tagNote = new TagNote();
+                            tagNote.setNoteId(noteId);
+                            tagNote.setCreateTime(new Date());
+                            tagNote.setTagId(tagBase.getTagId());
+                            iTagMiddle.createTagNote(tagNote);
+                        } else {
+
+                            TagNote tagNote = new TagNote();
+                            tagNote.setNoteId(noteId);
+                            tagNote.setCreateTime(new Date());
+                            tagNote.setTagId(tagView.getTagId());
+                            iTagMiddle.createTagNote(tagNote);
+                            /**
+                             * 增加tagHot热度
+                             */
+                            qIn = new HashMap();
+                            qIn.put("tagHot", tagView.getTagHot() + 1);
+                            qIn.put("tagId", tagView.getTagId());
+                            iTagMiddle.updateTagBase(qIn);
+                        }
+                    }
+                }
+            }
+        }
+
+
         Map out = new HashMap();
         out.put("noteId", noteId);
         return out;
@@ -242,18 +303,6 @@ public class NoteBService implements INoteBService {
         NoteView noteView = iNoteMiddle.getNoteTiny(noteId, false, userView.getUserId());
 
         iNoteMiddle.deleteNote(noteId);
-
-        qIn = new HashMap();
-        qIn.put("noteId", noteId);
-        iTaskMiddle.deleteTask(qIn);
-
-        /**
-         * 一并删除接收人，触发器
-         */
-        qIn = new HashMap();
-        qIn.put("noteId", noteId);
-        iRecipientMiddle.deleteNoteRecipient(qIn);
-        iTriggerMiddle.deleteTrigger(qIn);
     }
 
     @Override

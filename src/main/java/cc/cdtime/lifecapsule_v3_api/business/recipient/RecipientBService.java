@@ -226,56 +226,6 @@ public class RecipientBService implements IRecipientBService {
         return out;
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public void deleteRecipient(Map in) throws Exception {
-        String token = in.get("token").toString();
-        String recipientId = (String) in.get("recipientId");
-
-        Map qIn = new HashMap();
-        qIn.put("token", token);
-
-        /**
-         * 读取用户信息
-         */
-        UserView userView = iUserMiddle.getUser(qIn, false, true);
-
-        /**
-         * 读取接收人信息
-         */
-        RecipientView recipientView = iRecipientMiddle.getRecipientTiny(recipientId, false, userView.getUserId());
-
-        /**
-         * 如果recipient有triggerId，那就是用户先创建trigger再添加的接收人，只删除recipient即可
-         */
-        if (recipientView.getTriggerId() != null) {
-            qIn = new HashMap();
-            qIn.put("triggerId", recipientView.getTriggerId());
-            TriggerView triggerView = iTriggerMiddle.getTrigger(qIn, false, userView.getUserId());
-        } else {
-            /**
-             * 没有triggerId即表示用户直接在note上创建的recipient，每个接收人的trigger都是独立的，所以要一并删除接收人关联的trigger
-             */
-            //检查关联的笔记是否存在，且为当前用户所有
-            NoteView noteView = iNoteMiddle.getNoteTiny(recipientView.getNoteId(), false, userView.getUserId());
-            //删除trigger
-            qIn = new HashMap();
-            qIn.put("recipientId", recipientId);
-            TriggerView triggerView = iTriggerMiddle.getTrigger(qIn, true, userView.getUserId());
-            if (triggerView != null && triggerView.getTriggerId() != null) {
-                qIn = new HashMap();
-                qIn.put("triggerId", triggerView.getTriggerId());
-                iTriggerMiddle.deleteTrigger(qIn);
-            }
-        }
-        /**
-         * 删除接收人
-         */
-        qIn = new HashMap();
-        qIn.put("recipientId", recipientId);
-        iRecipientMiddle.deleteNoteRecipient(qIn);
-    }
-
     @Override
     public void addContactToRecipient(Map in) throws Exception {
         String token = in.get("token").toString();
