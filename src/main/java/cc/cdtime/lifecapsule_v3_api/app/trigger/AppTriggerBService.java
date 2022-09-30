@@ -39,4 +39,9 @@ public class AppTriggerBService implements IAppTriggerBService {
     public void createTriggerInstant(Map in) throws Exception {
         iTriggerBService.createTriggerInstant(in);
     }
+
+    @Override
+    public void createTriggerPrimary(Map in) throws Exception {
+        iTriggerBService.createNoteTriggerPrimary(in);
+    }
 }

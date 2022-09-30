@@ -23,7 +23,7 @@
          category_id, pid)
         values (#{noteId}, #{userId}, #{title},
                 #{createTime}, #{status}, #{encrypt},
-             #{categoryId}, #{pid})
+                #{categoryId}, #{pid})
     </insert>
 
     <!--查询一条笔记简要信息-->
@@ -132,5 +132,34 @@
                                                  from note_trigger
                                                  where 1 = 1
                                                    and user_id = #{userId}))
+    </select>
+
+    <!--查询历史笔记-->
+    <select id="listHistoryNote" parameterType="map" resultMap="noteMap">
+        select * from note_info
+        where 1=1
+        <choose>
+            <when test="createTimeStart!=null">
+                and create_time &gt;=#{createTimeStart}
+            </when>
+        </choose>
+        <choose>
+            <when test="createTimeEnd!=null">
+                and create_time &lt;=#{createTimeEnd}
+            </when>
+        </choose>
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+    </select>
+
+    <!--随机查询笔记-->
+    <select id="listHistoryRandom" parameterType="map" resultMap="noteMap">
+        select *
+        from note_info
+        where user_id = #{userId}
+        order by random() limit #{size}
     </select>
 </mapper>

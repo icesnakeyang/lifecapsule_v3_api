@@ -50,8 +50,22 @@
                 and status=#{status}
             </when>
         </choose>
+        <choose>
+            <when test="noteId!=null">
+                and note_id =#{noteId}
+            </when>
+        </choose>
+        <choose>
+            <when test="triggerType!=null">
+                and trigger_type = #{triggerType}
+            </when>
+        </choose>
         order by create_time desc
-        limit #{size} offset #{offset}
+        <choose>
+            <when test="offset!=null">
+                limit #{size} offset #{offset}
+            </when>
+        </choose>
     </select>
 
     <select id="totalTrigger" parameterType="map" resultType="java.lang.Integer">

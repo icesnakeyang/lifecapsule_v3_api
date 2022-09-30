@@ -87,7 +87,7 @@ public class NoteMiddle implements INoteMiddle {
             if (userEncodeKeyView.getEncodeKey() != null) {
                 noteView.setUserEncodeKey(userEncodeKeyView.getEncodeKey());
             }
-        }else{
+        } else {
 
         }
         return noteView;
@@ -139,9 +139,9 @@ public class NoteMiddle implements INoteMiddle {
             iContentService.updateContent(contentMap);
         }
 
-        String encodeKey=(String) qIn.get("encodeKey");
-        if(encodeKey!=null){
-            Map keyMap=new HashMap();
+        String encodeKey = (String) qIn.get("encodeKey");
+        if (encodeKey != null) {
+            Map keyMap = new HashMap();
             keyMap.put("encodeKey", encodeKey);
             keyMap.put("indexId", indexId);
             iUserEncodeKeyService.updateUserEncodeKey(keyMap);
@@ -158,6 +158,18 @@ public class NoteMiddle implements INoteMiddle {
     @Override
     public ArrayList<NoteView> listNoteTrigger(String userId) throws Exception {
         ArrayList<NoteView> noteViews = iNoteService.listNoteTrigger(userId);
+        return noteViews;
+    }
+
+    @Override
+    public ArrayList<NoteView> listHistoryNote(Map qIn) throws Exception {
+        ArrayList<NoteView> noteViews = iNoteService.listHistoryNote(qIn);
+        return noteViews;
+    }
+
+    @Override
+    public ArrayList<NoteView> listHistoryRandom(Map qIn) throws Exception {
+        ArrayList<NoteView> noteViews = iNoteService.listHistoryRandom(qIn);
         return noteViews;
     }
 }

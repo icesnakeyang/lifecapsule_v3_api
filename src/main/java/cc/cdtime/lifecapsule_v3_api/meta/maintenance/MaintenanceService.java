@@ -39,4 +39,10 @@ public class MaintenanceService implements IMaintenanceService {
         ArrayList<CategoryView> categoryViews = maintenanceDao.listCategoryOld();
         return categoryViews;
     }
+
+    @Override
+    public ArrayList<NoteView> listAllNote() throws Exception {
+        ArrayList<NoteView> noteViews = maintenanceDao.listAllNote();
+        return noteViews;
+    }
 }

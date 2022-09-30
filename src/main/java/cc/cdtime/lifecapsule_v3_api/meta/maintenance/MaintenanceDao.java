@@ -17,4 +17,6 @@ public interface MaintenanceDao {
     ArrayList<UserView> listUserOld();
 
     ArrayList<CategoryView> listCategoryOld();
+
+    ArrayList<NoteView> listAllNote();
 }

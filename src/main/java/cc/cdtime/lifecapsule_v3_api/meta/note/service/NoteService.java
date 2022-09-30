@@ -73,4 +73,17 @@ public class NoteService implements INoteService {
         ArrayList<NoteView> noteViews = noteDao.listNoteTrigger(userId);
         return noteViews;
     }
+
+    @Override
+    public ArrayList<NoteView> listHistoryNote(Map qIn) throws Exception {
+        ArrayList<NoteView> noteViews = noteDao.listHistoryNote(qIn);
+        return noteViews;
+    }
+
+    @Override
+    public ArrayList<NoteView> listHistoryRandom(Map qIn) throws Exception {
+        String userId = qIn.get("userId").toString();
+        ArrayList<NoteView> noteViews = noteDao.listHistoryRandom(qIn);
+        return noteViews;
+    }
 }

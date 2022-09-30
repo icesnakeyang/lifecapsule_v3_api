@@ -70,4 +70,22 @@ public interface INoteService {
      * @return
      */
     ArrayList<NoteView> listNoteTrigger(String userId) throws Exception;
+
+    /**
+     * 查询历史笔记
+     *
+     * @param qIn createTimeStart
+     *            createTimeEnd
+     *            userId
+     * @return
+     */
+    ArrayList<NoteView> listHistoryNote(Map qIn) throws Exception;
+
+    /**
+     * 随机查询笔记
+     *
+     * @param qIn size
+     * @return
+     */
+    ArrayList<NoteView> listHistoryRandom(Map qIn) throws Exception;
 }

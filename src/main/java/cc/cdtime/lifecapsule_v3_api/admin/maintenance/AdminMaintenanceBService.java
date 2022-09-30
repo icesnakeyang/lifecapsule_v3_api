@@ -9,20 +9,19 @@ import cc.cdtime.lifecapsule_v3_api.meta.maintenance.Maintenance;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteInfo;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserBase;
+import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserEncodeKey;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserLoginName;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
 import cc.cdtime.lifecapsule_v3_api.middle.admin.IAdminUserMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.category.ICategoryMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.note.INoteMiddle;
+import cc.cdtime.lifecapsule_v3_api.middle.user.IUserEncodeKeyMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.user.IUserMiddle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class AdminMaintenanceBService implements IAdminMaintenanceBService {
@@ -31,17 +30,20 @@ public class AdminMaintenanceBService implements IAdminMaintenanceBService {
     private final IUserMiddle iUserMiddle;
     private final ICategoryMiddle iCategoryMiddle;
     private final INoteMiddle iNoteMiddle;
+    private final IUserEncodeKeyMiddle iUserEncodeKeyMiddle;
 
     public AdminMaintenanceBService(IAdminUserMiddle iAdminUserMiddle,
                                     IMaintenanceService iMaintenanceService,
                                     IUserMiddle iUserMiddle,
                                     ICategoryMiddle iCategoryMiddle,
-                                    INoteMiddle iNoteMiddle) {
+                                    INoteMiddle iNoteMiddle,
+                                    IUserEncodeKeyMiddle iUserEncodeKeyMiddle) {
         this.iAdminUserMiddle = iAdminUserMiddle;
         this.iMaintenanceService = iMaintenanceService;
         this.iUserMiddle = iUserMiddle;
         this.iCategoryMiddle = iCategoryMiddle;
         this.iNoteMiddle = iNoteMiddle;
+        this.iUserEncodeKeyMiddle = iUserEncodeKeyMiddle;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -136,5 +138,45 @@ public class AdminMaintenanceBService implements IAdminMaintenanceBService {
 
         Map out = new HashMap();
 
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public Map moveContentToIndex(Map in) throws Exception {
+        String token = in.get("token").toString();
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        AdminUserView adminUserView = iAdminUserMiddle.getAdminUser(qIn, false);
+
+//        ArrayList<Maintenance> noteOldList = iMaintenanceService.listNoteOld();
+
+        ArrayList<NoteView> noteViews = iMaintenanceService.listAllNote();
+
+        int cContent = 0;
+        int cKey = 0;
+        for (int i = 0; i < noteViews.size(); i++) {
+            NoteView noteView = noteViews.get(i);
+            if (noteView.getUserEncodeKey() != null) {
+                cKey++;
+                /**
+                 * 在user_encode_key表里创建
+                 */
+                UserEncodeKey userEncodeKey = new UserEncodeKey();
+                userEncodeKey.setIndexId(noteView.getNoteId());
+                userEncodeKey.setEncodeKey(noteView.getUserEncodeKey());
+                userEncodeKey.setUserId(noteView.getUserId());
+                userEncodeKey.setEncodeKeyId(GogoTools.UUID32());
+                userEncodeKey.setCreateTime(new Date());
+                iUserEncodeKeyMiddle.createUserEncodeKey(userEncodeKey);
+            }
+
+        }
+
+        Map out = new HashMap();
+        out.put("cContent", cContent);
+        out.put("cKey", cKey);
+
+        return out;
     }
 }

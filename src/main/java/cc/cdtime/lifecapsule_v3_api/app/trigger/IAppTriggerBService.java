@@ -46,4 +46,12 @@ public interface IAppTriggerBService {
      * @throws Exception
      */
     void createTriggerInstant(Map in) throws Exception;
+
+    /**
+     * App用户指定一篇笔记随主倒计时结束发送
+     *
+     * @param in
+     * @throws Exception
+     */
+    void createTriggerPrimary(Map in) throws Exception;
 }

@@ -15,4 +15,6 @@ public interface IMaintenanceService {
     ArrayList<UserView> listUserOld() throws Exception;
 
     ArrayList<CategoryView> listCategoryOld() throws Exception;
+
+    ArrayList<NoteView> listAllNote() throws Exception;
 }

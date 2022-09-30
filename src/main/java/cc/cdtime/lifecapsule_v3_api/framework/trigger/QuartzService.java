@@ -3,19 +3,14 @@ package cc.cdtime.lifecapsule_v3_api.framework.trigger;
 import cc.cdtime.lifecapsule_v3_api.framework.constant.ESTags;
 import cc.cdtime.lifecapsule_v3_api.framework.tools.GogoTools;
 import cc.cdtime.lifecapsule_v3_api.meta.email.entity.UserEmailView;
-import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
 import cc.cdtime.lifecapsule_v3_api.meta.noteSendLog.entity.NoteSendLog;
-import cc.cdtime.lifecapsule_v3_api.meta.recipient.entity.RecipientView;
 import cc.cdtime.lifecapsule_v3_api.meta.timer.entity.TimerView;
 import cc.cdtime.lifecapsule_v3_api.meta.trigger.entity.TriggerView;
-import cc.cdtime.lifecapsule_v3_api.middle.note.INoteMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.noteSend.INoteSendMiddle;
-import cc.cdtime.lifecapsule_v3_api.middle.recipient.IRecipientMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.timer.ITimerMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.trigger.IAdminTriggerMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.user.IUserMiddle;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,23 +25,17 @@ import java.util.Map;
 public class QuartzService {
     private final IAdminTriggerMiddle iAdminTriggerMiddle;
     private final IUserMiddle iUserMiddle;
-    private final IRecipientMiddle iRecipientMiddle;
     private final ITimerMiddle iTimerMiddle;
     private final INoteSendMiddle iNoteSendMiddle;
-    private final INoteMiddle iNoteMiddle;
 
     public QuartzService(IAdminTriggerMiddle iAdminTriggerMiddle,
                          IUserMiddle iUserMiddle,
-                         IRecipientMiddle iRecipientMiddle,
                          ITimerMiddle iTimerMiddle,
-                         INoteSendMiddle iNoteSendMiddle,
-                         INoteMiddle iNoteMiddle) {
+                         INoteSendMiddle iNoteSendMiddle) {
         this.iAdminTriggerMiddle = iAdminTriggerMiddle;
         this.iUserMiddle = iUserMiddle;
-        this.iRecipientMiddle = iRecipientMiddle;
         this.iTimerMiddle = iTimerMiddle;
         this.iNoteSendMiddle = iNoteSendMiddle;
-        this.iNoteMiddle = iNoteMiddle;
     }
 
     /**
@@ -55,7 +44,7 @@ public class QuartzService {
      * @throws Exception
      */
     @Transactional(rollbackFor = Exception.class)
-    @Scheduled(cron = "0 0 */1 * * ?")
+    @Scheduled(cron = "0 */1 * * * ?")
     public void primaryTimerJob() throws Exception {
         log.info("primary timer trigger");
 
@@ -95,68 +84,16 @@ public class QuartzService {
                      */
                     if (GogoTools.compare_date(new Date(), timerView.getTimerTime())) {
                         /**
-                         * 已触发，读取该trigger的接收人
+                         * 已触发，发送
                          */
-                        if (triggerView.getRecipientId() != null) {
-                            RecipientView recipientView = iRecipientMiddle.getRecipientTiny(triggerView.getRecipientId(), true, null);
-                            if (recipientView != null) {
-                                if (recipientView.getEmail() != null) {
-                                    /**
-                                     * 读取接收人的email是否是注册用户
-                                     */
-                                    qIn = new HashMap();
-                                    qIn.put("email", recipientView.getEmail());
-                                    UserEmailView userEmailView = iUserMiddle.getUserEmail(qIn, true, null);
-                                    if (userEmailView != null) {
-                                        /**
-                                         * 是注册用户，就发一封站内信
-                                         */
-                                        /**
-                                         * 读取笔记
-                                         */
-                                        NoteView noteView = iNoteMiddle.getNoteDetail(recipientView.getNoteId(), true, null);
-                                        if (noteView != null) {
-                                            if (noteView.getUserId().equals(timerView.getUserId())) {
-                                                /**
-                                                 * 笔记是当前触发用户的，发送
-                                                 */
-                                                NoteSendLog noteSendLog = new NoteSendLog();
-                                                noteSendLog.setSendLogId(GogoTools.UUID32());
-                                                noteSendLog.setSendTime(new Date());
-                                                noteSendLog.setReceiveUserId(userEmailView.getUserId());
-                                                noteSendLog.setSendUserId(triggerView.getUserId());
-                                                noteSendLog.setRecipientId(recipientView.getRecipientId());
-                                                noteSendLog.setTriggerType(ESTags.TIMER_TYPE_PRIMARY.toString());
-
-                                                noteSendLog.setNoteContent(noteView.getContent());
-                                                noteSendLog.setUserEncodeKey(noteView.getUserEncodeKey());
-                                                iNoteSendMiddle.createNoteSendLog(noteSendLog);
-                                                log.info("create trigger log success" + userEmailView.getEmail());
-
-                                                /**
-                                                 * 把trigger设置为已发送状态
-                                                 */
-                                                qIn = new HashMap();
-                                                int actTimes = 1;
-                                                if (triggerView.getActTimes() != null) {
-                                                    actTimes += triggerView.getActTimes();
-                                                }
-                                                qIn.put("actTimes", actTimes);
-                                                qIn.put("status", ESTags.SEND_COMPLETE.toString());
-                                                qIn.put("triggerId", triggerView.getTriggerId());
-                                                iAdminTriggerMiddle.updateNoteTrigger(qIn);
-
-                                                log.info("create trigger log success--" + userEmailView.getEmail());
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                        int cc = sendNote(triggerView);
+                        if (cc == 1) {
+                            log.info("Send primary trigger success:" + triggerView.getTitle());
                         }
                     }
                 }
             } catch (Exception ex) {
-                log.error("send trigger log error:" + ex.getMessage());
+                log.error("Send primary trigger error:" + ex.getMessage());
             }
         }
     }
@@ -177,65 +114,19 @@ public class QuartzService {
         for (int i = 0; i < triggerViews.size(); i++) {
             TriggerView triggerView = triggerViews.get(i);
             /**
-             * userId是设置触发器的发送人
-             * recipient是接收人，根据recipient表查询email，可以查询到接收人的userId
-             * noteId就是要发送的笔记
-             * recipient表也记录了发送人给接收人的部分信息
-             * 计算timer_time是否已经触发，如果触发就发送笔记
-             * 站外发送：通过接口把笔记或者笔记链接发送给用户的email
-             * 站内发送：增加一个note_send_log记录，把note content内容重新保存到content_detail表里，以避免用户修改。解密的key也需要复制一次，保存在user_encode_key里
-             * 把note笔记内容读出来，不用解密，在note_trigger_log表里
+             * 1、通过toEmail，或者toUserId获取接收人用户id
+             * 2、创建note_send_log表
+             * 3、修改trigger表的状态为已发送
              */
             try {
                 if (GogoTools.compare_date(new Date(), triggerView.getTriggerTime())) {
-                    if (triggerView.getRecipientId() != null) {
-                        RecipientView recipientView = iRecipientMiddle.getRecipientTiny(triggerView.getRecipientId(), true, null);
-                        if (recipientView != null) {
-                            if (recipientView.getEmail() != null) {
-                                qIn = new HashMap();
-                                qIn.put("email", recipientView.getEmail());
-                                UserEmailView userEmailView = iUserMiddle.getUserEmail(qIn, true, null);
-                                if (userEmailView != null) {
-                                    /**
-                                     * 发送笔记给接收用户
-                                     */
-                                    //读取笔记
-                                    NoteView noteView = iNoteMiddle.getNoteDetail(triggerView.getNoteId(), true, triggerView.getUserId());
-                                    if (noteView != null) {
-                                        NoteSendLog noteSendLog = new NoteSendLog();
-                                        noteSendLog.setSendLogId(GogoTools.UUID32());
-                                        noteSendLog.setSendTime(new Date());
-                                        noteSendLog.setReceiveUserId(userEmailView.getUserId());
-                                        noteSendLog.setSendUserId(triggerView.getUserId());
-                                        noteSendLog.setRecipientId(recipientView.getRecipientId());
-                                        noteSendLog.setRecipientId(recipientView.getRecipientId());
-                                        noteSendLog.setTriggerType(ESTags.TIMER_TYPE_DATETIME.toString());
-                                        noteSendLog.setNoteContent(noteView.getContent());
-                                        noteSendLog.setUserEncodeKey(noteView.getUserEncodeKey());
-                                        iNoteSendMiddle.createNoteSendLog(noteSendLog);
-
-                                        /**
-                                         * 把trigger设置为已发送状态
-                                         */
-                                        qIn = new HashMap();
-                                        int actTimes = 1;
-                                        if (triggerView.getActTimes() != null) {
-                                            actTimes += triggerView.getActTimes();
-                                        }
-                                        qIn.put("actTimes", actTimes);
-                                        qIn.put("status", ESTags.SEND_COMPLETE.toString());
-                                        qIn.put("triggerId", triggerView.getTriggerId());
-                                        iAdminTriggerMiddle.updateNoteTrigger(qIn);
-
-                                        log.info("create trigger log success--" + userEmailView.getEmail());
-                                    }
-                                }
-                            }
-                        }
+                    int cc = sendNote(triggerView);
+                    if (cc == 1) {
+                        log.info("send specific time trigger success--" + triggerView.getTitle());
                     }
                 }
             } catch (Exception ex) {
-                log.error("send trigger log error:" + ex.getMessage());
+                log.error("send specific time trigger log error:" + ex.getMessage());
             }
         }
     }
@@ -255,58 +146,63 @@ public class QuartzService {
         ArrayList<TriggerView> triggerViews = iAdminTriggerMiddle.adminListTrigger(qIn);
         for (int i = 0; i < triggerViews.size(); i++) {
             TriggerView triggerView = triggerViews.get(i);
-            /**
-             *
-             */
             try {
-                String toUserId = null;
-                /**
-                 * 获取接收用户id，如果没有接收人id，就不发送
-                 */
-                if (triggerView.getToUserId() != null) {
-                    toUserId = triggerView.getToUserId();
-                } else {
-                    if (triggerView.getToEmail() != null) {
-                        qIn = new HashMap();
-                        qIn.put("email", triggerView.getToEmail());
-                        UserEmailView userEmailView = iUserMiddle.getUserEmail(qIn, true, null);
-                        if (userEmailView != null) {
-                            toUserId = userEmailView.getUserId();
-                        }
-                    }
-                }
-                if (toUserId != null) {
-                    NoteSendLog noteSendLog = new NoteSendLog();
-                    noteSendLog.setSendLogId(GogoTools.UUID32());
-                    noteSendLog.setSendTime(new Date());
-                    noteSendLog.setReceiveUserId(toUserId);
-                    noteSendLog.setSendUserId(triggerView.getUserId());
-                    noteSendLog.setTriggerType(triggerView.getTriggerType());
-                    noteSendLog.setTriggerId(triggerView.getTriggerId());
-                    noteSendLog.setToEmail(triggerView.getToEmail());
-                    noteSendLog.setTitle(triggerView.getTitle());
-                    noteSendLog.setFromName(triggerView.getFromName());
-                    noteSendLog.setRefPid(triggerView.getRefPid());
-                    iNoteSendMiddle.createNoteSendLog(noteSendLog);
-
-                    /**
-                     * 把trigger设置为已发送状态
-                     */
-                    qIn = new HashMap();
-                    int actTimes = 1;
-                    if (triggerView.getActTimes() != null) {
-                        actTimes += triggerView.getActTimes();
-                    }
-                    qIn.put("actTimes", actTimes);
-                    qIn.put("status", ESTags.SEND_COMPLETE.toString());
-                    qIn.put("triggerId", triggerView.getTriggerId());
-                    iAdminTriggerMiddle.updateNoteTrigger(qIn);
-
-                    log.info("send instant message success --" + noteSendLog.getTitle());
+                int cc = sendNote(triggerView);
+                if (cc == 1) {
+                    log.info("send instant message success --" + triggerView.getTitle());
                 }
             } catch (Exception ex) {
                 log.error("send instant message error:" + ex.getMessage());
             }
         }
+    }
+
+    private int sendNote(TriggerView triggerView) throws Exception {
+        String toUserId = null;
+        if (triggerView.getToUserId() != null) {
+            toUserId = triggerView.getUserId();
+        } else {
+            if (triggerView.getToEmail() != null) {
+                Map qIn = new HashMap();
+                qIn.put("email", triggerView.getToEmail());
+                UserEmailView userEmailView = iUserMiddle.getUserEmail(qIn, true, null);
+                if (userEmailView != null) {
+                    toUserId = userEmailView.getUserId();
+                }
+            }
+        }
+        if (toUserId != null) {
+            NoteSendLog noteSendLog = new NoteSendLog();
+            noteSendLog.setSendLogId(GogoTools.UUID32());
+            noteSendLog.setSendTime(new Date());
+            noteSendLog.setReceiveUserId(toUserId);
+            noteSendLog.setSendUserId(triggerView.getUserId());
+            noteSendLog.setTriggerType(triggerView.getTriggerType());
+            noteSendLog.setTriggerId(triggerView.getTriggerId());
+            noteSendLog.setToEmail(triggerView.getToEmail());
+            noteSendLog.setTitle(triggerView.getTitle());
+            noteSendLog.setFromName(triggerView.getFromName());
+            noteSendLog.setRefPid(triggerView.getRefPid());
+            iNoteSendMiddle.createNoteSendLog(noteSendLog);
+
+            /**
+             * 把trigger设置为已发送状态
+             */
+            Map qIn = new HashMap();
+            int actTimes = 1;
+            if (triggerView.getActTimes() != null) {
+                actTimes += triggerView.getActTimes();
+            }
+            qIn.put("actTimes", actTimes);
+            qIn.put("status", ESTags.SEND_COMPLETE.toString());
+            qIn.put("triggerId", triggerView.getTriggerId());
+            iAdminTriggerMiddle.updateNoteTrigger(qIn);
+
+            /**
+             * 已发送返回1，未发送返回0
+             */
+            return 1;
+        }
+        return 0;
     }
 }

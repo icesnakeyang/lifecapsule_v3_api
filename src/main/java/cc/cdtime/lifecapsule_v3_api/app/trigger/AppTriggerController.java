@@ -181,4 +181,38 @@ public class AppTriggerController {
         }
         return response;
     }
+
+    /**
+     * App用户指定一篇笔记随主倒计时结束发送
+     * 遗言
+     *
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/createTriggerPrimary")
+    public Response createTriggerPrimary(@RequestBody TriggerRequest request,
+                                          HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("noteId", request.getNoteId());
+            in.put("toEmail", request.getToEmail());
+            in.put("title", request.getTitle());
+
+            iAppTriggerBService.createTriggerPrimary(in);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("App createTriggerPrimary error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
 }

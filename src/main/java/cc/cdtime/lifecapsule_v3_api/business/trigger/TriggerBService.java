@@ -49,71 +49,6 @@ public class TriggerBService implements ITriggerBService {
         this.iSecurityMiddle = iSecurityMiddle;
     }
 
-    /**
-     * 用户保存一个笔记触发器，根据设置的时间来发送
-     *
-     * @param in
-     * @throws Exception
-     */
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public void createNoteTriggerByDatetime(Map in) throws Exception {
-        String token = in.get("token").toString();
-        String toEmail = in.get("toEmail").toString();
-        String title = (String) in.get("title");
-        Date sendTime = (Date) in.get("sendTime");
-        String noteId = in.get("noteId").toString();
-
-        Map qIn = new HashMap();
-        qIn.put("token", token);
-        UserView userView = iUserMiddle.getUser(qIn, false, true);
-
-        NoteView noteView = iNoteMiddle.getNoteDetail(noteId, false, userView.getUserId());
-
-        qIn = new HashMap();
-        qIn.put("email", toEmail);
-        UserEmailView userEmailView = iUserMiddle.getUserEmail(qIn, true, null);
-        if (userEmailView == null) {
-
-        }
-
-        qIn = new HashMap();
-        qIn.put("email", toEmail);
-        ContactView contactView = iContactMiddle.getContact(qIn, true, null);
-        if (contactView == null) {
-            /**
-             * 创建联系人
-             */
-            Contact contact = new Contact();
-            contact.setContactId(GogoTools.UUID32());
-            contact.setEmail(toEmail);
-            contact.setUserId(userView.getUserId());
-            iContactMiddle.createContact(contact);
-        }
-
-
-        /**
-         * 新建触发器
-         * 1、首先创建一个NoteTrigger
-         * 2、生成triggerId
-         * 3、创建一个content，indexId=triggerId
-         * 4、创建一个UserEncodeKey，indexId=triggerId
-         */
-        NoteTrigger noteTrigger = new NoteTrigger();
-        noteTrigger.setTriggerId(GogoTools.UUID32());
-        noteTrigger.setTriggerType(ESTags.TIMER_TYPE_DATETIME.toString());
-        noteTrigger.setNoteContent(noteView.getContent());
-        noteTrigger.setUserEncodeKey(noteView.getUserEncodeKey());
-        noteTrigger.setCreateTime(new Date());
-        noteTrigger.setUserId(userView.getUserId());
-        noteTrigger.setStatus(ESTags.ACTIVE.toString());
-        noteTrigger.setTitle(title);
-        noteTrigger.setToEmail(toEmail);
-        noteTrigger.setTriggerTime(sendTime);
-        noteTrigger.setNoteId(noteView.getNoteId());
-        iTriggerMiddle.createTrigger(noteTrigger);
-    }
-
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Map saveNoteTrigger(Map in) throws Exception {
@@ -423,7 +358,7 @@ public class TriggerBService implements ITriggerBService {
         String title = (String) in.get("title");
         String noteId = in.get("noteId").toString();
         String noteContent = in.get("noteContent").toString();
-        String fromName =(String) in.get("fromName");
+        String fromName = (String) in.get("fromName");
 
         Map qIn = new HashMap();
         qIn.put("token", token);
@@ -472,6 +407,133 @@ public class TriggerBService implements ITriggerBService {
         noteTrigger.setTriggerTime(new Date());
         noteTrigger.setNoteId(noteView.getNoteId());
         noteTrigger.setFromName(fromName);
+        iTriggerMiddle.createTrigger(noteTrigger);
+    }
+
+    /**
+     * 用户保存一个笔记触发器，根据设置的时间来发送
+     *
+     * @param in
+     * @throws Exception
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void createNoteTriggerByDatetime(Map in) throws Exception {
+        String token = in.get("token").toString();
+        String toEmail = in.get("toEmail").toString();
+        String title = (String) in.get("title");
+        Date sendTime = (Date) in.get("sendTime");
+        String noteId = in.get("noteId").toString();
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        UserView userView = iUserMiddle.getUser(qIn, false, true);
+
+        NoteView noteView = iNoteMiddle.getNoteDetail(noteId, false, userView.getUserId());
+
+        qIn = new HashMap();
+        qIn.put("email", toEmail);
+        UserEmailView userEmailView = iUserMiddle.getUserEmail(qIn, true, null);
+        if (userEmailView == null) {
+
+        }
+
+        qIn = new HashMap();
+        qIn.put("email", toEmail);
+        ContactView contactView = iContactMiddle.getContact(qIn, true, null);
+        if (contactView == null) {
+            /**
+             * 创建联系人
+             */
+            Contact contact = new Contact();
+            contact.setContactId(GogoTools.UUID32());
+            contact.setEmail(toEmail);
+            contact.setUserId(userView.getUserId());
+            iContactMiddle.createContact(contact);
+        }
+
+
+        /**
+         * 新建触发器
+         * 1、首先创建一个NoteTrigger
+         * 2、生成triggerId
+         * 3、创建一个content，indexId=triggerId
+         * 4、创建一个UserEncodeKey，indexId=triggerId
+         */
+        NoteTrigger noteTrigger = new NoteTrigger();
+        noteTrigger.setTriggerId(GogoTools.UUID32());
+        noteTrigger.setTriggerType(ESTags.TIMER_TYPE_DATETIME.toString());
+        noteTrigger.setNoteContent(noteView.getContent());
+        noteTrigger.setUserEncodeKey(noteView.getUserEncodeKey());
+        noteTrigger.setCreateTime(new Date());
+        noteTrigger.setUserId(userView.getUserId());
+        noteTrigger.setStatus(ESTags.ACTIVE.toString());
+        noteTrigger.setTitle(title);
+        noteTrigger.setToEmail(toEmail);
+        noteTrigger.setTriggerTime(sendTime);
+        noteTrigger.setNoteId(noteView.getNoteId());
+        iTriggerMiddle.createTrigger(noteTrigger);
+    }
+
+    @Override
+    public void createNoteTriggerPrimary(Map in) throws Exception {
+        String token = in.get("token").toString();
+        String toEmail = in.get("toEmail").toString();
+        String title = (String) in.get("title");
+        String noteId = in.get("noteId").toString();
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        UserView userView = iUserMiddle.getUser(qIn, false, true);
+
+        NoteView noteView = iNoteMiddle.getNoteDetail(noteId, false, userView.getUserId());
+
+        qIn = new HashMap();
+        qIn.put("email", toEmail);
+        ContactView contactView = iContactMiddle.getContact(qIn, true, null);
+        if (contactView == null) {
+            /**
+             * 创建联系人
+             */
+            Contact contact = new Contact();
+            contact.setContactId(GogoTools.UUID32());
+            contact.setEmail(toEmail);
+            contact.setUserId(userView.getUserId());
+            iContactMiddle.createContact(contact);
+        }
+
+        /**
+         * 查询触发器是否已经存在
+         */
+        qIn = new HashMap();
+        qIn.put("triggerType", ESTags.TIMER_TYPE_PRIMARY.toString());
+        qIn.put("userId", userView.getUserId());
+        qIn.put("status", ESTags.ACTIVE.toString());
+        qIn.put("noteId", noteId);
+        ArrayList<TriggerView> triggerViews = iTriggerMiddle.listTrigger(qIn);
+        if(triggerViews.size()>0){
+            //该笔记已经设订了主倒计时结束时发送
+            throw new Exception("10057");
+        }
+
+        /**
+         * 新建触发器
+         * 1、首先创建一个NoteTrigger
+         * 2、生成triggerId
+         * 3、创建一个content，indexId=triggerId
+         * 4、创建一个UserEncodeKey，indexId=triggerId
+         */
+        NoteTrigger noteTrigger = new NoteTrigger();
+        noteTrigger.setTriggerId(GogoTools.UUID32());
+        noteTrigger.setTriggerType(ESTags.TIMER_TYPE_PRIMARY.toString());
+        noteTrigger.setNoteContent(noteView.getContent());
+        noteTrigger.setUserEncodeKey(noteView.getUserEncodeKey());
+        noteTrigger.setCreateTime(new Date());
+        noteTrigger.setUserId(userView.getUserId());
+        noteTrigger.setStatus(ESTags.ACTIVE.toString());
+        noteTrigger.setTitle(title);
+        noteTrigger.setToEmail(toEmail);
+        noteTrigger.setNoteId(noteView.getNoteId());
         iTriggerMiddle.createTrigger(noteTrigger);
     }
 }

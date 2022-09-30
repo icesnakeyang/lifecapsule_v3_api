@@ -28,6 +28,8 @@ public interface ITriggerMiddle {
      *
      * @param qIn userId
      *            status
+     *            noteId
+     *            triggerType
      *            size
      *            offset
      * @return

@@ -81,4 +81,23 @@ public interface NoteDao {
      * @return
      */
     ArrayList<NoteView> listNoteTrigger(String userId);
+
+    /**
+     * 查询历史笔记
+     *
+     * @param qIn createTimeStart
+     *            createTimeEnd
+     *            userId
+     * @return
+     */
+    ArrayList<NoteView> listHistoryNote(Map qIn);
+
+    /**
+     * 随机查询笔记
+     *
+     * @param qIn size
+     *            userId
+     * @return
+     */
+    ArrayList<NoteView> listHistoryRandom(Map qIn);
 }

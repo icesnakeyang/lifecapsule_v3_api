@@ -4,14 +4,6 @@ import java.util.Map;
 
 public interface ITriggerBService {
 
-    /**
-     * 用户保存一个笔记触发器，根据设置的时间来发送
-     *
-     * @param in
-     * @throws Exception
-     */
-    void createNoteTriggerByDatetime(Map in) throws Exception;
-
     Map saveNoteTrigger(Map in) throws Exception;
 
 //    Map saveNoteRecipientTrigger(Map in) throws Exception;
@@ -32,4 +24,19 @@ public interface ITriggerBService {
     void deleteNoteTrigger(Map in) throws Exception;
 
     void createTriggerInstant(Map in) throws Exception;
+
+    /**
+     * 用户保存一个笔记触发器，根据设置的时间来发送
+     *
+     * @param in
+     * @throws Exception
+     */
+    void createNoteTriggerByDatetime(Map in) throws Exception;
+
+    /**
+     * 用户设置一篇笔记为主倒计时结束时发送
+     * @param in
+     * @throws Exception
+     */
+    void createNoteTriggerPrimary(Map in)throws Exception;
 }
