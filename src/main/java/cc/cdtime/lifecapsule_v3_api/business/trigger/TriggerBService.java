@@ -431,11 +431,15 @@ public class TriggerBService implements ITriggerBService {
 
         NoteView noteView = iNoteMiddle.getNoteDetail(noteId, false, userView.getUserId());
 
+        String toUserId = null;
+
         qIn = new HashMap();
         qIn.put("email", toEmail);
         UserEmailView userEmailView = iUserMiddle.getUserEmail(qIn, true, null);
         if (userEmailView == null) {
 
+        } else {
+            toUserId = userEmailView.getUserId();
         }
 
         qIn = new HashMap();
@@ -472,6 +476,7 @@ public class TriggerBService implements ITriggerBService {
         noteTrigger.setToEmail(toEmail);
         noteTrigger.setTriggerTime(sendTime);
         noteTrigger.setNoteId(noteView.getNoteId());
+        noteTrigger.setToUserId(toUserId);
         iTriggerMiddle.createTrigger(noteTrigger);
     }
 
@@ -511,7 +516,7 @@ public class TriggerBService implements ITriggerBService {
         qIn.put("status", ESTags.ACTIVE.toString());
         qIn.put("noteId", noteId);
         ArrayList<TriggerView> triggerViews = iTriggerMiddle.listTrigger(qIn);
-        if(triggerViews.size()>0){
+        if (triggerViews.size() > 0) {
             //该笔记已经设订了主倒计时结束时发送
             throw new Exception("10057");
         }

@@ -163,5 +163,4 @@ public interface IUserMiddle {
      *            userId
      */
     void setEmailStatus(Map qIn) throws Exception;
-
 }

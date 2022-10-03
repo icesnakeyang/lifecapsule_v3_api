@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.author.dao.AuthorLogDao">
+    <!--配置表和对象的字段映射 -->
+    <resultMap id="authorLogMap" type="cc.cdtime.lifecapsule_v3_api.meta.author.entity.AuthorLogView">
+        <result property="userId" column="user_id"/>
+        <result property="userId" column="create_time"/>
+        <result property="authorName" column="author_name"/>
+        <result property="authorLogId" column="author_log_id"/>
+    </resultMap>
+
+    <!--创建一个用户笔名信息-->
+    <insert id="createAuthorLog" parameterType="cc.cdtime.lifecapsule_v3_api.meta.author.entity.AuthorLog">
+        insert into author_log
+            (user_id, author_name, create_time, status, author_log_id)
+        values (#{userId}, #{authorName}, #{createTime}, #{status}, #{authorLogId})
+    </insert>
+
+    <!--查询一个用户信息日志-->
+    <select id="getAuthorLog" parameterType="java.lang.String" resultMap="authorLogMap">
+        select *
+        from author_log
+        where 1 = 1
+        <choose>
+            <when test="authorLogId!=null">
+                and author_log_id=#{authorLogId}
+            </when>
+        </choose>
+        <choose>
+            <when test="authorName!=null">
+                and author_name = #{authorName}
+            </when>
+        </choose>
+        <choose>
+            <when test="userId!=null">
+                and user_id = #{userId}
+            </when>
+        </choose>
+        <choose>
+            <when test="status!=null">
+                and status = #{status}
+            </when>
+        </choose>
+    </select>
+
+    <!--修改用户信息日志-->
+    <update id="updateAuthorLog" parameterType="map">
+        update author_log
+        <set>
+            <if test="status!=null">
+                status=#{status}
+            </if>
+        </set>
+        where author_log_id=#{authorLogId}
+    </update>
+</mapper>
