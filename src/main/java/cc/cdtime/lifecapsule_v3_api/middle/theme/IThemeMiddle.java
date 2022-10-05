@@ -36,6 +36,9 @@ public interface IThemeMiddle {
      *            textHolder
      *            themeName
      *            themeId
+     *            colorDark2
+     *            colorMedium2
+     *            colorLight2
      */
     void updateTheme(Map qIn) throws Exception;
 

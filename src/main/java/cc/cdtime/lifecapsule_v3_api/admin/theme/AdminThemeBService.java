@@ -111,6 +111,9 @@ public class AdminThemeBService implements IAdminThemeBService {
         String themeName = (String) in.get("themeName");
         String colorDanger = (String) in.get("colorDanger");
         String colorDanger2 = (String) in.get("colorDanger2");
+        String colorDark2 = (String) in.get("colorDark2");
+        String colorMedium2 = (String) in.get("colorMedium2");
+        String colorLight2 = (String) in.get("colorLight2");
 
         int cc = 0;
         Map qIn = new HashMap();
@@ -150,6 +153,18 @@ public class AdminThemeBService implements IAdminThemeBService {
             qIn.put("colorDanger2", colorDanger2);
             cc++;
         }
+        if (colorDark2 != null) {
+            qIn.put("colorDark2", colorDark2);
+            cc++;
+        }
+        if (colorMedium2 != null) {
+            qIn.put("colorMedium2", colorMedium2);
+            cc++;
+        }
+        if (colorLight2 != null) {
+            qIn.put("colorLight2", colorLight2);
+            cc++;
+        }
         if (cc == 0) {
             return;
         }
@@ -175,6 +190,16 @@ public class AdminThemeBService implements IAdminThemeBService {
         String textHolder = (String) in.get("textHolder");
         String colorDanger = (String) in.get("colorDanger");
         String colorDanger2 = (String) in.get("colorDanger2");
+        String colorDark = (String) in.get("colorDark");
+        String colorDark2 = (String) in.get("colorDark2");
+        String colorMedium = (String) in.get("colorMedium");
+        String colorMedium2 = (String) in.get("colorMedium2");
+        String colorLight = (String) in.get("colorLight");
+        String colorLight2 = (String) in.get("colorLight2");
+        String color1 = (String) in.get("color1");
+        String color2 = (String) in.get("color2");
+        String color3 = (String) in.get("color3");
+        String color4 = (String) in.get("color4");
         String status = (String) in.get("status");
 
         Map qIn = new HashMap();
@@ -196,6 +221,16 @@ public class AdminThemeBService implements IAdminThemeBService {
         theme.setTextHolder(textHolder);
         theme.setColorDanger(colorDanger);
         theme.setColorDanger2(colorDanger2);
+        theme.setColorDark(colorDark);
+        theme.setColorDark2(colorDark2);
+        theme.setColorMedium(colorMedium);
+        theme.setColorMedium2(colorMedium2);
+        theme.setColorLight(colorLight);
+        theme.setColorLight2(colorLight2);
+        theme.setColor1(color1);
+        theme.setColor2(color2);
+        theme.setColor3(color3);
+        theme.setColor4(color4);
         iThemeMiddle.createTheme(theme);
     }
 
@@ -213,6 +248,16 @@ public class AdminThemeBService implements IAdminThemeBService {
         String themeName = (String) in.get("themeName");
         String colorDanger = (String) in.get("colorDanger");
         String colorDanger2 = (String) in.get("colorDanger2");
+        String colorDark = (String) in.get("colorDark");
+        String colorDark2 = (String) in.get("colorDark2");
+        String colorMedium = (String) in.get("colorMedium");
+        String colorMedium2 = (String) in.get("colorMedium2");
+        String colorLight = (String) in.get("colorLight");
+        String colorLight2 = (String) in.get("colorLight2");
+        String color1 = (String) in.get("color1");
+        String color2 = (String) in.get("color2");
+        String color3 = (String) in.get("color3");
+        String color4 = (String) in.get("color4");
         String status = (String) in.get("status");
 
         Map qIn = new HashMap();
@@ -320,13 +365,123 @@ public class AdminThemeBService implements IAdminThemeBService {
                 cc++;
             }
         }
+        if (colorDark != null) {
+            if (theme.getColorDark() != null) {
+                if (!colorDark.equals(theme.getColorDark())) {
+                    qIn.put("colorDark", colorDark);
+                    cc++;
+                }
+            } else {
+                qIn.put("colorDark", colorDark);
+                cc++;
+            }
+        }
+        if (colorDark2 != null) {
+            if (theme.getColorDark2() != null) {
+                if (!colorDark2.equals(theme.getColorDark2())) {
+                    qIn.put("colorDark2", colorDark2);
+                    cc++;
+                }
+            } else {
+                qIn.put("colorDark2", colorDark2);
+                cc++;
+            }
+        }
+        if (colorMedium != null) {
+            if (theme.getColorMedium() != null) {
+                if (!colorMedium.equals(theme.getColorMedium())) {
+                    qIn.put("colorMedium", colorMedium);
+                    cc++;
+                }
+            } else {
+                qIn.put("colorMedium", colorMedium);
+                cc++;
+            }
+        }
+        if (colorMedium2 != null) {
+            if (theme.getColorMedium2() != null) {
+                if (!colorMedium2.equals(theme.getColorMedium2())) {
+                    qIn.put("colorMedium2", colorMedium2);
+                    cc++;
+                }
+            } else {
+                qIn.put("colorMedium2", colorMedium2);
+                cc++;
+            }
+        }
+        if (colorLight != null) {
+            if (theme.getColorLight() != null) {
+                if (!colorLight.equals(theme.getColorLight())) {
+                    qIn.put("colorLight", colorLight);
+                    cc++;
+                }
+            } else {
+                qIn.put("colorLight", colorLight);
+                cc++;
+            }
+        }
+        if (colorLight2 != null) {
+            if (theme.getColorLight2() != null) {
+                if (!colorLight2.equals(theme.getColorLight2())) {
+                    qIn.put("colorLight2", colorLight2);
+                    cc++;
+                }
+            } else {
+                qIn.put("colorLight2", colorLight2);
+                cc++;
+            }
+        }
+        if (color1 != null) {
+            if (theme.getColor1() != null) {
+                if (!color1.equals(theme.getColor1())) {
+                    qIn.put("color1", color1);
+                    cc++;
+                }
+            } else {
+                qIn.put("color1", color1);
+                cc++;
+            }
+        }
+        if (color2 != null) {
+            if (theme.getColor2() != null) {
+                if (!color2.equals(theme.getColor2())) {
+                    qIn.put("color2", color2);
+                    cc++;
+                }
+            } else {
+                qIn.put("color2", color2);
+                cc++;
+            }
+        }
+        if (color3 != null) {
+            if (theme.getColor3() != null) {
+                if (!color3.equals(theme.getColor3())) {
+                    qIn.put("color3", color3);
+                    cc++;
+                }
+            } else {
+                qIn.put("color3", color3);
+                cc++;
+            }
+        }
+        if (color4 != null) {
+            if (theme.getColor4() != null) {
+                if (!color4.equals(theme.getColor4())) {
+                    qIn.put("color4", color4);
+                    cc++;
+                }
+            } else {
+                qIn.put("color4", color4);
+                cc++;
+            }
+        }
         if (status != null) {
             if (theme.getStatus() != null) {
                 if (!status.equals(theme.getStatus())) {
                     qIn.put("status", status);
                     cc++;
-                    if(status.equals(ESTags.DEFAULT.toString())){
-                        Map qinThemeType=new HashMap();
+                    if (status.equals(ESTags.DEFAULT.toString())) {
+                        Map qinThemeType = new HashMap();
                         qinThemeType.put("themeType", theme.getThemeType());
                         iThemeMiddle.setAllThemeStatusToActive(qinThemeType);
                     }

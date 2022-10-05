@@ -13,8 +13,11 @@
         <result property="textDark" column="text_dark"/>
         <result property="textHolder" column="text_holder"/>
         <result property="colorDark" column="color_dark"/>
+        <result property="colorDark2" column="color_dark2"/>
         <result property="colorLight" column="color_light"/>
+        <result property="colorLight2" column="color_light2"/>
         <result property="colorMedium" column="color_medium"/>
+        <result property="colorMedium2" column="color_medium2"/>
         <result property="themeType" column="theme_type"/>
         <result property="colorDanger" column="color_danger"/>
         <result property="colorDanger2" column="color_danger2"/>
@@ -29,12 +32,16 @@
          background, block_dark, block_light,
          text_dark, text_light, text_holder,
          color_dark, color_light, color_medium,
-         status, theme_type, color_danger, color_danger2)
+         status, theme_type, color_danger, color_danger2,
+         color_dark2, color_medium2, color_light2,
+         color1, color2, color3, color4)
         values (#{themeId}, #{themeName}, #{createTime}, #{createUserId},
                 #{background}, #{blockDark}, #{blockLight},
                 #{textDark}, #{textLight}, #{textHolder},
                 #{colorDark}, #{colorLight}, #{colorMedium},
-                #{status}, #{themeType}, #{colorDanger}, #{colorDanger2})
+                #{status}, #{themeType}, #{colorDanger}, #{colorDanger2},
+                #{colorDark2}, #{colorMedium2}, #{colorLight2},
+                #{color1}, #{color2}, #{color3}, #{color4})
     </insert>
 
     <!--读取一个主题-->
@@ -95,6 +102,36 @@
             </if>
             <if test="status!=null">
                 status=#{status},
+            </if>
+            <if test="colorDark!=null">
+                color_dark=#{colorDark},
+            </if>
+            <if test="colorDark2!=null">
+                color_dark2=#{colorDark2},
+            </if>
+            <if test="colorMedium!=null">
+                color_medium=#{colorMedium},
+            </if>
+            <if test="colorMedium2!=null">
+                color_medium2=#{colorMedium2},
+            </if>
+            <if test="colorLight!=null">
+                color_light=#{colorLight},
+            </if>
+            <if test="colorLight2!=null">
+                color_light2=#{colorLight2},
+            </if>
+            <if test="color1!=null">
+                color1=#{color1},
+            </if>
+            <if test="color2!=null">
+                color2=#{color2},
+            </if>
+            <if test="color3!=null">
+                color3=#{color3},
+            </if>
+            <if test="color4!=null">
+                color4=#{color4},
             </if>
             <if test="themeName!=null">
                 theme_name=#{themeName}

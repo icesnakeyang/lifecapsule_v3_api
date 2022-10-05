@@ -15,4 +15,14 @@ public class ThemeRequest extends Request {
     private String colorDanger;
     private String colorDanger2;
     private String status;
+    private String colorDark;
+    private String colorDark2;
+    private String colorMedium;
+    private String colorMedium2;
+    private String colorLight;
+    private String colorLight2;
+    private String color1;
+    private String color2;
+    private String color3;
+    private String color4;
 }

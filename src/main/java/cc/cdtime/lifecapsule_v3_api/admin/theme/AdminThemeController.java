@@ -101,6 +101,10 @@ public class AdminThemeController {
             in.put("textHolder", request.getTextHolder());
             in.put("colorDanger", request.getColorDanger());
             in.put("colorDanger2", request.getColorDanger2());
+            in.put("color1", request.getColor1());
+            in.put("color2", request.getColor2());
+            in.put("color3", request.getColor3());
+            in.put("color4", request.getColor4());
 
             iAdminThemeBService.createWebTheme(in);
         } catch (Exception ex) {
@@ -138,6 +142,16 @@ public class AdminThemeController {
             in.put("textHolder", request.getTextHolder());
             in.put("colorDanger", request.getColorDanger());
             in.put("colorDanger2", request.getColorDanger2());
+            in.put("colorDark", request.getColorDark());
+            in.put("colorDark2", request.getColorDark2());
+            in.put("colorMedium", request.getColorMedium());
+            in.put("colorMedium2", request.getColorMedium2());
+            in.put("colorLight", request.getColorLight());
+            in.put("colorLight2", request.getColorLight2());
+            in.put("color1", request.getColor1());
+            in.put("color2", request.getColor2());
+            in.put("color3", request.getColor3());
+            in.put("color4", request.getColor4());
             in.put("status", request.getStatus());
 
             iAdminThemeBService.createAppTheme(in);
@@ -177,6 +191,9 @@ public class AdminThemeController {
             in.put("textHolder", request.getTextHolder());
             in.put("colorDanger", request.getColorDanger());
             in.put("colorDanger2", request.getColorDanger2());
+            in.put("colorDark2", request.getColorDark2());
+            in.put("colorMedium2", request.getColorMedium2());
+            in.put("colorLight2", request.getColorLight2());
 
             iAdminThemeBService.updateWebTheme(in);
         } catch (Exception ex) {
@@ -215,6 +232,16 @@ public class AdminThemeController {
             in.put("textHolder", request.getTextHolder());
             in.put("colorDanger", request.getColorDanger());
             in.put("colorDanger2", request.getColorDanger2());
+            in.put("colorDark", request.getColorDark());
+            in.put("colorDark2", request.getColorDark2());
+            in.put("colorMedium", request.getColorMedium());
+            in.put("colorMedium2", request.getColorMedium2());
+            in.put("colorLight", request.getColorLight());
+            in.put("colorLight2", request.getColorLight2());
+            in.put("color1", request.getColor1());
+            in.put("color2", request.getColor2());
+            in.put("color3", request.getColor3());
+            in.put("color4", request.getColor4());
             in.put("status", request.getStatus());
 
             iAdminThemeBService.updateAppTheme(in);
