@@ -24,4 +24,10 @@ public class AppHistoryBService implements IAppHistoryBService {
     public void replyMyNote(Map in) throws Exception {
         iHistoryBService.replyMyNote(in);
     }
+
+    @Override
+    public Map searchHistoryNote(Map in) throws Exception {
+        Map out = iHistoryBService.searchHistoryNote(in);
+        return out;
+    }
 }

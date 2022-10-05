@@ -147,4 +147,36 @@ public class AppTopicController {
         }
         return response;
     }
+
+    /**
+     * App查询最热的话题标签
+     *
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/listHotTopicTags")
+    public Response listHotTopicTags(@RequestBody TopicRequest request,
+                                     HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+
+            Map out = iAppTopicBService.listHotTopicTags(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("App listHotTopicTags error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+
 }

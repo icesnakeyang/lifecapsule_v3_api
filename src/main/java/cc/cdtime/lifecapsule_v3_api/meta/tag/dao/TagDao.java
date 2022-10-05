@@ -64,4 +64,12 @@ public interface TagDao {
      * @return
      */
     ArrayList<TagView> listNoteTag(Map qIn);
+
+    /**
+     * 查询一批标签
+     *
+     * @param qIn size
+     * @return
+     */
+    ArrayList<TagView> listBaseTag(Map qIn);
 }

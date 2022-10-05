@@ -61,4 +61,10 @@ public class TagMiddle implements ITagMiddle {
         ArrayList<TagView> tagViews = iTagService.listNoteTag(qIn);
         return tagViews;
     }
+
+    @Override
+    public ArrayList<TagView> listBaseTag(Map qIn) throws Exception {
+        ArrayList<TagView> tagViews = iTagService.listBaseTag(qIn);
+        return tagViews;
+    }
 }

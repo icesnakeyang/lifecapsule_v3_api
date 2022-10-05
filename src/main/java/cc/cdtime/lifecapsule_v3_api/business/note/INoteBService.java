@@ -30,4 +30,6 @@ public interface INoteBService {
     Map getNoteTiny(Map in) throws Exception;
 
     void replyNote(Map in) throws Exception;
+
+    Map listHotNoteTags(Map in) throws Exception;
 }

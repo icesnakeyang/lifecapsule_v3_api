@@ -79,6 +79,7 @@ public interface INoteMiddle {
      * @param qIn createTimeStart
      *            createTimeEnd
      *            userId
+     *            titleKey
      * @return
      */
     ArrayList<NoteView> listHistoryNote(Map qIn) throws Exception;

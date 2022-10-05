@@ -354,6 +354,17 @@ public class NoteBService implements INoteBService {
         }
     }
 
+    @Override
+    public Map listHotNoteTags(Map in) throws Exception {
+        Map qIn = new HashMap();
+        qIn.put("size", 10);
+        ArrayList<TagView> tagViews = iTagMiddle.listBaseTag(qIn);
+
+        Map out = new HashMap();
+        out.put("tagList", tagViews);
+        return out;
+    }
+
     private String createNote(Map in) throws Exception {
         String content = in.get("content").toString();
         String categoryId = in.get("categoryId").toString();

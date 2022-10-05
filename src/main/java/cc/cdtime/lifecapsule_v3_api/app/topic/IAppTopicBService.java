@@ -36,4 +36,13 @@ public interface IAppTopicBService {
      * @throws Exception
      */
     void replyComment(Map in) throws Exception;
+
+    /**
+     * App查询最热的话题标签
+     *
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    Map listHotTopicTags(Map in) throws Exception;
 }

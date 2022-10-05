@@ -153,6 +153,11 @@
                 and user_id=#{userId}
             </when>
         </choose>
+        <choose>
+            <when test="titleKey!=null">
+                and title like concat('%', #{titleKey},'%')
+            </when>
+        </choose>
     </select>
 
     <!--随机查询笔记-->

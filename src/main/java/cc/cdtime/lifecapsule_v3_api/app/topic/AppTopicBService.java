@@ -36,4 +36,10 @@ public class AppTopicBService implements IAppTopicBService {
     public void replyComment(Map in) throws Exception {
         iTopicBService.replyComment(in);
     }
+
+    @Override
+    public Map listHotTopicTags(Map in) throws Exception {
+        Map out = iTopicBService.listHotTopicTags(in);
+        return out;
+    }
 }

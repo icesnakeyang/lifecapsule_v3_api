@@ -230,4 +230,27 @@ public class AppNoteController {
         return response;
 
     }
+
+    /**
+     * App查询最热的10条笔记标签
+     *
+     */
+    @ResponseBody
+    @GetMapping("/listHotNoteTags")
+    public Response listHotNoteTags() {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            Map out = iAppNoteBService.listHotNoteTags(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("App listHotNoteTags error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
 }

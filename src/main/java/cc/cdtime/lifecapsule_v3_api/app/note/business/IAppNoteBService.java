@@ -69,4 +69,13 @@ public interface IAppNoteBService {
      * @throws Exception
      */
     Map getMyNoteTiny(Map in) throws Exception;
+
+    /**
+     * App查询最热的10条笔记标签
+     *
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    Map listHotNoteTags(Map in) throws Exception;
 }

@@ -73,6 +73,14 @@
                  left join tag_base tb on tn.tag_id = tb.tag_id
     </select>
 
+    <!--查询多条标签-->
+    <select id="listBaseTag" parameterType="map" resultMap="tagMap">
+        select *
+        from tag_base
+        order by tag_hot desc
+            limit #{size}
+    </select>
+
     <!--查询一个笔记的标签列表-->
     <select id="listNoteTag" parameterType="map" resultMap="tagMap">
         select tn.ids,

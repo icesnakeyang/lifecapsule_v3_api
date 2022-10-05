@@ -62,10 +62,10 @@ public class HistoryBService implements IHistoryBService {
         /**
          * 随机捞历史笔记
          */
-        qIn=new HashMap();
+        qIn = new HashMap();
         qIn.put("size", 10);
         qIn.put("userId", userView.getUserId());
-        ArrayList<NoteView> noteViews1=iNoteMiddle.listHistoryRandom(qIn);
+        ArrayList<NoteView> noteViews1 = iNoteMiddle.listHistoryRandom(qIn);
 
         noteViews.addAll(noteViews1);
 
@@ -111,5 +111,23 @@ public class HistoryBService implements IHistoryBService {
         noteInfo.setStatus(ESTags.ACTIVE.toString());
         noteInfo.setPid(pid);
         iNoteMiddle.createNoteInfo(noteInfo);
+    }
+
+    @Override
+    public Map searchHistoryNote(Map in) throws Exception {
+        String token = in.get("token").toString();
+        String searchKey = in.get("searchKey").toString();
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        UserView userView = iUserMiddle.getUser(qIn, false, true);
+        qIn = new HashMap();
+        qIn.put("userId", userView.getUserId());
+        qIn.put("titleKey", searchKey);
+        ArrayList<NoteView> noteViews = iNoteMiddle.listHistoryNote(qIn);
+
+        Map out = new HashMap();
+        out.put("noteList", noteViews);
+        return out;
     }
 }

@@ -62,4 +62,10 @@ public class TagService implements ITagService {
         ArrayList<TagView> tagViews = tagDao.listNoteTag(qIn);
         return tagViews;
     }
+
+    @Override
+    public ArrayList<TagView> listBaseTag(Map qIn) throws Exception {
+        ArrayList<TagView> tagViews = tagDao.listBaseTag(qIn);
+        return tagViews;
+    }
 }

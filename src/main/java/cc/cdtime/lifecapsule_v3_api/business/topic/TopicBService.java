@@ -6,13 +6,16 @@ import cc.cdtime.lifecapsule_v3_api.meta.author.entity.AuthorLog;
 import cc.cdtime.lifecapsule_v3_api.meta.author.entity.AuthorLogView;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteInfo;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
+import cc.cdtime.lifecapsule_v3_api.meta.tag.entity.TagView;
 import cc.cdtime.lifecapsule_v3_api.meta.topic.entity.Topic;
 import cc.cdtime.lifecapsule_v3_api.meta.topic.entity.TopicView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
 import cc.cdtime.lifecapsule_v3_api.middle.author.IAuthorMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.note.INoteMiddle;
+import cc.cdtime.lifecapsule_v3_api.middle.tag.ITagMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.topic.ITopicMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.user.IUserMiddle;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,15 +30,18 @@ public class TopicBService implements ITopicBService {
     private final ITopicMiddle iTopicMiddle;
     private final INoteMiddle iNoteMiddle;
     private final IAuthorMiddle iAuthorMiddle;
+    private final ITagMiddle iTagMiddle;
 
     public TopicBService(IUserMiddle iUserMiddle,
                          ITopicMiddle iTopicMiddle,
                          INoteMiddle iNoteMiddle,
-                         IAuthorMiddle iAuthorMiddle) {
+                         IAuthorMiddle iAuthorMiddle,
+                         ITagMiddle iTagMiddle) {
         this.iUserMiddle = iUserMiddle;
         this.iTopicMiddle = iTopicMiddle;
         this.iNoteMiddle = iNoteMiddle;
         this.iAuthorMiddle = iAuthorMiddle;
+        this.iTagMiddle = iTagMiddle;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -225,6 +231,18 @@ public class TopicBService implements ITopicBService {
         int comments = topicView.getComments() + 1;
         qIn.put("comments", comments);
         iTopicMiddle.updateTopic(qIn);
+    }
+
+    @Override
+    public Map listHotTopicTags(Map in) throws Exception {
+        Map qIn = new HashMap();
+        qIn.put("size", 10);
+        ArrayList<TagView> tagViews = iTagMiddle.listBaseTag(qIn);
+
+        Map out = new HashMap();
+        out.put("tagList", tagViews);
+
+        return out;
     }
 
     private void changeDefaultLogToActive(String userId) throws Exception {

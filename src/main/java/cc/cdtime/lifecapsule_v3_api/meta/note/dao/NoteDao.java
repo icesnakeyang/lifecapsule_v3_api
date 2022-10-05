@@ -88,6 +88,7 @@ public interface NoteDao {
      * @param qIn createTimeStart
      *            createTimeEnd
      *            userId
+     *            titleKey
      * @return
      */
     ArrayList<NoteView> listHistoryNote(Map qIn);

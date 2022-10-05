@@ -21,6 +21,7 @@ public class AppHistoryController {
 
     /**
      * App端查询我的历史首页需要显示的数据
+     *
      * @param request
      * @param httpServletRequest
      * @return
@@ -53,6 +54,7 @@ public class AppHistoryController {
 
     /**
      * App端用户回复自己的笔记
+     *
      * @param request
      * @param httpServletRequest
      * @return
@@ -60,7 +62,7 @@ public class AppHistoryController {
     @ResponseBody
     @PostMapping("/replyMyNote")
     public Response replyMyNote(@RequestBody HistoryRequest request,
-                                    HttpServletRequest httpServletRequest) {
+                                HttpServletRequest httpServletRequest) {
         Response response = new Response();
         Map in = new HashMap();
         try {
@@ -79,6 +81,37 @@ public class AppHistoryController {
             } catch (Exception ex2) {
                 response.setCode(10001);
                 log.error("App replyMyNote error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
+     * App端用户查询自己的历史笔记
+     *
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/searchHistoryNote")
+    public Response searchHistoryNote(@RequestBody HistoryRequest request,
+                                      HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("searchKey", request.getSearchKey());
+
+            Map out = iAppHistoryBService.searchHistoryNote(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("App searchHistoryNote error:" + ex.getMessage());
             }
         }
         return response;

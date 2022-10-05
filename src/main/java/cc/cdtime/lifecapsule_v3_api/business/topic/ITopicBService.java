@@ -29,4 +29,6 @@ public interface ITopicBService {
      */
     Map getTopicDetail(Map in) throws Exception;
     void replyComment(Map in) throws Exception;
+
+    Map listHotTopicTags(Map in) throws Exception;
 }

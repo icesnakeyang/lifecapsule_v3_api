@@ -62,4 +62,12 @@ public interface ITagMiddle {
      * @return
      */
     ArrayList<TagView> listNoteTag(Map qIn) throws Exception;
+
+    /**
+     * 查询一批标签
+     *
+     * @param qIn size
+     * @return
+     */
+    ArrayList<TagView> listBaseTag(Map qIn) throws Exception;
 }

@@ -9,4 +9,5 @@ public class HistoryRequest extends Request {
     private String title;
     private String encryptKey;
     private String keyToken;
+    private String searchKey;
 }
