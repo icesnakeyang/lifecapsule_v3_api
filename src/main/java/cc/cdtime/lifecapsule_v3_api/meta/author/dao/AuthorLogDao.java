@@ -5,6 +5,7 @@ import cc.cdtime.lifecapsule_v3_api.meta.author.entity.AuthorLogView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 @Mapper
@@ -21,6 +22,14 @@ public interface AuthorLogDao {
      * @return
      */
     AuthorLogView getAuthorLog(Map qIn);
+
+    /**
+     * 读取我的笔名列表
+     *
+     * @param qIn userId
+     * @return
+     */
+    ArrayList<AuthorLogView> listAuthorLog(Map qIn);
 
     /**
      * 修改用户信息日志

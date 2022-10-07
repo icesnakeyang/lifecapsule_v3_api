@@ -64,7 +64,7 @@ public class TopicBService implements ITopicBService {
              * 查询笔名是否存在
              */
             qIn = new HashMap();
-            qIn.put("nickname", authorName);
+            qIn.put("authorName", authorName);
             qIn.put("userId", userView.getUserId());
             AuthorLogView authorLogView = iAuthorMiddle.getAuthorLog(qIn);
             if (authorLogView == null) {

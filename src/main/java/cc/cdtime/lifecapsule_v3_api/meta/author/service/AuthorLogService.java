@@ -7,6 +7,7 @@ import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 @Service
@@ -26,6 +27,12 @@ public class AuthorLogService implements IAuthorLogService {
     public AuthorLogView getAuthorLog(Map qIn) throws Exception {
         AuthorLogView authorLogView = authorLogDao.getAuthorLog(qIn);
         return authorLogView;
+    }
+
+    @Override
+    public ArrayList<AuthorLogView> listAuthorLog(Map qIn) throws Exception {
+        ArrayList<AuthorLogView> authorLogViews = authorLogDao.listAuthorLog(qIn);
+        return authorLogViews;
     }
 
     @Override

@@ -8,6 +8,7 @@ import cc.cdtime.lifecapsule_v3_api.middle.user.IUserMiddle;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,6 +45,24 @@ public class AuthorBService implements IAuthorBService {
 
         Map out = new HashMap();
         out.put("authorName", userName);
+
+        return out;
+    }
+
+    @Override
+    public Map listMyAuthorInfo(Map in) throws Exception {
+        String token = in.get("token").toString();
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        UserView userView = iUserMiddle.getUser(qIn, false, true);
+
+        qIn = new HashMap();
+        qIn.put("userId", userView.getUserId());
+        ArrayList<AuthorLogView> authorLogViews = iAuthorMiddle.listAuthorLog(qIn);
+
+        Map out=new HashMap();
+        out.put("authorList", authorLogViews);
 
         return out;
     }

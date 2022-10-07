@@ -39,7 +39,7 @@ public class AppTopicController {
             in.put("noteId", request.getNoteId());
             in.put("title", request.getTitle());
             in.put("content", request.getContent());
-            in.put("dsss", request.getAuthorName());
+            in.put("authorName", request.getAuthorName());
 
             iAppTopicBService.publishNoteToTopic(in);
         } catch (Exception ex) {

@@ -4,6 +4,7 @@ import cc.cdtime.lifecapsule_v3_api.meta.author.entity.AuthorLog;
 import cc.cdtime.lifecapsule_v3_api.meta.author.entity.AuthorLogView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public interface IAuthorMiddle {
@@ -20,6 +21,14 @@ public interface IAuthorMiddle {
      * @throws Exception
      */
     AuthorLogView getAuthorLog(Map qIn) throws Exception;
+
+    /**
+     * 读取我的笔名列表
+     *
+     * @param qIn userId
+     * @return
+     */
+    ArrayList<AuthorLogView> listAuthorLog(Map qIn) throws Exception;
 
     /**
      * 修改用户信息日志

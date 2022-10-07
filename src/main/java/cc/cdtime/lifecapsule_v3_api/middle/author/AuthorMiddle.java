@@ -8,10 +8,11 @@ import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 @Service
-public class AuthorMiddle implements IAuthorMiddle{
+public class AuthorMiddle implements IAuthorMiddle {
     private final IAuthorLogService iAuthorLogService;
 
     public AuthorMiddle(IAuthorLogService iAuthorLogService) {
@@ -27,6 +28,12 @@ public class AuthorMiddle implements IAuthorMiddle{
     public AuthorLogView getAuthorLog(Map qIn) throws Exception {
         AuthorLogView authorLogView = iAuthorLogService.getAuthorLog(qIn);
         return authorLogView;
+    }
+
+    @Override
+    public ArrayList<AuthorLogView> listAuthorLog(Map qIn) throws Exception {
+        ArrayList<AuthorLogView> authorLogViews = iAuthorLogService.listAuthorLog(qIn);
+        return authorLogViews;
     }
 
     @Override

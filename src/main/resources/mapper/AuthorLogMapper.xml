@@ -4,7 +4,7 @@
     <!--配置表和对象的字段映射 -->
     <resultMap id="authorLogMap" type="cc.cdtime.lifecapsule_v3_api.meta.author.entity.AuthorLogView">
         <result property="userId" column="user_id"/>
-        <result property="userId" column="create_time"/>
+        <result property="createTime" column="create_time"/>
         <result property="authorName" column="author_name"/>
         <result property="authorLogId" column="author_log_id"/>
     </resultMap>
@@ -41,6 +41,18 @@
                 and status = #{status}
             </when>
         </choose>
+    </select>
+
+    <!--读取我的笔名列表-->
+    <select id="listAuthorLog" parameterType="map" resultMap="authorLogMap">
+        select * from author_log
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+        order by ids desc
     </select>
 
     <!--修改用户信息日志-->
