@@ -2,6 +2,7 @@ package cc.cdtime.lifecapsule_v3_api.meta.admin.service;
 
 import cc.cdtime.lifecapsule_v3_api.meta.admin.dao.AdminStatisticDao;
 import cc.cdtime.lifecapsule_v3_api.meta.admin.entity.AdminStatisticView;
+import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,5 +21,11 @@ public class AdminStatisticService implements IAdminStatisticService {
     public ArrayList<AdminStatisticView> totalUserLogin(Map qIn) throws Exception {
         ArrayList<AdminStatisticView> adminStatisticViews = adminStatisticDao.totalUserLogin(qIn);
         return adminStatisticViews;
+    }
+
+    @Override
+    public ArrayList<NoteView> listNoteInfo(Map qIn) throws Exception {
+        ArrayList<NoteView> noteViews = adminStatisticDao.listNoteInfo(qIn);
+        return noteViews;
     }
 }

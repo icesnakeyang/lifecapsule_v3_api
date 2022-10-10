@@ -79,5 +79,12 @@ public enum ESTags {
     /**
      * 回复发送给我的笔记
      */
-    REPLY_SEND_LOG
+    REPLY_SEND_LOG,
+    ADMIN_REMOVE,
+    /**
+     * 查看话题
+     */
+    READ_TOPIC,
+    USER_LIST_HISTORY,
+    USER_READ_NOTE
 }

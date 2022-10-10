@@ -20,4 +20,5 @@ public class NoteView {
     private String noteType;
     private String nickname;
     private String pid;
+    private String email;
 }

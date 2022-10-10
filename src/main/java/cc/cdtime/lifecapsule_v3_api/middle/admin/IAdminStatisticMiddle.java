@@ -1,6 +1,7 @@
 package cc.cdtime.lifecapsule_v3_api.middle.admin;
 
 import cc.cdtime.lifecapsule_v3_api.meta.admin.entity.AdminStatisticView;
+import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -16,4 +17,12 @@ public interface IAdminStatisticMiddle {
      * @return
      */
     ArrayList<AdminStatisticView> totalUserLogin(Map qIn) throws Exception;
+
+    /**
+     * 管理员查询笔记列表
+     *
+     * @param qIn size
+     * @return
+     */
+    ArrayList<NoteView> listNoteInfo(Map qIn) throws Exception;
 }

@@ -3,6 +3,7 @@ package cc.cdtime.lifecapsule_v3_api.business.adminStatistic;
 import cc.cdtime.lifecapsule_v3_api.framework.tools.GogoTools;
 import cc.cdtime.lifecapsule_v3_api.meta.admin.entity.AdminStatisticView;
 import cc.cdtime.lifecapsule_v3_api.meta.admin.entity.AdminUserView;
+import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
 import cc.cdtime.lifecapsule_v3_api.middle.admin.IAdminStatisticMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.admin.IAdminUserMiddle;
@@ -76,5 +77,24 @@ public class AdminStatisticBService implements IAdminStatisticBService {
 
         return out;
 
+    }
+
+    @Override
+    public Map listTopNote(Map in) throws Exception {
+        String token = in.get("token").toString();
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        AdminUserView adminUserView = iAdminUserMiddle.getAdminUser(qIn, false);
+
+        qIn = new HashMap();
+        qIn.put("size", 10);
+
+        ArrayList<NoteView> noteViews = iAdminStatisticMiddle.listNoteInfo(qIn);
+
+        Map out = new HashMap();
+        out.put("noteList", noteViews);
+
+        return out;
     }
 }

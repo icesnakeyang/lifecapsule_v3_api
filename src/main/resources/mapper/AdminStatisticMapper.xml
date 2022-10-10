@@ -5,6 +5,11 @@
     <resultMap id="adminStatisticMap" type="cc.cdtime.lifecapsule_v3_api.meta.admin.entity.AdminStatisticView">
         <result property="userId" column="user_id"/>
     </resultMap>
+    <resultMap id="noteMap" type="cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView">
+        <result property="userId" column="user_id"/>
+        <result property="noteId" column="note_id"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
 
     <!--统计用户登录次数-->
     <select id="totalUserLogin" parameterType="map" resultMap="adminStatisticMap">
@@ -27,4 +32,20 @@
         order by total desc
         limit #{size} offset #{offset}
     </select>
+
+    <select id="listNoteInfo" parameterType="map" resultMap="noteMap">
+        select ni.ids,
+               note_id, ni.user_id,
+               title,
+               ni.create_time,
+               ni.status,
+               nickname,
+               email
+        from note_info ni
+                 left join user_base ub on ni.user_id=ub.user_id
+                 left join user_email ue on ni.user_id=ue.user_id
+        order by create_time desc
+            limit #{size}
+    </select>
+
 </mapper>

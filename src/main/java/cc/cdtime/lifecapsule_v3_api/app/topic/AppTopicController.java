@@ -1,5 +1,7 @@
 package cc.cdtime.lifecapsule_v3_api.app.topic;
 
+import cc.cdtime.lifecapsule_v3_api.framework.common.ICommonService;
+import cc.cdtime.lifecapsule_v3_api.framework.constant.ESTags;
 import cc.cdtime.lifecapsule_v3_api.framework.vo.Response;
 import cc.cdtime.lifecapsule_v3_api.framework.vo.TopicRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -15,9 +17,12 @@ import java.util.Map;
 @RequestMapping("/lifecapsule3_api/app/topic")
 public class AppTopicController {
     private final IAppTopicBService iAppTopicBService;
+    private final ICommonService iCommonService;
 
-    public AppTopicController(IAppTopicBService iAppTopicBService) {
+    public AppTopicController(IAppTopicBService iAppTopicBService,
+                              ICommonService iCommonService) {
         this.iAppTopicBService = iAppTopicBService;
+        this.iCommonService = iCommonService;
     }
 
     /**
@@ -54,36 +59,6 @@ public class AppTopicController {
     }
 
     /**
-     * App端捞10条话题出来
-     *
-     * @param request
-     * @param httpServletRequest
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/listTopicPublic")
-    public Response listTopicPublic(@RequestBody TopicRequest request,
-                                    HttpServletRequest httpServletRequest) {
-        Response response = new Response();
-        Map in = new HashMap();
-        try {
-            String token = httpServletRequest.getHeader("token");
-            in.put("token", token);
-
-            Map out = iAppTopicBService.listTopicPublic(in);
-            response.setData(out);
-        } catch (Exception ex) {
-            try {
-                response.setCode(Integer.parseInt(ex.getMessage()));
-            } catch (Exception ex2) {
-                response.setCode(10001);
-                log.error("App listTopicPublic error:" + ex.getMessage());
-            }
-        }
-        return response;
-    }
-
-    /**
      * App读取一条话题详情
      *
      * @param request
@@ -96,13 +71,21 @@ public class AppTopicController {
                                    HttpServletRequest httpServletRequest) {
         Response response = new Response();
         Map in = new HashMap();
+        Map logMap=new HashMap();
+        Map memoMap=new HashMap();
         try {
             String token = httpServletRequest.getHeader("token");
             in.put("token", token);
             in.put("topicId", request.getTopicId());
 
+            logMap.put("UserActType", ESTags.READ_TOPIC);
+            logMap.put("token", token);
+            memoMap.put("topicId", request.getTopicId());
+
             Map out = iAppTopicBService.getTopicDetail(in);
             response.setData(out);
+
+            logMap.put("result", ESTags.SUCCESS);
         } catch (Exception ex) {
             try {
                 response.setCode(Integer.parseInt(ex.getMessage()));
@@ -110,6 +93,14 @@ public class AppTopicController {
                 response.setCode(10001);
                 log.error("App getTopicDetail error:" + ex.getMessage());
             }
+            logMap.put("result", ESTags.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonService.createUserActLog(logMap);
+        }catch (Exception ex3){
+            log.error("App getTopicDetail user act error:"+ex3.getMessage());
         }
         return response;
     }
@@ -161,12 +152,19 @@ public class AppTopicController {
                                      HttpServletRequest httpServletRequest) {
         Response response = new Response();
         Map in = new HashMap();
+        Map memoMap = new HashMap();
+        Map logMap = new HashMap();
         try {
             String token = httpServletRequest.getHeader("token");
             in.put("token", token);
 
+            logMap.put("UserActType", ESTags.READ_TOPIC);
+            logMap.put("token", token);
+
             Map out = iAppTopicBService.listHotTopicTags(in);
             response.setData(out);
+
+            logMap.put("result", ESTags.SUCCESS);
         } catch (Exception ex) {
             try {
                 response.setCode(Integer.parseInt(ex.getMessage()));
@@ -174,6 +172,14 @@ public class AppTopicController {
                 response.setCode(10001);
                 log.error("App listHotTopicTags error:" + ex.getMessage());
             }
+            logMap.put("result", ESTags.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonService.createUserActLog(logMap);
+        } catch (Exception ex3) {
+            log.error("App listHotTopicTags user act error:" + ex3.getMessage());
         }
         return response;
     }

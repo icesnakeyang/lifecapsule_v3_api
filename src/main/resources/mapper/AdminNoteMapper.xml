@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.admin.dao.AdminNoteDao">
+    <!--配置表和对象的字段映射 -->
+    <resultMap id="triggerMap" type="cc.cdtime.lifecapsule_v3_api.meta.trigger.entity.TriggerView">
+        <result property="userId" column="user_id"/>
+        <result property="recipientId" column="recipient_id"/>
+        <result property="triggerId" column="trigger_id"/>
+        <result property="noteId" column="note_id"/>
+        <result property="triggerTime" column="trigger_time"/>
+        <result property="actTimes" column="act_times"/>
+        <result property="toEmail" column="to_email"/>
+        <result property="triggerType" column="trigger_type"/>
+        <result property="fromName" column="from_name"/>
+        <result property="toUserId" column="to_user_id"/>
+        <result property="refPid" column="ref_pid"/>
+    </resultMap>
+</mapper>

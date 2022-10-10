@@ -39,7 +39,8 @@ public class AppTopicBService implements IAppTopicBService {
 
     @Override
     public Map listHotTopicTags(Map in) throws Exception {
-        Map out = iTopicBService.listHotTopicTags(in);
+        in.put("size", 10);
+        Map out = iTopicBService.listTopicPublic(in);
         return out;
     }
 }

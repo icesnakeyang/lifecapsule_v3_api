@@ -154,4 +154,32 @@ public class AdminUserController {
         }
         return response;
     }
+
+    /**
+     * 查询最新的10篇笔记
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @GetMapping("/listTop10Notes")
+    public Response listTop10Notes(HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+
+            Map out = iAdminStatisticBService.listTopNote(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("Admin listTop10Notes error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
 }
