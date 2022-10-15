@@ -49,6 +49,7 @@ public class AppNoteController {
             in.put("pageSize", request.getPageSize());
             in.put("categoryId", request.getCategoryId());
             in.put("keyword", request.getKeyword());
+            in.put("tagList", request.getTagList());
 
             Map out = iAppNoteBService.listMyNote(in);
             response.setData(out);
@@ -232,23 +233,31 @@ public class AppNoteController {
     }
 
     /**
-     * App查询最热的10条笔记标签
+     * 保存笔记标签的更改
      *
+     * @param request
+     * @param httpServletRequest
+     * @return
      */
     @ResponseBody
-    @GetMapping("/listHotNoteTags")
-    public Response listHotNoteTags() {
+    @PostMapping("/saveMyNoteTags")
+    public Response saveMyNoteTags(@RequestBody NoteRequest request,
+                                   HttpServletRequest httpServletRequest) {
         Response response = new Response();
         Map in = new HashMap();
         try {
-            Map out = iAppNoteBService.listHotNoteTags(in);
-            response.setData(out);
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("tagList", request.getTagList());
+            in.put("noteId", request.getNoteId());
+
+            iAppNoteBService.saveMyNoteTags(in);
         } catch (Exception ex) {
             try {
                 response.setCode(Integer.parseInt(ex.getMessage()));
             } catch (Exception ex2) {
                 response.setCode(10001);
-                log.error("App listHotNoteTags error:" + ex.getMessage());
+                log.error("Web saveMyNoteTags error:" + ex.getMessage());
             }
         }
         return response;

@@ -36,19 +36,16 @@
     <!--查询笔记列表-->
     <select id="listNoteInfo" parameterType="map" resultMap="noteMap">
         select n.ids,
-        note_id,
+        n.note_id,
         n.user_id,
         title,
         n.create_time,
         status,
         encrypt,
         n.category_id,
-        category_name,
-        note_type,
         nickname
         from note_info n
-        left join category c on n.category_id = c.category_id
-        left join user_base ub on c.user_id=ub.user_id
+        left join user_base ub on n.user_id = ub.user_id
         where 1 = 1
         <choose>
             <when test="userId!=null">
@@ -56,14 +53,22 @@
             </when>
         </choose>
         <choose>
-            <when test="categoryId!=null">
-                and n.category_id=#{categoryId}
-            </when>
-        </choose>
-
-        <choose>
             <when test="keyword!=null">
                 and title like concat('%',#{keyword}, '%')
+            </when>
+        </choose>
+        <choose>
+            <when test="tagList!=null">
+                and n.note_id in (
+                select note_id
+                from tag_note tn
+                left join tag_base tb on tn.tag_id = tb.tag_id
+                where tn.user_id = #{userId}
+                and tag_name in
+                <foreach collection="tagList" item="item" separator="," open="(" close=")" index="">
+                    #{item.tagName}
+                </foreach>
+                )
             </when>
         </choose>
         order by create_time desc
@@ -72,6 +77,12 @@
                 limit #{size} offset #{offset}
             </when>
         </choose>
+        <choose>
+            <when test="searchKey!=null">
+                and title like concat('%', #{searchKey},'%')
+            </when>
+        </choose>
+
     </select>
 
     <!--统计笔记数量-->
@@ -91,6 +102,20 @@
         <choose>
             <when test="keyword!=null">
                 and title like concat('%',#{keyword}, '%')
+            </when>
+        </choose>
+        <choose>
+            <when test="tagList!=null">
+                and note_id in (
+                select note_id
+                from tag_note tn
+                left join tag_base tb on tn.tag_id = tb.tag_id
+                where tn.user_id = #{userId}
+                and tag_name in
+                <foreach collection="tagList" item="item" separator="," open="(" close=")" index="">
+                    #{item.tagName}
+                </foreach>
+                )
             </when>
         </choose>
     </select>

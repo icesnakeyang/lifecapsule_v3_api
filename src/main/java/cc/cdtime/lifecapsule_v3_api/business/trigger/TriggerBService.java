@@ -288,6 +288,17 @@ public class TriggerBService implements ITriggerBService {
         ArrayList<TriggerView> triggerViews = iTriggerMiddle.listTrigger(qIn);
         Integer total = iTriggerMiddle.totalTrigger(qIn);
 
+        for (int i = 0; i < triggerViews.size(); i++) {
+            TriggerView triggerView = triggerViews.get(i);
+            if (triggerView.getTriggerType().equals(ESTags.TIMER_TYPE_PRIMARY.toString())) {
+                /**
+                 * 把触发时间设置为主倒计时时间
+                 */
+                triggerView.setTriggerTime(userView.getTimerPrimary());
+            }
+            triggerViews.set(i, triggerView);
+        }
+
         Map out = new HashMap();
         out.put("triggerList", triggerViews);
         out.put("totalTrigger", total);

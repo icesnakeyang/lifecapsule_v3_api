@@ -13,4 +13,5 @@ public class TagNote {
     private String tagId;
     private String noteId;
     private Date createTime;
+    private String userId;
 }

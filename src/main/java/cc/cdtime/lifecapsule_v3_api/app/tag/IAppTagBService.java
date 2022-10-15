@@ -27,4 +27,22 @@ public interface IAppTagBService {
      * @throws Exception
      */
     void removeNoteTag(Map in) throws Exception;
+
+    /**
+     * 读取用户的所有笔记标签列表
+     *
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    Map listUserNoteTag(Map in) throws Exception;
+
+    /**
+     * App查询最热的10条笔记标签
+     *
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    Map listHotNoteTags(Map in) throws Exception;
 }

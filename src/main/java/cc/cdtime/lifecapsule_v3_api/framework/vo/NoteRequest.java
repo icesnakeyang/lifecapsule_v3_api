@@ -27,4 +27,5 @@ public class NoteRequest extends Request {
     private String email;
     private Integer ids;
     private ArrayList tagList;
+    private String searchKey;
 }

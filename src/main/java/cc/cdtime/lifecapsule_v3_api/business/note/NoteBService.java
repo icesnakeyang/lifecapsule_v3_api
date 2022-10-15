@@ -36,26 +36,17 @@ public class NoteBService implements INoteBService {
     private final INoteMiddle iNoteMiddle;
     private final ISecurityMiddle iSecurityMiddle;
     private final ICategoryMiddle iCategoryMiddle;
-    private final ITaskMiddle iTaskMiddle;
-    private final IRecipientMiddle iRecipientMiddle;
-    private final ITriggerMiddle iTriggerMiddle;
     private final ITagMiddle iTagMiddle;
 
     public NoteBService(IUserMiddle iUserMiddle,
                         INoteMiddle iNoteMiddle,
                         ISecurityMiddle iSecurityMiddle,
                         ICategoryMiddle iCategoryMiddle,
-                        ITaskMiddle iTaskMiddle,
-                        IRecipientMiddle iRecipientMiddle,
-                        ITriggerMiddle iTriggerMiddle,
                         ITagMiddle iTagMiddle) {
         this.iUserMiddle = iUserMiddle;
         this.iNoteMiddle = iNoteMiddle;
         this.iSecurityMiddle = iSecurityMiddle;
         this.iCategoryMiddle = iCategoryMiddle;
-        this.iTaskMiddle = iTaskMiddle;
-        this.iRecipientMiddle = iRecipientMiddle;
-        this.iTriggerMiddle = iTriggerMiddle;
         this.iTagMiddle = iTagMiddle;
     }
 
@@ -66,6 +57,8 @@ public class NoteBService implements INoteBService {
         Integer pageSize = (Integer) in.get("pageSize");
         String categoryId = (String) in.get("categoryId");
         String keyword = (String) in.get("keyword");
+        ArrayList tagList = (ArrayList) in.get("tagList");
+        String searchKey = (String) in.get("searchKey");
 
         Map qIn = new HashMap();
         qIn.put("token", token);
@@ -85,6 +78,10 @@ public class NoteBService implements INoteBService {
         if (keyword != null && !keyword.equals("")) {
             qIn.put("keyword", keyword);
         }
+        if (tagList != null && tagList.size() > 0) {
+            qIn.put("tagList", tagList);
+        }
+        qIn.put("keyword", searchKey);
         ArrayList<NoteView> noteViews = iNoteMiddle.listNote(qIn);
         Integer total = iNoteMiddle.totalNote(qIn);
         Map out = new HashMap();
@@ -219,37 +216,7 @@ public class NoteBService implements INoteBService {
                 if (tagMap != null) {
                     String tagName = (String) tagMap.get("tagName");
                     if (tagName != null) {
-                        /**
-                         * 新增加的tag
-                         * 1、检查tagName是否存在，不存在就创建tagBase
-                         * 2、获得tagId，创建到tagNote
-                         */
-                        TagView tagView = iTagMiddle.getTagBase(tagName, true);
-                        if (tagView == null) {
-                            TagBase tagBase = new TagBase();
-                            tagBase.setTagName(tagName);
-                            tagBase.setTagId(GogoTools.UUID32());
-                            iTagMiddle.createTagBase(tagBase);
-                            TagNote tagNote = new TagNote();
-                            tagNote.setNoteId(noteId);
-                            tagNote.setCreateTime(new Date());
-                            tagNote.setTagId(tagBase.getTagId());
-                            iTagMiddle.createTagNote(tagNote);
-                        } else {
-
-                            TagNote tagNote = new TagNote();
-                            tagNote.setNoteId(noteId);
-                            tagNote.setCreateTime(new Date());
-                            tagNote.setTagId(tagView.getTagId());
-                            iTagMiddle.createTagNote(tagNote);
-                            /**
-                             * 增加tagHot热度
-                             */
-                            qIn = new HashMap();
-                            qIn.put("tagHot", tagView.getTagHot() + 1);
-                            qIn.put("tagId", tagView.getTagId());
-                            iTagMiddle.updateTagBase(qIn);
-                        }
+                        saveTag(tagName, noteId, userView.getUserId());
                     }
                 }
             }
@@ -354,15 +321,43 @@ public class NoteBService implements INoteBService {
         }
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public Map listHotNoteTags(Map in) throws Exception {
-        Map qIn = new HashMap();
-        qIn.put("size", 10);
-        ArrayList<TagView> tagViews = iTagMiddle.listBaseTag(qIn);
+    public void saveMyNoteTags(Map in) throws Exception {
+        String token = in.get("token").toString();
+        ArrayList tagList = (ArrayList) in.get("tagList");
+        String noteId = in.get("noteId").toString();
 
-        Map out = new HashMap();
-        out.put("tagList", tagViews);
-        return out;
+        if (tagList == null) {
+            return;
+        }
+        if (tagList.size() == 0) {
+            return;
+        }
+
+        if (noteId == null) {
+            return;
+        }
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        UserView userView = iUserMiddle.getUser(qIn, false, true);
+
+        NoteView noteView = iNoteMiddle.getNoteTiny(noteId, false, userView.getUserId());
+
+        /**
+         * 删除掉原来所有tag，再添加tag
+         */
+        qIn = new HashMap();
+        qIn.put("noteId", noteId);
+        iTagMiddle.deleteTagNote(qIn);
+        for (int i = 0; i < tagList.size(); i++) {
+            Map tagMap = (Map) tagList.get(i);
+            String tagName = (String) tagMap.get("tagName");
+            if (tagName != null) {
+                saveTag(tagName, noteId, userView.getUserId());
+            }
+        }
     }
 
     private String createNote(Map in) throws Exception {
@@ -532,5 +527,40 @@ public class NoteBService implements INoteBService {
         }
         qInEdit.put("noteId", noteId);
         iNoteMiddle.updateNoteInfo(qInEdit);
+    }
+
+    private void saveTag(String tagName, String noteId, String userId) throws Exception {
+        /**
+         * 新增加的tag
+         * 1、检查tagName是否存在，不存在就创建tagBase
+         * 2、获得tagId，创建到tagNote
+         */
+        TagView tagView = iTagMiddle.getTagBase(tagName, true);
+        if (tagView == null) {
+            TagBase tagBase = new TagBase();
+            tagBase.setTagName(tagName);
+            tagBase.setTagId(GogoTools.UUID32());
+            iTagMiddle.createTagBase(tagBase);
+            TagNote tagNote = new TagNote();
+            tagNote.setNoteId(noteId);
+            tagNote.setCreateTime(new Date());
+            tagNote.setTagId(tagBase.getTagId());
+            tagNote.setUserId(userId);
+            iTagMiddle.createTagNote(tagNote);
+        } else {
+            TagNote tagNote = new TagNote();
+            tagNote.setNoteId(noteId);
+            tagNote.setCreateTime(new Date());
+            tagNote.setTagId(tagView.getTagId());
+            tagNote.setUserId(userId);
+            iTagMiddle.createTagNote(tagNote);
+            /**
+             * 增加tagHot热度
+             */
+            Map qIn = new HashMap();
+            qIn.put("tagHot", tagView.getTagHot() + 1);
+            qIn.put("tagId", tagView.getTagId());
+            iTagMiddle.updateTagBase(qIn);
+        }
     }
 }

@@ -29,6 +29,8 @@ public interface INoteService {
      * @param qIn userId
      *            categoryId
      *            keyword
+     *            tagList
+     *            tagName
      *            offset
      *            size
      * @return
@@ -41,6 +43,7 @@ public interface INoteService {
      * @param qIn userId
      *            categoryId
      *            keyword
+     *            tagList
      * @return
      */
     Integer totalNoteInfo(Map qIn) throws Exception;

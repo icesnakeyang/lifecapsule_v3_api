@@ -30,6 +30,7 @@ public interface NoteDao {
      * @param qIn userId
      *            categoryId
      *            keyword
+     *            tagName
      *            offset
      *            size
      * @return

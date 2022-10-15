@@ -66,4 +66,9 @@ public class WebNoteBService implements IWebNoteBService {
         Map out = iNoteSendBService.loadMyNoteSendStatistic(in);
         return out;
     }
+
+    @Override
+    public void saveMyNoteTags(Map in) throws Exception {
+        iNoteBService.saveMyNoteTags(in);
+    }
 }

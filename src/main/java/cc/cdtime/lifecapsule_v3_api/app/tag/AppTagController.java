@@ -83,6 +83,34 @@ public class AppTagController {
     }
 
     /**
+     * 读取用户的所有笔记标签列表
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @GetMapping("/listUserNoteTag")
+    public Response listUserNoteTag(HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+
+            Map out = iAppTagBService.listUserNoteTag(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("App listUserNoteTag error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
      * App端用户删除一个笔记标签
      *
      * @param request
@@ -108,6 +136,28 @@ public class AppTagController {
             } catch (Exception ex2) {
                 response.setCode(10001);
                 log.error("App removeNoteTag error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
+     * App查询最热的10条笔记标签
+     */
+    @ResponseBody
+    @GetMapping("/listHotNoteTags")
+    public Response listHotNoteTags() {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            Map out = iAppTagBService.listHotNoteTags(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("App listHotNoteTags error:" + ex.getMessage());
             }
         }
         return response;

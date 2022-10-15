@@ -33,7 +33,8 @@ public class WebNoteController {
             in.put("token", token);
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
-            in.put("categoryId", request.getCategoryId());
+            in.put("tagList", request.getTagList());
+            in.put("searchKey", request.getSearchKey());
 
             Map out = iWebNoteBService.listMyNote(in);
             response.setData(out);
@@ -90,8 +91,9 @@ public class WebNoteController {
             in.put("title", request.getTitle());
             in.put("content", request.getContent());
             in.put("encrypt", request.getEncrypt());
+            in.put("tagList", request.getTagList());
 
-            Map out=iWebNoteBService.saveMyNote(in);
+            Map out = iWebNoteBService.saveMyNote(in);
             response.setData(out);
         } catch (Exception ex) {
             try {
@@ -210,7 +212,7 @@ public class WebNoteController {
     @ResponseBody
     @PostMapping("/delete_my_note")
     public Response deleteMyNote(@RequestBody NoteRequest request,
-                                     HttpServletRequest httpServletRequest) {
+                                 HttpServletRequest httpServletRequest) {
         Response response = new Response();
         Map in = new HashMap();
         try {
@@ -247,7 +249,7 @@ public class WebNoteController {
             String token = httpServletRequest.getHeader("token");
             in.put("token", token);
 
-            Map out=iWebNoteBService.loadMyNoteSendStatistic(in);
+            Map out = iWebNoteBService.loadMyNoteSendStatistic(in);
             response.setData(out);
         } catch (Exception ex) {
             try {
@@ -255,6 +257,37 @@ public class WebNoteController {
             } catch (Exception ex2) {
                 response.setCode(10001);
                 log.error("Web loadMyNoteSendStatistic error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
+     * 保存笔记标签的更改
+     *
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/saveMyNoteTags")
+    public Response saveMyNoteTags(@RequestBody NoteRequest request,
+                                   HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("tagList", request.getTagList());
+            in.put("noteId", request.getNoteId());
+
+            iWebNoteBService.saveMyNoteTags(in);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("Web saveMyNoteTags error:" + ex.getMessage());
             }
         }
         return response;

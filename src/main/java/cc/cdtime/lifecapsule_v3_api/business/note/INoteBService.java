@@ -31,5 +31,7 @@ public interface INoteBService {
 
     void replyNote(Map in) throws Exception;
 
-    Map listHotNoteTags(Map in) throws Exception;
+
+
+    void saveMyNoteTags(Map in) throws Exception;
 }

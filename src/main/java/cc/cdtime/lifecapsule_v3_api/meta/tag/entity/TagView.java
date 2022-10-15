@@ -12,4 +12,5 @@ public class TagView {
     private Date createTime;
     private String tagName;
     private Integer tagHot;
+    private String userId;
 }

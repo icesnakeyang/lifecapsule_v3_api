@@ -71,11 +71,10 @@ public interface IAppNoteBService {
     Map getMyNoteTiny(Map in) throws Exception;
 
     /**
-     * App查询最热的10条笔记标签
+     * 保存笔记标签的更改
      *
      * @param in
-     * @return
      * @throws Exception
      */
-    Map listHotNoteTags(Map in) throws Exception;
+    void saveMyNoteTags(Map in) throws Exception;
 }

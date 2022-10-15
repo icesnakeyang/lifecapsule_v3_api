@@ -30,6 +30,8 @@ public interface INoteMiddle {
      * @param qIn userId
      *            categoryId
      *            keyword
+     *            tagList
+     *            tagName
      *            offset
      *            size
      * @return
@@ -42,6 +44,7 @@ public interface INoteMiddle {
      * @param qIn userId
      *            categoryId
      *            keyword
+     *            tagList
      * @return
      */
     Integer totalNote(Map qIn) throws Exception;

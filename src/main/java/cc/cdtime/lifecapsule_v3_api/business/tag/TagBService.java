@@ -103,15 +103,28 @@ public class TagBService implements ITagBService {
     @Override
     public Map listNoteTag(Map in) throws Exception {
         String token = in.get("token").toString();
-        String noteId = in.get("noteId").toString();
+        String noteId = (String) in.get("noteId");
 
         Map qIn = new HashMap();
         qIn.put("token", token);
         UserView userView = iUserMiddle.getUser(qIn, false, true);
+        ArrayList<TagView> noteTags = null;
+        if (noteId != null) {
+            /**
+             * 读取一个笔记的所有tag
+             */
+            qIn = new HashMap();
+            qIn.put("noteId", noteId);
+            noteTags = iTagMiddle.listNoteTag(qIn);
+        } else {
+            /**
+             * 读取用户的所有tag
+             */
+            qIn = new HashMap();
+            qIn.put("userId", userView.getUserId());
+            noteTags = iTagMiddle.listNoteTag(qIn);
+        }
 
-        qIn = new HashMap();
-        qIn.put("noteId", noteId);
-        ArrayList<TagView> noteTags = iTagMiddle.listNoteTag(qIn);
 
         Map out = new HashMap();
         out.put("tagList", noteTags);
@@ -132,5 +145,32 @@ public class TagBService implements ITagBService {
         qIn.put("tagId", tagId);
         qIn.put("noteId", noteId);
         iTagMiddle.deleteTagNote(qIn);
+    }
+
+    @Override
+    public Map listHotNoteTags(Map in) throws Exception {
+        Map qIn = new HashMap();
+        qIn.put("size", 10);
+        ArrayList<TagView> tagViews = iTagMiddle.listBaseTag(qIn);
+
+        Map out = new HashMap();
+        out.put("tagList", tagViews);
+        return out;
+    }
+
+    @Override
+    public Map listUserNoteTag(Map in) throws Exception {
+        String token = in.get("token").toString();
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        UserView userView = iUserMiddle.getUser(qIn, false, true);
+
+        qIn = new HashMap();
+        qIn.put("userId", userView.getUserId());
+        ArrayList<TagView> tagViews = iTagMiddle.listTagGroup(qIn);
+
+        Map out = new HashMap();
+        out.put("tagList", tagViews);
+        return out;
     }
 }

@@ -6,6 +6,8 @@ import cc.cdtime.lifecapsule_v3_api.meta.content.service.IContentService;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteInfo;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
 import cc.cdtime.lifecapsule_v3_api.meta.note.service.INoteService;
+import cc.cdtime.lifecapsule_v3_api.meta.tag.entity.TagView;
+import cc.cdtime.lifecapsule_v3_api.meta.tag.service.ITagService;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserEncodeKey;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserEncodeKeyView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.service.IUserEncodeKeyService;
@@ -23,13 +25,16 @@ public class NoteMiddle implements INoteMiddle {
     private final INoteService iNoteService;
     private final IUserEncodeKeyService iUserEncodeKeyService;
     private final IContentService iContentService;
+    private final ITagService iTagService;
 
     public NoteMiddle(INoteService iNoteService,
                       IUserEncodeKeyService iUserEncodeKeyService,
-                      IContentService iContentService) {
+                      IContentService iContentService,
+                      ITagService iTagService) {
         this.iNoteService = iNoteService;
         this.iUserEncodeKeyService = iUserEncodeKeyService;
         this.iContentService = iContentService;
+        this.iTagService = iTagService;
     }
 
     @Transactional(rollbackFor = Exception.class)

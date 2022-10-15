@@ -59,8 +59,7 @@ public class AppNoteBservice implements IAppNoteBService {
     }
 
     @Override
-    public Map listHotNoteTags(Map in) throws Exception {
-        Map out = iNoteBService.listHotNoteTags(in);
-        return out;
+    public void saveMyNoteTags(Map in) throws Exception {
+        iNoteBService.saveMyNoteTags(in);
     }
 }

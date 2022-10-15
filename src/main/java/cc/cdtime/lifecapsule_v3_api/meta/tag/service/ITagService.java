@@ -59,6 +59,7 @@ public interface ITagService {
      *
      * @param qIn noteId
      *            tagName
+     *            userId
      * @return
      */
     ArrayList<TagView> listNoteTag(Map qIn) throws Exception;
@@ -70,4 +71,12 @@ public interface ITagService {
      * @return
      */
     ArrayList<TagView> listBaseTag(Map qIn) throws Exception;
+
+    /**
+     * 聚合查询标签
+     *
+     * @param qIn userId
+     * @return
+     */
+    ArrayList<TagView> listTagGroup(Map qIn) throws Exception;
 }

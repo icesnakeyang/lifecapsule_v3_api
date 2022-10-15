@@ -61,6 +61,7 @@ public interface TagDao {
      *
      * @param qIn noteId
      *            tagName
+     *            userId
      * @return
      */
     ArrayList<TagView> listNoteTag(Map qIn);
@@ -72,4 +73,12 @@ public interface TagDao {
      * @return
      */
     ArrayList<TagView> listBaseTag(Map qIn);
+
+    /**
+     * 聚合查询标签
+     *
+     * @param qIn userId
+     * @return
+     */
+    ArrayList<TagView> listTagGroup(Map qIn);
 }

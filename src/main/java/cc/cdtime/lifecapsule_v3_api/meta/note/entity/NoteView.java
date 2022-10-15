@@ -2,6 +2,7 @@ package cc.cdtime.lifecapsule_v3_api.meta.note.entity;
 
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 @Data
@@ -21,4 +22,5 @@ public class NoteView {
     private String nickname;
     private String pid;
     private String email;
+    private ArrayList tagList;
 }

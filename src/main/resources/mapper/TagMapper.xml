@@ -8,6 +8,7 @@
         <result property="tagHot" column="tag_hot"/>
         <result property="noteId" column="note_id"/>
         <result property="createTime" column="create_time"/>
+        <result property="userId" column="user_id"/>
     </resultMap>
 
     <!--在标签库里添加一个新标签-->
@@ -20,8 +21,8 @@
     <!--给笔记添加一个标签-->
     <insert id="createTagNote" parameterType="cc.cdtime.lifecapsule_v3_api.meta.tag.entity.TagNote">
         insert into tag_note
-            (tag_id, note_id, create_time)
-        values (#{tagId}, #{noteId}, #{createTime})
+            (tag_id, note_id, create_time, user_id)
+        values (#{tagId}, #{noteId}, #{createTime}, #{userId})
     </insert>
 
     <!--修改标签热度-->
@@ -68,7 +69,8 @@
                note_id,
                create_time,
                tag_name,
-               tag_hot
+               tag_hot,
+               user_id
         from tag_note tn
                  left join tag_base tb on tn.tag_id = tb.tag_id
     </select>
@@ -88,7 +90,8 @@
         note_id,
         create_time,
         tag_name,
-        tag_hot
+        tag_hot,
+        user_id
         from tag_note tn
         left join tag_base tb on tn.tag_id = tb.tag_id
         where 1=1
@@ -100,6 +103,11 @@
         <choose>
             <when test="tagName!=null">
                 and tag_name = #{tagName}
+            </when>
+        </choose>
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
             </when>
         </choose>
     </select>
@@ -131,5 +139,19 @@
         <!--        </choose>-->
         <!--        order by tag_hot desc-->
         <!--        limit #{size} offset #{offset}-->
+    </select>
+
+    <!--聚合查询标签-->
+    <select id="listTagGroup" parameterType="map" resultMap="tagMap">
+        select tag_name
+        from tag_note tn
+        left join tag_base tb on tn.tag_id = tb.tag_id
+        where 1 = 1
+        <choose>
+            <when test="userId!=null">
+                and user_id = #{userId}
+            </when>
+        </choose>
+        group by tag_name
     </select>
 </mapper>
