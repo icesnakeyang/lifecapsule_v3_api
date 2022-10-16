@@ -15,4 +15,5 @@ public class TriggerRequest extends Request{
     private String encryptKey;
     private String noteContent;
     private String fromName;
+    private String status;
 }

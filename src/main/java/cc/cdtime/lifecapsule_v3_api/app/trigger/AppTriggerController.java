@@ -63,7 +63,7 @@ public class AppTriggerController {
     @ResponseBody
     @PostMapping("/createTriggerInstant")
     public Response createTriggerInstant(@RequestBody TriggerRequest request,
-                                          HttpServletRequest httpServletRequest) {
+                                         HttpServletRequest httpServletRequest) {
         Response response = new Response();
         Map in = new HashMap();
         try {
@@ -105,6 +105,7 @@ public class AppTriggerController {
             in.put("token", token);
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
+            in.put("status", request.getStatus());
 
             Map out = iAppTriggerBService.listMyTrigger(in);
             response.setData(out);
@@ -193,7 +194,7 @@ public class AppTriggerController {
     @ResponseBody
     @PostMapping("/createTriggerPrimary")
     public Response createTriggerPrimary(@RequestBody TriggerRequest request,
-                                          HttpServletRequest httpServletRequest) {
+                                         HttpServletRequest httpServletRequest) {
         Response response = new Response();
         Map in = new HashMap();
         try {

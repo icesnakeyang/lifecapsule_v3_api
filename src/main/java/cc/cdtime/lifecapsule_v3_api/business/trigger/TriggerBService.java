@@ -275,6 +275,7 @@ public class TriggerBService implements ITriggerBService {
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
         String triggerType = (String) in.get("triggerType");
+        String status = (String) in.get("status");
 
         Map qIn = new HashMap();
         qIn.put("token", token);
@@ -285,6 +286,7 @@ public class TriggerBService implements ITriggerBService {
         Integer offset = (pageIndex - 1) * pageSize;
         qIn.put("offset", offset);
         qIn.put("size", pageSize);
+        qIn.put("status", status);
         ArrayList<TriggerView> triggerViews = iTriggerMiddle.listTrigger(qIn);
         Integer total = iTriggerMiddle.totalTrigger(qIn);
 
@@ -348,6 +350,7 @@ public class TriggerBService implements ITriggerBService {
         return out;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteNoteTrigger(Map in) throws Exception {
         String token = in.get("token").toString();
@@ -358,6 +361,11 @@ public class TriggerBService implements ITriggerBService {
         UserView userView = iUserMiddle.getUser(qIn, false, true);
 
         TriggerView triggerView = iTriggerMiddle.getTrigger(triggerId, false, userView.getUserId());
+
+        if(!triggerView.getStatus().equals(ESTags.ACTIVE.toString())){
+            //只能删除未发送的触发器
+            throw new Exception("10059");
+        }
 
         iTriggerMiddle.deleteTrigger(triggerId);
     }
