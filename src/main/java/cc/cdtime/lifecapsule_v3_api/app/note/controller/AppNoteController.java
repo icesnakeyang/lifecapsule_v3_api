@@ -1,13 +1,18 @@
 package cc.cdtime.lifecapsule_v3_api.app.note.controller;
 
 import cc.cdtime.lifecapsule_v3_api.app.note.business.IAppNoteBService;
+import cc.cdtime.lifecapsule_v3_api.framework.common.ICommonService;
+import cc.cdtime.lifecapsule_v3_api.framework.constant.ESTags;
 import cc.cdtime.lifecapsule_v3_api.framework.vo.CategoryRequest;
 import cc.cdtime.lifecapsule_v3_api.framework.vo.NoteRequest;
 import cc.cdtime.lifecapsule_v3_api.framework.vo.Response;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.plaf.metal.MetalFileChooserUI;
+import javax.xml.crypto.dsig.spec.ExcC14NParameterSpec;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,9 +25,12 @@ import java.util.Map;
 @RequestMapping("/lifecapsule3_api/app/note")
 public class AppNoteController {
     private final IAppNoteBService iAppNoteBService;
+    private final ICommonService iCommonService;
 
-    public AppNoteController(IAppNoteBService iAppNoteBService) {
+    public AppNoteController(IAppNoteBService iAppNoteBService,
+                             ICommonService iCommonService) {
         this.iAppNoteBService = iAppNoteBService;
+        this.iCommonService = iCommonService;
     }
 
     /**
@@ -42,6 +50,8 @@ public class AppNoteController {
                                HttpServletRequest httpServletRequest) {
         Response response = new Response();
         Map in = new HashMap();
+        Map logMap = new HashMap();
+        Map memoMap = new HashMap();
         try {
             String token = httpServletRequest.getHeader("token");
             in.put("token", token);
@@ -51,8 +61,13 @@ public class AppNoteController {
             in.put("keyword", request.getKeyword());
             in.put("tagList", request.getTagList());
 
+            logMap.put("UserActType", ESTags.USER_LIST_MYNOTE);
+            logMap.put("token", token);
+
             Map out = iAppNoteBService.listMyNote(in);
             response.setData(out);
+
+            logMap.put("result", ESTags.SUCCESS);
         } catch (Exception ex) {
             try {
                 response.setCode(Integer.parseInt(ex.getMessage()));
@@ -60,6 +75,14 @@ public class AppNoteController {
                 response.setCode(10001);
                 log.error("App listMyNote error:" + ex.getMessage());
             }
+            logMap.put("result", ESTags.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonService.createUserActLog(logMap);
+        } catch (Exception ex3) {
+            log.error("App listMyNote user act error:" + ex3.getMessage());
         }
         return response;
     }

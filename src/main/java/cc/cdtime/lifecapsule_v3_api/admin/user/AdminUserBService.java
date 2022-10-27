@@ -78,25 +78,4 @@ public class AdminUserBService implements IAdminUserBService {
 
         return out;
     }
-
-    @Override
-    public Map loadUserStatistic(Map in) throws Exception {
-        String token = in.get("token").toString();
-
-        Map qIn = new HashMap();
-        qIn.put("token", token);
-        AdminUserView adminUserView = iAdminUserMiddle.getAdminUser(qIn, false);
-
-        qIn = new HashMap();
-        Integer totalUserLogs = iUserMiddle.totalUserLoginLog(qIn);
-        Integer totalUser = iUserMiddle.totalUser(qIn);
-        Integer totalNote = iNoteMiddle.totalNote(qIn);
-
-        Map out = new HashMap();
-        out.put("totalUserLogs", totalUserLogs);
-        out.put("totalUser", totalUser);
-        out.put("totalNote", totalNote);
-
-        return out;
-    }
 }

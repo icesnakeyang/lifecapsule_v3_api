@@ -109,7 +109,7 @@ public class AdminUserController {
             String token = httpServletRequest.getHeader("token");
             in.put("token", token);
 
-            Map out = iAdminUserBService.loadUserStatistic(in);
+            Map out = iAdminStatisticBService.loadUserStatistic(in);
             response.setData(out);
         } catch (Exception ex) {
             try {

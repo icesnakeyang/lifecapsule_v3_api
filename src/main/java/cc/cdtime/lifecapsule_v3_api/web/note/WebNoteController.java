@@ -1,10 +1,13 @@
 package cc.cdtime.lifecapsule_v3_api.web.note;
 
+import cc.cdtime.lifecapsule_v3_api.framework.common.ICommonService;
+import cc.cdtime.lifecapsule_v3_api.framework.constant.ESTags;
 import cc.cdtime.lifecapsule_v3_api.framework.vo.CategoryRequest;
 import cc.cdtime.lifecapsule_v3_api.framework.vo.NoteRequest;
 import cc.cdtime.lifecapsule_v3_api.framework.vo.NoteSendRequest;
 import cc.cdtime.lifecapsule_v3_api.framework.vo.Response;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.el.parser.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,9 +20,12 @@ import java.util.Map;
 @RequestMapping("/lifecapsule3_api/web/note")
 public class WebNoteController {
     private final IWebNoteBService iWebNoteBService;
+    private final ICommonService iCommonService;
 
-    public WebNoteController(IWebNoteBService iWebNoteBService) {
+    public WebNoteController(IWebNoteBService iWebNoteBService,
+                             ICommonService iCommonService) {
         this.iWebNoteBService = iWebNoteBService;
+        this.iCommonService = iCommonService;
     }
 
     @ResponseBody
@@ -27,7 +33,10 @@ public class WebNoteController {
     public Response listMyNote(@RequestBody NoteRequest request,
                                HttpServletRequest httpServletRequest) {
         Response response = new Response();
+
         Map in = new HashMap();
+        Map logMap = new HashMap();
+        Map memoMap = new HashMap();
         try {
             String token = httpServletRequest.getHeader("token");
             in.put("token", token);
@@ -36,8 +45,13 @@ public class WebNoteController {
             in.put("tagList", request.getTagList());
             in.put("searchKey", request.getSearchKey());
 
+            logMap.put("UserActType", ESTags.USER_LIST_MYNOTE);
+            logMap.put("token", token);
+
             Map out = iWebNoteBService.listMyNote(in);
             response.setData(out);
+
+            logMap.put("result", ESTags.SUCCESS);
         } catch (Exception ex) {
             try {
                 response.setCode(Integer.parseInt(ex.getMessage()));
@@ -45,6 +59,14 @@ public class WebNoteController {
                 response.setCode(10001);
                 log.error("Web user listMyNote error:" + ex.getMessage());
             }
+            logMap.put("result", ESTags.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonService.createUserActLog(logMap);
+        } catch (Exception ex3) {
+            log.error("Web user listMyNote user act error:" + ex3.getMessage());
         }
         return response;
     }

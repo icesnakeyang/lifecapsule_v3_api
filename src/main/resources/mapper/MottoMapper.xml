@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.motto.dao.MottoDao">
+    <!--配置表和对象的字段映射 -->
+    <resultMap id="mottoMap" type="cc.cdtime.lifecapsule_v3_api.meta.motto.entity.MottoView">
+        <result property="userId" column="user_id"/>
+        <result property="mottoId" column="motto_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="noteId" column="note_id"/>
+        <result property="authorName" column="author_name"/>
+    </resultMap>
+
+    <!--创建一条motto-->
+    <insert id="createMotto" parameterType="cc.cdtime.lifecapsule_v3_api.meta.motto.entity.Motto">
+        insert into motto
+        (motto_id, user_id, create_time,
+         status, note_id, author_name)
+        values (#{mottoId}, #{userId}, #{createTime},
+                #{status}, #{noteId}, #{authorName})
+    </insert>
+
+    <!--查询一条motto-->
+    <select id="getMotto" parameterType="map" resultMap="mottoMap">
+        select * from motto m
+        left join content_detail cd on index_id=motto_id
+        where 1=1
+        <choose>
+            <when test="mottoId!=null">
+                and motto_id=#{mottoId}
+            </when>
+        </choose>
+        <choose>
+            <when test="status!=null">
+                and status=#{status}
+            </when>
+        </choose>
+        <choose>
+            <when test="random">
+                order by random() limit 1
+            </when>
+        </choose>
+    </select>
+
+    <!--创建一个motto日志-->
+    <insert id="createMottoLog" parameterType="cc.cdtime.lifecapsule_v3_api.meta.motto.entity.MottoLog">
+        insert into motto_log
+            (motto_id, user_id, create_time, log_type)
+        values (#{mottoId}, #{userId}, #{createTime}, #{logType})
+    </insert>
+
+    <!--修改motto-->
+    <update id="updateMotto" parameterType="map">
+        update motto
+        <set>
+            <if test="views!=null">
+                views=#{views}
+            </if>
+            <if test="status!=null">
+                status=#{status}
+            </if>
+            <if test="likes!=null">
+                likes=#{likes}
+            </if>
+        </set>
+        where motto_id=#{mottoId}
+    </update>
+
+    <!--读取motto列表-->
+    <select id="listMotto" parameterType="map" resultMap="mottoMap">
+        select * from motto m
+        left join content_detail cd on index_id=motto_id
+        where 1 = 1
+        <choose>
+            <when test="userId!=null">
+                and user_id = #{userId}
+            </when>
+        </choose>
+        <choose>
+            <when test="mottoId!=null">
+                and motto_id = #{mottoId}
+            </when>
+        </choose>
+        order by create_time desc
+        <choose>
+            <when test="offset!=null">
+                limit #{size} offset #{offset}
+            </when>
+        </choose>
+    </select>
+
+    <select id="totalMotto" parameterType="map" resultType="java.lang.Integer">
+        select count(*) as total from motto
+        where 1 = 1
+        <choose>
+            <when test="userId!=null">
+                and user_id = #{userId}
+            </when>
+        </choose>
+        <choose>
+            <when test="mottoId!=null">
+                and motto_id = #{mottoId}
+            </when>
+        </choose>
+    </select>
+
+    <!--读取motto列表-->
+    <select id="listMottoLog" parameterType="map" resultMap="mottoMap">
+        select * from motto m
+        left join content_detail cd on index_id=motto_id
+        where 1 = 1
+        <choose>
+            <when test="userId!=null">
+                and user_id = #{userId}
+            </when>
+        </choose>
+        <choose>
+            <when test="mottoId!=null">
+                and motto_id = #{mottoId}
+            </when>
+        </choose>
+        order by create_time desc
+        <choose>
+            <when test="offset!=null">
+                limit #{size} offset #{offset}
+            </when>
+        </choose>
+    </select>
+</mapper>

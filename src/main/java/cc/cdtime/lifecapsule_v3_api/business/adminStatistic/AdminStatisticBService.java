@@ -5,8 +5,10 @@ import cc.cdtime.lifecapsule_v3_api.meta.admin.entity.AdminStatisticView;
 import cc.cdtime.lifecapsule_v3_api.meta.admin.entity.AdminUserView;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
+import cc.cdtime.lifecapsule_v3_api.meta.userAct.entity.UserActView;
 import cc.cdtime.lifecapsule_v3_api.middle.admin.IAdminStatisticMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.admin.IAdminUserMiddle;
+import cc.cdtime.lifecapsule_v3_api.middle.note.INoteMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.user.IUserMiddle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,13 +24,16 @@ public class AdminStatisticBService implements IAdminStatisticBService {
     private final IAdminUserMiddle iAdminUserMiddle;
     private final IAdminStatisticMiddle iAdminStatisticMiddle;
     private final IUserMiddle iUserMiddle;
+    private final INoteMiddle iNoteMiddle;
 
     public AdminStatisticBService(IAdminUserMiddle iAdminUserMiddle,
                                   IAdminStatisticMiddle iAdminStatisticMiddle,
-                                  IUserMiddle iUserMiddle) {
+                                  IUserMiddle iUserMiddle,
+                                  INoteMiddle iNoteMiddle) {
         this.iAdminUserMiddle = iAdminUserMiddle;
         this.iAdminStatisticMiddle = iAdminStatisticMiddle;
         this.iUserMiddle = iUserMiddle;
+        this.iNoteMiddle = iNoteMiddle;
     }
 
     @Override
@@ -94,6 +99,39 @@ public class AdminStatisticBService implements IAdminStatisticBService {
 
         Map out = new HashMap();
         out.put("noteList", noteViews);
+
+        return out;
+    }
+
+    @Override
+    public Map loadUserStatistic(Map in) throws Exception {
+        String token = in.get("token").toString();
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        AdminUserView adminUserView = iAdminUserMiddle.getAdminUser(qIn, false);
+
+        qIn = new HashMap();
+        Integer totalUserLogs = iUserMiddle.totalUserLoginLog(qIn);
+        Integer totalUser = iUserMiddle.totalUser(qIn);
+        Integer totalNote = iNoteMiddle.totalNote(qIn);
+
+        /**
+         * 今日日活
+         * 今天有用户行为记录的用户总数
+         * 1个用户只能算1次日活
+         */
+        qIn = new HashMap();
+        qIn.put("startTime", GogoTools.cutTime(new Date()));
+        qIn.put("endTime", new Date());
+        Integer totalDUA = iAdminStatisticMiddle.totalUserAct(qIn);
+
+
+        Map out = new HashMap();
+        out.put("totalUserLogs", totalUserLogs);
+        out.put("totalUser", totalUser);
+        out.put("totalNote", totalNote);
+        out.put("totalDUA", totalDUA);
 
         return out;
     }

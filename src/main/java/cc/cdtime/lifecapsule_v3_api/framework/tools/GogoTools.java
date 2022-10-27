@@ -5,6 +5,7 @@ import org.apache.tomcat.util.codec.binary.Base64;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.security.*;
 import java.security.interfaces.RSAPrivateKey;
@@ -190,6 +191,35 @@ public class GogoTools {
         BigDecimal data1 = new BigDecimal(double1);
         BigDecimal data2 = new BigDecimal(double2);
         return data1.compareTo(data2);
+    }
+
+    /**
+     * 把一个日期的时间部分清零
+     *
+     * @param date
+     * @return
+     */
+    public static Date cutTime(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        Date out = calendar.getTime();
+        return out;
+    }
+
+    public static <T> T mapToObj(Map source, Class<T> target) throws Exception {
+        Field[] fields = target.getDeclaredFields();
+        T o = target.newInstance();
+        for (Field field : fields) {
+            Object val;
+            if ((val = source.get(field.getName())) != null) {
+                field.setAccessible(true);
+                field.set(o, val);
+            }
+        }
+        return o;
     }
 
 }

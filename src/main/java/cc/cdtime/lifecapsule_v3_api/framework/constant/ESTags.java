@@ -86,5 +86,8 @@ public enum ESTags {
      */
     READ_TOPIC,
     USER_LIST_HISTORY,
-    USER_READ_NOTE
+    USER_READ_NOTE,
+    USER_LIST_MYNOTE,
+    USER_LIKE_MOTTO,
+    STOP
 }

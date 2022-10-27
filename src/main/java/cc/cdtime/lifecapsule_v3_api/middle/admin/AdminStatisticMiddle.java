@@ -3,6 +3,7 @@ package cc.cdtime.lifecapsule_v3_api.middle.admin;
 import cc.cdtime.lifecapsule_v3_api.meta.admin.entity.AdminStatisticView;
 import cc.cdtime.lifecapsule_v3_api.meta.admin.service.IAdminStatisticService;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
+import cc.cdtime.lifecapsule_v3_api.meta.userAct.entity.UserActView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,5 +29,11 @@ public class AdminStatisticMiddle implements IAdminStatisticMiddle {
     public ArrayList<NoteView> listNoteInfo(Map qIn) throws Exception {
         ArrayList<NoteView> noteViews = iAdminStatisticService.listNoteInfo(qIn);
         return noteViews;
+    }
+
+    @Override
+    public Integer totalUserAct(Map qIn) throws Exception {
+        Integer total = iAdminStatisticService.totalUserAct(qIn);
+        return total;
     }
 }

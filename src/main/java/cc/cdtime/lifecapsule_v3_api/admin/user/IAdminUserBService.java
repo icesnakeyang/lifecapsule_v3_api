@@ -19,13 +19,4 @@ public interface IAdminUserBService {
      * @throws Exception
      */
     Map listUserLoginLog(Map in) throws Exception;
-
-    /**
-     * 读取用户统计数据
-     *
-     * @param in
-     * @return
-     * @throws Exception
-     */
-    Map loadUserStatistic(Map in) throws Exception;
 }

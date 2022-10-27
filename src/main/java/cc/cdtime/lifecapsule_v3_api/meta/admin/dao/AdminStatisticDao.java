@@ -2,6 +2,7 @@ package cc.cdtime.lifecapsule_v3_api.meta.admin.dao;
 
 import cc.cdtime.lifecapsule_v3_api.meta.admin.entity.AdminStatisticView;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
+import cc.cdtime.lifecapsule_v3_api.meta.userAct.entity.UserActView;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.ArrayList;
@@ -27,6 +28,17 @@ public interface AdminStatisticDao {
      * @return
      */
     ArrayList<NoteView> listNoteInfo(Map qIn);
+
+    /**
+     * 统计用户行为
+     *
+     * @param qIn startTime
+     *            endTime
+     * @return
+     */
+    Integer totalUserAct(Map qIn);
+
+    ArrayList<UserActView> listUserActTotal(Map qIn);
 
 
 }

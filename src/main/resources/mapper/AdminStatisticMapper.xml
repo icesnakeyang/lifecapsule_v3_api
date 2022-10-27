@@ -10,6 +10,11 @@
         <result property="noteId" column="note_id"/>
         <result property="createTime" column="create_time"/>
     </resultMap>
+    <resultMap id="userActMap" type="cc.cdtime.lifecapsule_v3_api.meta.userAct.entity.UserActView">
+        <result property="userId" column="user_id"/>
+        <result property="actType" column="act_type"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
 
     <!--统计用户登录次数-->
     <select id="totalUserLogin" parameterType="map" resultMap="adminStatisticMap">
@@ -35,17 +40,67 @@
 
     <select id="listNoteInfo" parameterType="map" resultMap="noteMap">
         select ni.ids,
-               note_id, ni.user_id,
+               note_id,
+               ni.user_id,
                title,
                ni.create_time,
                ni.status,
                nickname,
                email
         from note_info ni
-                 left join user_base ub on ni.user_id=ub.user_id
-                 left join user_email ue on ni.user_id=ue.user_id
+                 left join user_base ub on ni.user_id = ub.user_id
+                 left join user_email ue on ni.user_id = ue.user_id
         order by create_time desc
             limit #{size}
     </select>
 
+    <!--统计用户行为-->
+    <select id="totalUserAct" parameterType="map" resultType="java.lang.Integer">
+        select count(*) as total
+        from (
+        select count(*) as total
+        from user_act
+        where 1=1
+        <choose>
+            <when test="startTime!=null">
+                <![CDATA[
+               and  create_time >= #{startTime}
+                          ]]>
+            </when>
+        </choose>
+        <choose>
+            <when test="endTime!=null">
+                <![CDATA[
+               and  create_time <= #{endTime}
+                          ]]>
+            </when>
+        </choose>
+        group by user_id
+        ) a
+    </select>
+
+
+    <select id="listUserActTotal" parameterType="map" resultMap="userActMap">
+        select count(*) as total,
+        min(ua.user_id) as user_id,
+        max(act_type) as act_type,
+        min(ua.create_time) as create_time,
+        max(email) as email
+        from user_act ua
+        left join user_email ue on ua.user_id = ue.user_id
+        where 1 = 1
+        <choose>
+            <when test="startTime!=null">
+                <![CDATA[
+          and ua.create_time > #{startTime}
+        ]]>
+            </when>
+        </choose>
+        <choose>
+            <when test="userId!=null">
+                and ua.user_id = #{userId}
+            </when>
+        </choose>
+        group by ua.user_id
+    </select>
 </mapper>
