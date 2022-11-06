@@ -29,6 +29,7 @@ public class AdminMottoBService implements IAdminMottoBService {
         String token = in.get("token").toString();
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
+        String status = (String) in.get("status");
 
         Map qIn = new HashMap();
         qIn.put("token", token);
@@ -38,6 +39,7 @@ public class AdminMottoBService implements IAdminMottoBService {
         Integer offset = (pageIndex - 1) * pageSize;
         qIn.put("offset", offset);
         qIn.put("size", pageSize);
+        qIn.put("status", status);
         ArrayList<MottoView> mottoViews = iMottoMiddle.listMotto(qIn);
         Integer totalMotto = iMottoMiddle.totalMotto(qIn);
 

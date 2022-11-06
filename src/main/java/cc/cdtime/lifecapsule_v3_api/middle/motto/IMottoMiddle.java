@@ -47,6 +47,7 @@ public interface IMottoMiddle {
      *
      * @param qIn userId
      *            mottoId
+     *            status
      * @return
      */
     ArrayList<MottoView> listMotto(Map qIn) throws Exception;

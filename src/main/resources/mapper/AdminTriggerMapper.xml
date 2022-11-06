@@ -14,6 +14,9 @@
         <result property="fromName" column="from_name"/>
         <result property="toUserId" column="to_user_id"/>
         <result property="refPid" column="ref_pid"/>
+        <result property="toEmailStatus" column="to_email_status"/>
+        <result property="toUserStatus" column="to_user_status"/>
+        <result property="toName" column="to_name"/>
     </resultMap>
 
     <!--管理后台读取所有触发器-->
@@ -40,6 +43,12 @@
         <set>
             <if test="actTimes!=null">
                 act_times=#{actTimes},
+            </if>
+            <if test="toEmailStatus!=null">
+                to_email_status=#{toEmailStatus},
+            </if>
+            <if test="toUserStatus!=null">
+                to_user_status=#{toUserStatus},
             </if>
             <if test="status!=null">
                 status=#{status}

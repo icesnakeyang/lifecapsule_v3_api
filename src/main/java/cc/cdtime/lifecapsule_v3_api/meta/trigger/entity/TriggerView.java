@@ -1,6 +1,7 @@
 package cc.cdtime.lifecapsule_v3_api.meta.trigger.entity;
 
 import lombok.Data;
+import org.apache.ibatis.type.NStringTypeHandler;
 
 import java.util.Date;
 
@@ -24,4 +25,7 @@ public class TriggerView {
     private String fromName;
     private String toUserId;
     private String refPid;
+    private String toEmailStatus;
+    private String toUserStatus;
+    private String toName;
 }

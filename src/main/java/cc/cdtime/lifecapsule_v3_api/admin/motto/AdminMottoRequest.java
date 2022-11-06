@@ -6,4 +6,5 @@ import lombok.Data;
 @Data
 public class AdminMottoRequest extends Request {
     private String mottoId;
+    private String status;
 }

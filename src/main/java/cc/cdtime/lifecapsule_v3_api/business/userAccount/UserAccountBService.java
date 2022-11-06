@@ -1,16 +1,20 @@
 package cc.cdtime.lifecapsule_v3_api.business.userAccount;
 
+import cc.cdtime.lifecapsule_v3_api.business.common.IUserComBService;
 import cc.cdtime.lifecapsule_v3_api.framework.constant.ESTags;
 import cc.cdtime.lifecapsule_v3_api.framework.tools.GogoTools;
 import cc.cdtime.lifecapsule_v3_api.meta.category.entity.Category;
 import cc.cdtime.lifecapsule_v3_api.meta.category.entity.CategoryView;
+import cc.cdtime.lifecapsule_v3_api.meta.email.entity.EmailLog;
 import cc.cdtime.lifecapsule_v3_api.meta.email.entity.UserEmail;
 import cc.cdtime.lifecapsule_v3_api.meta.email.entity.UserEmailView;
 import cc.cdtime.lifecapsule_v3_api.meta.timer.entity.TimerView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.*;
 import cc.cdtime.lifecapsule_v3_api.middle.category.ICategoryMiddle;
+import cc.cdtime.lifecapsule_v3_api.middle.email.IEmailMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.timer.ITimerMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.user.IUserMiddle;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,13 +28,19 @@ public class UserAccountBService implements IUserAccountBService {
     private final IUserMiddle iUserMiddle;
     private final ITimerMiddle iTimerMiddle;
     private final ICategoryMiddle iCategoryMiddle;
+    private final IEmailMiddle iEmailMiddle;
+    private final IUserComBService iUserComBService;
 
     public UserAccountBService(IUserMiddle iUserMiddle,
                                ITimerMiddle iTimerMiddle,
-                               ICategoryMiddle iCategoryMiddle) {
+                               ICategoryMiddle iCategoryMiddle,
+                               IEmailMiddle iEmailMiddle,
+                               IUserComBService iUserComBService) {
         this.iUserMiddle = iUserMiddle;
         this.iTimerMiddle = iTimerMiddle;
         this.iCategoryMiddle = iCategoryMiddle;
+        this.iEmailMiddle = iEmailMiddle;
+        this.iUserComBService = iUserComBService;
     }
 
     @Override
@@ -425,6 +435,7 @@ public class UserAccountBService implements IUserAccountBService {
      * @return
      * @throws Exception
      */
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Map bindEmail(Map in) throws Exception {
         String token = in.get("token").toString();
@@ -449,44 +460,45 @@ public class UserAccountBService implements IUserAccountBService {
         qIn = new HashMap();
         qIn.put("email", email);
         UserEmailView userEmailView = iUserMiddle.getUserEmail(qIn, true, null);
-
-        /**
-         * todo 检查email的认证情况
-         */
-
-        if (!emailCode.equals("xxxxxx")) {
-            //email未认证成功
-            throw new Exception("10045");
+        if (userEmailView != null) {
+            //该email已经被绑定了
+            throw new Exception("10066");
         }
 
+        /**
+         * 检查email的认证情况
+         */
+        EmailLog emailLog = iEmailMiddle.getEmailLog(email, true);
+        if (emailLog == null) {
+            //email未认证成功
+            throw new Exception("10063");
+        }
+        if (!emailLog.getCode().equals(emailCode)) {
+            //邮箱验证码错误
+            throw new Exception("10063");
+        }
 
         /**
          * 绑定email
          */
         Map out = new HashMap();
-        if (userEmailView == null) {
-            /**
-             * email还没有被绑定，直接添加到email表
-             */
-            UserEmail userEmail = new UserEmail();
-            userEmail.setEmail(email);
-            userEmail.setEmailId(GogoTools.UUID32());
-            userEmail.setUserId(userView.getUserId());
-            userEmail.setStatus(ESTags.DEFAULT.toString());
-            userEmail.setCreateTime(new Date());
-            iUserMiddle.createUserEmail(userEmail);
-            out.put("token", token);
-        } else {
-            /**
-             * 如果email已经被绑定了，就切换到该email账号
-             */
-            /**
-             * todo
-             * 为了账户安全性，这里考虑再增加一些验证操作
-             */
-            token = loginUser(userEmailView.getUserId(), in);
-            out.put("token", token);
-        }
+
+        /**
+         * email还没有被绑定，直接添加到email表
+         */
+        UserEmail userEmail = new UserEmail();
+        userEmail.setEmail(email);
+        userEmail.setEmailId(GogoTools.UUID32());
+        userEmail.setUserId(userView.getUserId());
+        userEmail.setStatus(ESTags.DEFAULT.toString());
+        userEmail.setCreateTime(new Date());
+        iUserMiddle.createUserEmail(userEmail);
+        out.put("token", token);
+
+        /**
+         * 删除验证码
+         */
+        iEmailMiddle.deleteEmailLog(email);
 
         return out;
     }
@@ -502,45 +514,66 @@ public class UserAccountBService implements IUserAccountBService {
     public Map signByEmail(Map in) throws Exception {
         String email = in.get("email").toString();
         String emailCode = in.get("emailCode").toString();
+        String token = (String) in.get("token");
 
         /**
-         * 查询email记录
+         * 读取当前的token的userId，保存到user_login_history表里
          */
         Map qIn = new HashMap();
-        qIn.put("email", email);
-        UserEmailView userEmailView = iUserMiddle.getUserEmail(qIn, true, null);
-
-        /**
-         * todo 检查email的认证情况
-         */
-
-        if (!emailCode.equals("xxxxxx")) {
-            //email未认证成功
-            throw new Exception("10045");
+        String oldToken = token;
+        String oldUserId = null;
+        String newUserId = GogoTools.UUID32();
+        String newToken = GogoTools.UUID32();
+        if (token != null) {
+            qIn.put("token", token);
+            UserView userView = iUserMiddle.getUser(qIn, true, false);
+            if (userView != null) {
+                oldUserId = userView.getUserId();
+            }
         }
 
+        /**
+         * 检查email的认证情况
+         */
+        EmailLog emailLog = iEmailMiddle.getEmailLog(email, true);
+
+        if (emailLog == null) {
+            if (!emailCode.equals("xxxxxx")) {
+                //email未认证成功
+                throw new Exception("10045");
+            }
+        }
+        if (!emailLog.getCode().equals(emailCode)) {
+            //邮箱验证码错误
+            throw new Exception("10063");
+        }
 
         /**
          * 绑定email
          */
+        /**
+         * 查询email
+         */
+        qIn = new HashMap();
+        qIn.put("email", email);
+        UserEmailView userEmailView = iUserMiddle.getUserEmail(qIn, true, null);
         Map out = new HashMap();
         if (userEmailView == null) {
             /**
-             * 未使用的过的email，只能通过bind绑定到当前账号，不能在登录时创建，以免游客登录后，丢失未绑定账号的数据
+             * email没有使用过，创建一个新用户
              */
-//            Map newUserMap = registerUser(in);
-//            String userId = newUserMap.get("userId").toString();
-//
-//            UserEmail userEmail = new UserEmail();
-//            userEmail.setEmail(email);
-//            userEmail.setEmailId(GogoTools.UUID32());
-//            userEmail.setUserId(userId);
-//            userEmail.setStatus(ESTags.DEFAULT.toString());
-//            userEmail.setCreateTime(new Date());
-//            iUserMiddle.createUserEmail(userEmail);
-//            out.put("token", newUserMap.get("token"));
-            //email还没有注册，需要绑定后才能登录
-            throw new Exception("10053");
+            Map regOutMap = registerUser(in);
+            newUserId = regOutMap.get("userId").toString();
+            newToken = regOutMap.get("token").toString();
+
+            //创建用户email
+            UserEmail userEmail = new UserEmail();
+            userEmail.setEmail(email);
+            userEmail.setEmailId(GogoTools.UUID32());
+            userEmail.setUserId(newUserId);
+            userEmail.setStatus(ESTags.DEFAULT.toString());
+            userEmail.setCreateTime(new Date());
+            iUserMiddle.createUserEmail(userEmail);
         } else {
             /**
              * 如果email已经被绑定了，就切换到该email账号
@@ -549,8 +582,25 @@ public class UserAccountBService implements IUserAccountBService {
              * todo
              * 为了账户安全性，这里考虑再增加一些验证操作
              */
-            out.put("token", loginUser(userEmailView.getUserId(), in));
+            newUserId = userEmailView.getUserId();
+            out.put("token", loginUser(newUserId, in));
         }
+
+        /**
+         * 保存登录历史记录
+         */
+        UserLoginHistory userLoginHistory = new UserLoginHistory();
+        userLoginHistory.setCreateTime(new Date());
+        userLoginHistory.setNewUserId(newUserId);
+        userLoginHistory.setOldUserId(oldUserId);
+        userLoginHistory.setNewToken(newToken);
+        userLoginHistory.setOldToken(oldToken);
+        iUserMiddle.createUserLoginHistory(userLoginHistory);
+
+        /**
+         * 删除验证码
+         */
+        iEmailMiddle.deleteEmailLog(email);
 
         return out;
     }

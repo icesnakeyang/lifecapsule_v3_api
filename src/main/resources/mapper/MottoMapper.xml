@@ -80,6 +80,11 @@
                 and motto_id = #{mottoId}
             </when>
         </choose>
+        <choose>
+            <when test="status!=null">
+                and status=#{status}
+            </when>
+        </choose>
         order by create_time desc
         <choose>
             <when test="offset!=null">

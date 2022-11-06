@@ -13,4 +13,5 @@ public class UserAccountRequest extends Request {
     private String email;
     private String emailId;
     private String emailCode;
+    private String actType;
 }

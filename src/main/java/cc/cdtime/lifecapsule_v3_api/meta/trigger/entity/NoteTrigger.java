@@ -27,4 +27,5 @@ public class NoteTrigger {
     private String fromName;
     private String toUserId;
     private String refPid;
+    private String toName;
 }

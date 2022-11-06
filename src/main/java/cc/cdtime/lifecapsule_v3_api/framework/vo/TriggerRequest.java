@@ -16,4 +16,5 @@ public class TriggerRequest extends Request{
     private String noteContent;
     private String fromName;
     private String status;
+    private String toName;
 }

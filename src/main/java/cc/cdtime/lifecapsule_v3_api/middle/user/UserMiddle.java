@@ -8,9 +8,11 @@ import cc.cdtime.lifecapsule_v3_api.meta.timer.service.IUserTimerService;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.*;
 import cc.cdtime.lifecapsule_v3_api.meta.user.service.IUserBaseService;
 import cc.cdtime.lifecapsule_v3_api.meta.email.service.IUserEmailService;
+import cc.cdtime.lifecapsule_v3_api.meta.user.service.IUserLoginHistoryService;
 import cc.cdtime.lifecapsule_v3_api.meta.user.service.IUserLoginNameService;
 import cc.cdtime.lifecapsule_v3_api.meta.user.service.IUserLoginService;
 import cc.cdtime.lifecapsule_v3_api.middle.timer.ITimerMiddle;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,19 +29,22 @@ public class UserMiddle implements IUserMiddle {
     private final IUserEmailService iUserEmailService;
     private final IUserTimerService iUserTimerService;
     private final ITimerMiddle iTimerMiddle;
+    private final IUserLoginHistoryService iUserLoginHistoryService;
 
     public UserMiddle(IUserBaseService iUserBaseService,
                       IUserLoginService iUserLoginService,
                       IUserLoginNameService iUserLoginNameService,
                       IUserEmailService iUserEmailService,
                       IUserTimerService iUserTimerService,
-                      ITimerMiddle iTimerMiddle) {
+                      ITimerMiddle iTimerMiddle,
+                      IUserLoginHistoryService iUserLoginHistoryService) {
         this.iUserBaseService = iUserBaseService;
         this.iUserLoginService = iUserLoginService;
         this.iUserLoginNameService = iUserLoginNameService;
         this.iUserEmailService = iUserEmailService;
         this.iUserTimerService = iUserTimerService;
         this.iTimerMiddle = iTimerMiddle;
+        this.iUserLoginHistoryService = iUserLoginHistoryService;
     }
 
     @Override
@@ -266,5 +271,10 @@ public class UserMiddle implements IUserMiddle {
     @Override
     public void setEmailStatus(Map qIn) throws Exception {
         iUserEmailService.setEmailStatus(qIn);
+    }
+
+    @Override
+    public void createUserLoginHistory(UserLoginHistory userLoginHistory) throws Exception {
+        iUserLoginHistoryService.createUserLoginHistory(userLoginHistory);
     }
 }

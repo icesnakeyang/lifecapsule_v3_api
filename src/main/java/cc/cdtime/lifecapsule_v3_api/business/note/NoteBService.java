@@ -332,6 +332,12 @@ public class NoteBService implements INoteBService {
             return;
         }
         if (tagList.size() == 0) {
+            /**
+             * 把该笔记的所有tag删除
+             */
+            Map qIn = new HashMap();
+            qIn.put("noteId", noteId);
+            iTagMiddle.deleteTagNote(qIn);
             return;
         }
 

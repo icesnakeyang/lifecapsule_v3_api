@@ -89,5 +89,7 @@ public enum ESTags {
     USER_READ_NOTE,
     USER_LIST_MYNOTE,
     USER_LIKE_MOTTO,
-    STOP
+    STOP,
+    MAIL_TYPE_VALIDATE,
+    MAIL_TYPE_NOTE_SEND
 }

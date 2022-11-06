@@ -40,6 +40,8 @@ public class AppTriggerController {
             in.put("toEmail", request.getToEmail());
             in.put("title", request.getTitle());
             in.put("sendTime", request.getSendTime());
+            in.put("fromName", request.getFromName());
+            in.put("toName", request.getToName());
 
             iAppTriggerBService.createTriggerDatetime(in);
         } catch (Exception ex) {
@@ -74,6 +76,7 @@ public class AppTriggerController {
             in.put("title", request.getTitle());
             in.put("noteContent", request.getNoteContent());
             in.put("fromName", request.getFromName());
+            in.put("toName", request.getToName());
 
             iAppTriggerBService.createTriggerInstant(in);
         } catch (Exception ex) {
@@ -203,6 +206,8 @@ public class AppTriggerController {
             in.put("noteId", request.getNoteId());
             in.put("toEmail", request.getToEmail());
             in.put("title", request.getTitle());
+            in.put("fromName", request.getFromName());
+            in.put("toName", request.getToName());
 
             iAppTriggerBService.createTriggerPrimary(in);
         } catch (Exception ex) {

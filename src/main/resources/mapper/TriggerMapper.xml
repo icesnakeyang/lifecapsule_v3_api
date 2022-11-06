@@ -12,6 +12,9 @@
         <result property="triggerType" column="trigger_type"/>
         <result property="toEmail" column="to_email"/>
         <result property="fromName" column="from_name"/>
+        <result property="toName" column="to_name"/>
+        <result property="toEmailStatus" column="to_email_status"/>
+        <result property="toUserStatus" column="to_user_status"/>
     </resultMap>
 
     <!--创建一个触发器-->
@@ -22,11 +25,11 @@
         (trigger_id, trigger_time, create_time, user_id,
          trigger_type, status,
          title, to_email, note_id, from_name,
-         to_user_id, ref_pid)
+         to_user_id, ref_pid, to_name)
         values (#{triggerId}, #{triggerTime}, #{createTime}, #{userId},
                 #{triggerType}, #{status},
                 #{title}, #{toEmail}, #{noteId}, #{fromName},
-                #{toUserId}, #{refPid})
+                #{toUserId}, #{refPid}, #{toName})
     </insert>
 
     <!--查询一个触发器-->
@@ -58,6 +61,11 @@
         <choose>
             <when test="triggerType!=null">
                 and trigger_type = #{triggerType}
+            </when>
+        </choose>
+        <choose>
+            <when test="toEmail!=null">
+                and to_email=#{toEmail}
             </when>
         </choose>
         order by create_time desc
@@ -104,6 +112,9 @@
             </if>
             <if test="toEmail!=null">
                 to_email=#{toEmail},
+            </if>
+            <if test="toName!=null">
+                to_name=#{toName},
             </if>
             <if test="actTimes!=null">
                 act_times=#{actTimes}

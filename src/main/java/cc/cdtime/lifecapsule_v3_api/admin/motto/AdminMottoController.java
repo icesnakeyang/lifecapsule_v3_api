@@ -30,6 +30,7 @@ public class AdminMottoController {
             in.put("token", token);
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
+            in.put("status", request.getStatus());
 
             Map out = iAdminMottoBService.listMotto(in);
             response.setData(out);
@@ -94,7 +95,7 @@ public class AdminMottoController {
     @ResponseBody
     @PostMapping("/setMottoActive")
     public Response setMottoActive(@RequestBody AdminMottoRequest request,
-                                 HttpServletRequest httpServletRequest) {
+                                   HttpServletRequest httpServletRequest) {
         Response response = new Response();
         Map in = new HashMap();
         try {

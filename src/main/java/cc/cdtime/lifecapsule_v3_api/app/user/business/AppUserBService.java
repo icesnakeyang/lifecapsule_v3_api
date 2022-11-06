@@ -1,11 +1,11 @@
 package cc.cdtime.lifecapsule_v3_api.app.user.business;
 
+import cc.cdtime.lifecapsule_v3_api.business.email.IEmailBService;
 import cc.cdtime.lifecapsule_v3_api.business.userAccount.IUserAccountBService;
+import cc.cdtime.lifecapsule_v3_api.business.userProfile.IUserProfileBService;
 import cc.cdtime.lifecapsule_v3_api.framework.constant.ESTags;
 import cc.cdtime.lifecapsule_v3_api.framework.tools.GogoTools;
-import cc.cdtime.lifecapsule_v3_api.meta.timer.entity.TimerView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.*;
-import cc.cdtime.lifecapsule_v3_api.middle.timer.ITimerMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.user.IUserMiddle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,11 +20,17 @@ import java.util.Map;
 public class AppUserBService implements IAppUserBService {
     private final IUserMiddle iUserMiddle;
     private final IUserAccountBService iUserAccountBService;
+    private final IEmailBService iEmailBService;
+    private final IUserProfileBService iUserProfileBService;
 
     public AppUserBService(IUserMiddle iUserMiddle,
-                           IUserAccountBService iUserAccountBService) {
+                           IUserAccountBService iUserAccountBService,
+                           IEmailBService iEmailBService,
+                           IUserProfileBService iUserProfileBService) {
         this.iUserMiddle = iUserMiddle;
         this.iUserAccountBService = iUserAccountBService;
+        this.iEmailBService = iEmailBService;
+        this.iUserProfileBService = iUserProfileBService;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -211,6 +217,16 @@ public class AppUserBService implements IAppUserBService {
         in.put("frontEnd", ESTags.MOBILE_CLIENT.toString());
         Map out = iUserAccountBService.signByEmail(in);
         return out;
+    }
+
+    @Override
+    public void sendVerifyCodeToEmail(Map in) throws Exception {
+        iEmailBService.sendVerifyCodeToEmail(in);
+    }
+
+    @Override
+    public void saveNickname(Map in) throws Exception {
+        iUserProfileBService.saveNickname(in);
     }
 
     private void verifyToken() throws Exception {

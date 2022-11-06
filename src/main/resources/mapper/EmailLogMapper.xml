@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.email.dao.EmailLogDao">
+    <!--配置表和对象的字段映射 -->
+    <resultMap id="emailLogMap" type="cc.cdtime.lifecapsule_v3_api.meta.email.entity.EmailLog">
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <insert id="createEmailLog" parameterType="cc.cdtime.lifecapsule_v3_api.meta.email.entity.EmailLog">
+        insert into email_log
+            (email, code, create_time)
+        values (#{email}, #{code}, #{createTime})
+    </insert>
+
+    <select id="getEmailLog" parameterType="map" resultMap="emailLogMap">
+        select *
+        from email_log
+        where email = #{email}
+    </select>
+
+    <delete id="deleteEmailLog" parameterType="java.lang.String">
+        delete
+        from email_log
+        where email = #{email}
+    </delete>
+</mapper>

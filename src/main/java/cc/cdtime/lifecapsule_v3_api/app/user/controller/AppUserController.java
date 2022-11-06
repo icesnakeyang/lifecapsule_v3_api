@@ -6,7 +6,6 @@ import cc.cdtime.lifecapsule_v3_api.framework.constant.ESTags;
 import cc.cdtime.lifecapsule_v3_api.framework.vo.Response;
 import cc.cdtime.lifecapsule_v3_api.framework.vo.UserAccountRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -417,7 +416,7 @@ public class AppUserController {
             String token = httpServletRequest.getHeader("token");
             in.put("token", token);
 
-            Map out=iAppUserBService.getUserLoginByToken(in);
+            Map out = iAppUserBService.getUserLoginByToken(in);
             response.setData(out);
         } catch (Exception ex) {
             try {
@@ -435,14 +434,17 @@ public class AppUserController {
      */
     @ResponseBody
     @PostMapping("/signByEmail")
-    public Response signByEmail(@RequestBody UserAccountRequest request) {
+    public Response signByEmail(@RequestBody UserAccountRequest request,
+                                HttpServletRequest httpServletRequest) {
         Response response = new Response();
         Map in = new HashMap();
         try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
             in.put("email", request.getEmail());
             in.put("emailCode", request.getEmailCode());
 
-            Map out=iAppUserBService.signByEmail(in);
+            Map out = iAppUserBService.signByEmail(in);
             response.setData(out);
         } catch (Exception ex) {
             try {
@@ -462,6 +464,62 @@ public class AppUserController {
         Map out = new HashMap();
         out.put("value", 33);
         response.setData(out);
+        return response;
+    }
+
+    /**
+     * 用户请求发送邮箱验证码
+     *
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/sendVerifyCodeToEmail")
+    public Response sendVerifyCodeToEmail(@RequestBody UserAccountRequest request) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            in.put("email", request.getEmail());
+            in.put("actType", request.getActType());
+
+            iAppUserBService.sendVerifyCodeToEmail(in);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("App user sendVerifyCodeToEmail error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
+     * 用户修改昵称
+     *
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/saveNickname")
+    public Response saveNickname(@RequestBody UserAccountRequest request,
+                                 HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("nickname", request.getNickname());
+
+            iAppUserBService.saveNickname(in);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("App user saveNickname error:" + ex.getMessage());
+            }
+        }
         return response;
     }
 }

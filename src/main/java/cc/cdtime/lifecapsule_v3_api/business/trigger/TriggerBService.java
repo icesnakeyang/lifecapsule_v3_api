@@ -362,7 +362,7 @@ public class TriggerBService implements ITriggerBService {
 
         TriggerView triggerView = iTriggerMiddle.getTrigger(triggerId, false, userView.getUserId());
 
-        if(!triggerView.getStatus().equals(ESTags.ACTIVE.toString())){
+        if (!triggerView.getStatus().equals(ESTags.ACTIVE.toString())) {
             //只能删除未发送的触发器
             throw new Exception("10059");
         }
@@ -378,6 +378,7 @@ public class TriggerBService implements ITriggerBService {
         String noteId = in.get("noteId").toString();
         String noteContent = in.get("noteContent").toString();
         String fromName = (String) in.get("fromName");
+        String toName = (String) in.get("toName");
 
         Map qIn = new HashMap();
         qIn.put("token", token);
@@ -426,6 +427,7 @@ public class TriggerBService implements ITriggerBService {
         noteTrigger.setTriggerTime(new Date());
         noteTrigger.setNoteId(noteView.getNoteId());
         noteTrigger.setFromName(fromName);
+        noteTrigger.setToName(toName);
         iTriggerMiddle.createTrigger(noteTrigger);
     }
 
@@ -443,6 +445,8 @@ public class TriggerBService implements ITriggerBService {
         String title = (String) in.get("title");
         Date sendTime = (Date) in.get("sendTime");
         String noteId = in.get("noteId").toString();
+        String fromName = in.get("fromName").toString();
+        String toName = in.get("toName").toString();
 
         Map qIn = new HashMap();
         qIn.put("token", token);
@@ -496,6 +500,8 @@ public class TriggerBService implements ITriggerBService {
         noteTrigger.setTriggerTime(sendTime);
         noteTrigger.setNoteId(noteView.getNoteId());
         noteTrigger.setToUserId(toUserId);
+        noteTrigger.setFromName(fromName);
+        noteTrigger.setToName(toName);
         iTriggerMiddle.createTrigger(noteTrigger);
     }
 
@@ -505,6 +511,8 @@ public class TriggerBService implements ITriggerBService {
         String toEmail = in.get("toEmail").toString();
         String title = (String) in.get("title");
         String noteId = in.get("noteId").toString();
+        String fromName = in.get("fromName").toString();
+        String toName = in.get("toName").toString();
 
         Map qIn = new HashMap();
         qIn.put("token", token);
@@ -534,6 +542,7 @@ public class TriggerBService implements ITriggerBService {
         qIn.put("userId", userView.getUserId());
         qIn.put("status", ESTags.ACTIVE.toString());
         qIn.put("noteId", noteId);
+        qIn.put("toEmail", toEmail);
         ArrayList<TriggerView> triggerViews = iTriggerMiddle.listTrigger(qIn);
         if (triggerViews.size() > 0) {
             //该笔记已经设订了主倒计时结束时发送
@@ -557,6 +566,8 @@ public class TriggerBService implements ITriggerBService {
         noteTrigger.setStatus(ESTags.ACTIVE.toString());
         noteTrigger.setTitle(title);
         noteTrigger.setToEmail(toEmail);
+        noteTrigger.setFromName(fromName);
+        noteTrigger.setToName(toName);
         noteTrigger.setNoteId(noteView.getNoteId());
         iTriggerMiddle.createTrigger(noteTrigger);
     }
