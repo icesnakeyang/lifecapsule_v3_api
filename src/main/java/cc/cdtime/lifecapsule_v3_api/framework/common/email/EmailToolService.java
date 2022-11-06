@@ -29,6 +29,7 @@ public class EmailToolService implements IEmailToolService {
      */
     @Override
     public void sendMail(Map qIn) throws Exception {
+        System.out.println("Send mail begin---1---");
         String userEmail = qIn.get("email").toString();
         String subject = qIn.get("subject").toString();
 
@@ -53,7 +54,9 @@ public class EmailToolService implements IEmailToolService {
             }
         });
 
-        session.setDebug(false);
+        System.out.println("Send mail begin---2---");
+
+        session.setDebug(true);
 
         MimeMessage msg = new MimeMessage(session);
         msg.setFrom(new InternetAddress(from));
