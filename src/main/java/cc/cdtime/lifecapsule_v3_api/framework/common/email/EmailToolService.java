@@ -10,9 +10,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -29,7 +27,6 @@ public class EmailToolService implements IEmailToolService {
      */
     @Override
     public void sendMail(Map qIn) throws Exception {
-        System.out.println("Send mail begin---1---");
         String userEmail = qIn.get("email").toString();
         String subject = qIn.get("subject").toString();
 
@@ -54,9 +51,7 @@ public class EmailToolService implements IEmailToolService {
             }
         });
 
-        System.out.println("Send mail begin---2---");
-
-        session.setDebug(true);
+        session.setDebug(false);
 
         MimeMessage msg = new MimeMessage(session);
         msg.setFrom(new InternetAddress(from));
@@ -122,7 +117,10 @@ public class EmailToolService implements IEmailToolService {
         String code = qIn.get("code").toString();
 
         String fileName = "MailTmpValidateCode.html";
-        InputStream inputStream = ClassLoader.getSystemResourceAsStream(fileName);
+//        InputStream inputStream = ClassLoader.getSystemResourceAsStream(fileName);
+
+        File file = new File("classes/MailTmpValidateCode.html");
+        InputStream inputStream = new FileInputStream(file);
         BufferedReader fileReader = new BufferedReader(new InputStreamReader(inputStream));
         StringBuffer buffer = new StringBuffer();
         String line = "";

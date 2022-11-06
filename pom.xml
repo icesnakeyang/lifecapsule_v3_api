@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>cc.cdtime</groupId>
-    <artifactId>lifecapsule_v3_api</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>lifecapsule_v3_api</name>
+    <artifactId>lifecapsule3</artifactId>
+    <version>1</version>
+    <name>lifecapsule3</name>
     <description>lifecapsule_v3_api</description>
     <properties>
         <java.version>17</java.version>
