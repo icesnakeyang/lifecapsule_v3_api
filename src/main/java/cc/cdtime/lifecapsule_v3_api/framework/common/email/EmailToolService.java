@@ -12,7 +12,6 @@ import javax.mail.internet.MimeMultipart;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
 
@@ -103,8 +102,8 @@ public class EmailToolService implements IEmailToolService {
         String htmlText = buffer.toString();
         htmlText = htmlText.replaceAll("%toName%", toName);
         htmlText = htmlText.replaceAll("%subject%", subject);
-        htmlText = htmlText.replaceAll("%link%", urlLink);
-        htmlText = htmlText.replaceAll("%decode%", decode);
+//        htmlText = htmlText.replaceAll("%link%", urlLink);
+//        htmlText = htmlText.replaceAll("%decode%", decode);
         if (username != null) {
             htmlText = htmlText.replaceAll("%from%", username);
         } else {
@@ -116,7 +115,7 @@ public class EmailToolService implements IEmailToolService {
     private String buildContentValidateCode(Map qIn) throws Exception {
         String code = qIn.get("code").toString();
 
-        String fileName = "MailTmpValidateCode.html";
+        String fileName = "classes/MailTmpValidateCode.html";
 //        InputStream inputStream = ClassLoader.getSystemResourceAsStream(fileName);
 
         File file = new File("classes/MailTmpValidateCode.html");

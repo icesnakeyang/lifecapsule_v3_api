@@ -543,9 +543,11 @@ public class UserAccountBService implements IUserAccountBService {
                 throw new Exception("10045");
             }
         }
-        if (!emailLog.getCode().equals(emailCode)) {
-            //邮箱验证码错误
-            throw new Exception("10063");
+        if (emailLog != null) {
+            if (!emailLog.getCode().equals(emailCode)) {
+                //邮箱验证码错误
+                throw new Exception("10063");
+            }
         }
 
         /**
