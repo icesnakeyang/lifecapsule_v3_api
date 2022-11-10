@@ -155,7 +155,7 @@ public class QuartzService {
     private void sendNote(TriggerView triggerView) throws Exception {
         String toUserId = null;
         if (triggerView.getToUserId() != null) {
-            toUserId = triggerView.getUserId();
+            toUserId = triggerView.getToUserId();
         } else {
             if (triggerView.getToEmail() != null) {
                 if (triggerView.getToEmailStatus() == null) {
