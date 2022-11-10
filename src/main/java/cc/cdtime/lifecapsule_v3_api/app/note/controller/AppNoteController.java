@@ -58,7 +58,7 @@ public class AppNoteController {
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
             in.put("categoryId", request.getCategoryId());
-            in.put("keyword", request.getKeyword());
+            in.put("searchKey", request.getSearchKey());
             in.put("tagList", request.getTagList());
 
             logMap.put("UserActType", ESTags.USER_LIST_MYNOTE);
@@ -104,7 +104,7 @@ public class AppNoteController {
             String token = httpServletRequest.getHeader("token");
             in.put("token", token);
             in.put("categoryId", request.getCategoryId());
-            in.put("keyword", request.getKeyword());
+            in.put("searchKey", request.getSearchKey());
 
             Map out = iAppNoteBService.totalMyNote(in);
             response.setData(out);

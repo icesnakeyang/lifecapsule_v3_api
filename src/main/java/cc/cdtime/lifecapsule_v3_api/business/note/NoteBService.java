@@ -56,7 +56,6 @@ public class NoteBService implements INoteBService {
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
         String categoryId = (String) in.get("categoryId");
-        String keyword = (String) in.get("keyword");
         ArrayList tagList = (ArrayList) in.get("tagList");
         String searchKey = (String) in.get("searchKey");
 
@@ -74,9 +73,6 @@ public class NoteBService implements INoteBService {
         qIn.put("size", pageSize);
         if (categoryId != null) {
             qIn.put("categoryId", categoryId);
-        }
-        if (keyword != null && !keyword.equals("")) {
-            qIn.put("keyword", keyword);
         }
         if (tagList != null && tagList.size() > 0) {
             qIn.put("tagList", tagList);
