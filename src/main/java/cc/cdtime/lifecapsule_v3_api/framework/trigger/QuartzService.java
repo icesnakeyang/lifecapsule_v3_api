@@ -200,6 +200,7 @@ public class QuartzService {
                 noteSendLog.setTitle(triggerView.getTitle());
                 noteSendLog.setFromName(triggerView.getFromName());
                 noteSendLog.setRefPid(triggerView.getRefPid());
+                noteSendLog.setToName(triggerView.getToName());
                 iNoteSendMiddle.createNoteSendLog(noteSendLog);
 
                 /**

@@ -24,4 +24,5 @@ public class NoteSendLog {
     private String refPid;
     private String triggerId;
     private String fromName;
+    private String toName;
 }

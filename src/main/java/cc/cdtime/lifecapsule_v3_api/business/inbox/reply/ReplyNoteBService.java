@@ -91,11 +91,13 @@ public class ReplyNoteBService implements IReplyNoteBService {
         noteTrigger.setStatus(ESTags.ACTIVE.toString());
         noteTrigger.setTitle(title);
         noteTrigger.setNoteId(noteInfo.getNoteId());
-        noteTrigger.setFromName(noteSendLogView.getToEmail());
+        noteTrigger.setFromName(noteSendLogView.getToName());
+//        noteTrigger.setToEmail(noteSendLogView.getToEmail());
         noteTrigger.setToUserId(noteSendLogView.getSendUserId());
         noteTrigger.setRefPid(pid);
         noteTrigger.setUserEncodeKey(strAESKey);
         noteTrigger.setNoteContent(content);
+        noteTrigger.setToName(noteSendLogView.getFromName());
         iTriggerMiddle.createTrigger(noteTrigger);
     }
 }

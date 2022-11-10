@@ -35,12 +35,12 @@
          send_time,
          send_log_id, to_email,
          title, recipient_id, trigger_type,
-         ref_pid, trigger_id, from_name)
+         ref_pid, trigger_id, from_name, to_name)
         values (#{sendUserId}, #{receiveUserId},
                 #{sendTime},
                 #{sendLogId}, #{toEmail},
                 #{title}, #{recipientId}, #{triggerType},
-                #{refPid}, #{triggerId}, #{fromName})
+                #{refPid}, #{triggerId}, #{fromName}, #{toName})
     </insert>
 
     <!--读取主动发送笔记记录列表-->
