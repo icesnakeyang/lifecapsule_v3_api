@@ -132,6 +132,8 @@ public class AppNoteController {
                               HttpServletRequest httpServletRequest) {
         Response response = new Response();
         Map in = new HashMap();
+        Map logMap = new HashMap();
+        Map memoMap = new HashMap();
         try {
             String token = httpServletRequest.getHeader("token");
             in.put("token", token);
@@ -139,8 +141,14 @@ public class AppNoteController {
             in.put("keyToken", request.getKeyToken());
             in.put("encryptKey", request.getEncryptKey());
 
+            logMap.put("UserActType", ESTags.USER_GET_NOTE);
+            logMap.put("token", token);
+            memoMap.put("noteId", request.getNoteId());
+
             Map out = iAppNoteBService.getMyNote(in);
             response.setData(out);
+
+            logMap.put("result", ESTags.SUCCESS);
         } catch (Exception ex) {
             try {
                 response.setCode(Integer.parseInt(ex.getMessage()));
@@ -148,6 +156,14 @@ public class AppNoteController {
                 response.setCode(10001);
                 log.error("App getMyNote error:" + ex.getMessage());
             }
+            logMap.put("result", ESTags.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonService.createUserActLog(logMap);
+        } catch (Exception ex3) {
+            log.error("App getMyNote user act error:" + ex3.getMessage());
         }
         return response;
 
@@ -198,6 +214,8 @@ public class AppNoteController {
                                HttpServletRequest httpServletRequest) {
         Response response = new Response();
         Map in = new HashMap();
+        Map logMap = new HashMap();
+        Map memoMap = new HashMap();
         try {
             String token = httpServletRequest.getHeader("token");
             in.put("token", token);
@@ -210,8 +228,15 @@ public class AppNoteController {
             in.put("categoryId", request.getCategoryId());
             in.put("tagList", request.getTagList());
 
+            logMap.put("UserActType", ESTags.USER_SAVE_NOTE);
+            logMap.put("token", token);
+            memoMap.put("noteId", request.getNoteId());
+            memoMap.put("title", request.getTitle());
+
             Map out = iAppNoteBService.saveMyNote(in);
             response.setData(out);
+
+            logMap.put("result", ESTags.SUCCESS);
         } catch (Exception ex) {
             try {
                 response.setCode(Integer.parseInt(ex.getMessage()));
@@ -219,9 +244,16 @@ public class AppNoteController {
                 response.setCode(10001);
                 log.error("App saveMyNote error:" + ex.getMessage());
             }
+            logMap.put("result", ESTags.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonService.createUserActLog(logMap);
+        } catch (Exception ex3) {
+            log.error("App saveMyNote user act error:" + ex3.getMessage());
         }
         return response;
-
     }
 
     /**
