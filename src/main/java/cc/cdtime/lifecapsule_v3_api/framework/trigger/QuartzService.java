@@ -157,16 +157,20 @@ public class QuartzService {
         if (triggerView.getToUserId() != null) {
             toUserId = triggerView.getToUserId();
         } else {
+            /**
+             * toUserId为空
+             */
             if (triggerView.getToEmail() != null) {
-                if (triggerView.getToEmailStatus() == null) {
-                    Map qIn = new HashMap();
-                    qIn.put("email", triggerView.getToEmail());
-                    UserEmailView userEmailView = iUserMiddle.getUserEmail(qIn, true, null);
-                    if (userEmailView != null) {
-                        toUserId = userEmailView.getUserId();
-                    }
 
+                Map qIn = new HashMap();
+                qIn.put("email", triggerView.getToEmail());
+                UserEmailView userEmailView = iUserMiddle.getUserEmail(qIn, true, null);
+                if (userEmailView != null) {
+                    toUserId = userEmailView.getUserId();
+                }
+                if (triggerView.getToEmailStatus() == null) {
                     /**
+                     * 还没发送email，先发送
                      * 调用email接口，发送email
                      */
                     qIn.put("subject", triggerView.getTitle());
@@ -184,7 +188,14 @@ public class QuartzService {
                     qIn.put("triggerId", triggerView.getTriggerId());
                     iAdminTriggerMiddle.updateNoteTrigger(qIn);
                     log.info("Send mail to " + triggerView.getToEmail());
+                }else {
+                    /**
+                     * 已发送
+                     */
                 }
+                /**
+                 *
+                 */
             }
         }
         if (toUserId != null) {
