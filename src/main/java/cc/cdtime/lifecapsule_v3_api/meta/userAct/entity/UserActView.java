@@ -11,4 +11,8 @@ public class UserActView {
     private String actType;
     private Date createTime;
     private String email;
+    private String nickname;
+    private String result;
+    private String memo;
+
 }

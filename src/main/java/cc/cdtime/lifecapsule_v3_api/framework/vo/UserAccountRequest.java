@@ -2,6 +2,8 @@ package cc.cdtime.lifecapsule_v3_api.framework.vo;
 
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 public class UserAccountRequest extends Request {
     private String deviceCode;
@@ -14,4 +16,6 @@ public class UserAccountRequest extends Request {
     private String emailId;
     private String emailCode;
     private String actType;
+    private Date startTime;
+    private Date endTime;
 }
