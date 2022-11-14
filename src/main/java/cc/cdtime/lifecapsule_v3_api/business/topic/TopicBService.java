@@ -117,7 +117,7 @@ public class TopicBService implements ITopicBService {
     @Override
     public Map listTopicPublic(Map in) throws Exception {
         String token = in.get("token").toString();
-        Integer size=(Integer)in.get("size");
+        Integer size = (Integer) in.get("size");
 
         Map qIn = new HashMap();
         qIn.put("token", token);
@@ -125,6 +125,7 @@ public class TopicBService implements ITopicBService {
 
         qIn.put("offset", 0);
         qIn.put("size", size);
+        qIn.put("status", ESTags.ACTIVE);
         ArrayList<TopicView> topicViews = iTopicMiddle.listTopic(qIn);
 
         Map out = new HashMap();

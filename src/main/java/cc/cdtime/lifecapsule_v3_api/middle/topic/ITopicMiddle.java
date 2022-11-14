@@ -20,6 +20,7 @@ public interface ITopicMiddle {
      * @param qIn size
      *            offset
      *            pid
+     *            status
      * @return
      */
     ArrayList<TopicView> listTopic(Map qIn) throws Exception;

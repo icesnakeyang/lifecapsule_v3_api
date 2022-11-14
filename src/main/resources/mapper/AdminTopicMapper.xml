@@ -24,8 +24,46 @@
         select *
         from topic
         where 1 = 1
+        <choose>
+            <when test="isRoot">
+                and pid is null
+            </when>
+        </choose>
+        <choose>
+            <when test="status!=null">
+                and status=#{status}
+            </when>
+        </choose>
         order by create_time desc
-            limit #{size}
+        limit #{size}
         offset #{offset}
     </select>
+
+    <select id="totalTopic" parameterType="map" resultType="java.lang.Integer">
+        select count(*) as total
+        from topic
+        where 1 = 1
+        <choose>
+            <when test="isRoot">
+                and pid is null
+            </when>
+        </choose>
+        <choose>
+            <when test="status!=null">
+                and status=#{status}
+            </when>
+        </choose>
+    </select>
+
+    <select id="getTopic" parameterType="java.lang.String" resultMap="topicMap">
+        select *
+        from topic
+        where topic_id = #{topicId}
+    </select>
+
+    <delete id="deleteTopic" parameterType="java.lang.String">
+        delete
+        from topic
+        where topic_id = #{topicId}
+    </delete>
 </mapper>

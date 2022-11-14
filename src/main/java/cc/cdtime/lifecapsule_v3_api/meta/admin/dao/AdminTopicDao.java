@@ -16,5 +16,20 @@ public interface AdminTopicDao {
      */
     void updateTopic(Map qIn);
 
+    /**
+     * 查询话题列表
+     *
+     * @param qIn isRoot
+     *            status
+     *            size
+     *            offset
+     * @return
+     */
     ArrayList<TopicView> listTopic(Map qIn);
+
+    Integer totalTopic(Map qIn);
+
+    TopicView getTopic(String topicId);
+
+    void deleteTopic(String topicId);
 }

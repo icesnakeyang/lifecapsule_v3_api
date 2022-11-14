@@ -14,5 +14,18 @@ public interface IAdminTopicService {
      */
     void updateTopic(Map qIn) throws Exception;
 
+    /**
+     * 查询话题列表
+     *
+     * @param qIn isRoot
+     *            status
+     *            size
+     *            offset
+     * @return
+     */
     ArrayList<TopicView> listTopic(Map qIn) throws Exception;
+    Integer totalTopic(Map qIn) throws Exception;
+
+    TopicView getTopic(String topicId) throws Exception;
+    void deleteTopic(String topicId) throws Exception;
 }

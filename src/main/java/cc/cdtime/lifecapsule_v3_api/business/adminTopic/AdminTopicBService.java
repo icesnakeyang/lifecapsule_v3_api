@@ -2,12 +2,9 @@ package cc.cdtime.lifecapsule_v3_api.business.adminTopic;
 
 import cc.cdtime.lifecapsule_v3_api.framework.constant.ESTags;
 import cc.cdtime.lifecapsule_v3_api.meta.admin.entity.AdminUserView;
-import cc.cdtime.lifecapsule_v3_api.meta.admin.service.IAdminTopicService;
 import cc.cdtime.lifecapsule_v3_api.meta.topic.entity.TopicView;
 import cc.cdtime.lifecapsule_v3_api.middle.admin.IAdminTopicMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.admin.IAdminUserMiddle;
-import cc.cdtime.lifecapsule_v3_api.middle.topic.ITopicMiddle;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -44,6 +41,8 @@ public class AdminTopicBService implements IAdminTopicBService {
         String token = in.get("token").toString();
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
+        Boolean includeChildren = (Boolean) in.get("includeChildren");
+        String status = (String) in.get("status");
 
         Map qIn = new HashMap();
         qIn.put("token", token);
@@ -53,11 +52,53 @@ public class AdminTopicBService implements IAdminTopicBService {
         Integer offset = (pageIndex - 1) * pageSize;
         qIn.put("offset", offset);
         qIn.put("size", pageSize);
+        if (includeChildren) {
+            qIn.put("isRoot", false);
+        } else {
+            qIn.put("isRoot", true);
+        }
+        if (status != null && !status.equals("")) {
+            qIn.put("status", status);
+        }
         ArrayList<TopicView> topicViews = iAdminTopicMiddle.listTopic(qIn);
+        Integer totalTopic = iAdminTopicMiddle.totalTopic(qIn);
 
         Map out = new HashMap();
         out.put("topicList", topicViews);
+        out.put("totalTopic", totalTopic);
 
         return out;
+    }
+
+    @Override
+    public Map getTopic(Map in) throws Exception {
+        String token = in.get("token").toString();
+        String topicId = in.get("topicId").toString();
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        AdminUserView adminUserView = iAdminUserMiddle.getAdminUser(qIn, false);
+
+        TopicView topicView = iAdminTopicMiddle.getTopic(topicId);
+
+        Map out = new HashMap();
+        out.put("topic", topicView);
+
+        return out;
+    }
+
+    @Override
+    public void activeTopic(Map in) throws Exception {
+        String token = in.get("token").toString();
+        String topicId = in.get("topicId").toString();
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        AdminUserView adminUserView = iAdminUserMiddle.getAdminUser(qIn, false);
+
+        qIn = new HashMap();
+        qIn.put("topicId", topicId);
+        qIn.put("status", ESTags.ACTIVE);
+        iAdminTopicMiddle.updateTopic(qIn);
     }
 }

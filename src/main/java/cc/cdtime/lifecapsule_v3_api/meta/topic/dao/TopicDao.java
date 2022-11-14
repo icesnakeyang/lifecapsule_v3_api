@@ -22,6 +22,7 @@ public interface TopicDao {
      * @param qIn size
      *            offset
      *            pid
+     *            status
      * @return
      */
     ArrayList<TopicView> listTopic(Map qIn);

@@ -31,6 +31,8 @@ public class AdminTopicController {
             in.put("token", token);
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
+            in.put("includeChildren", request.getIncludeChildren());
+            in.put("status", request.getStatus());
 
             Map out = iAdminTopicBService.listTopic(in);
             response.setData(out);
@@ -40,6 +42,29 @@ public class AdminTopicController {
             } catch (Exception ex2) {
                 response.setCode(10001);
                 log.error("Admin listTopic error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    @ResponseBody
+    @PostMapping("/getTopic")
+    public Response getTopic(@RequestBody TopicRequest request, HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("topicId", request.getTopicId());
+
+            Map out = iAdminTopicBService.getTopic(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("Admin getTopic error:" + ex.getMessage());
             }
         }
         return response;
@@ -62,6 +87,34 @@ public class AdminTopicController {
             } catch (Exception ex2) {
                 response.setCode(10001);
                 log.error("Admin removeTopic error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
+     * 设置话题为正常状态
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/activeTopic")
+    public Response activeTopic(@RequestBody TopicRequest request, HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("topicId", request.getTopicId());
+
+            iAdminTopicBService.activeTopic(in);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("Admin activeTopic error:" + ex.getMessage());
             }
         }
         return response;

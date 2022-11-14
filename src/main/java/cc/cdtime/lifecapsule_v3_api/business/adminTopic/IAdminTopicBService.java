@@ -13,4 +13,8 @@ public interface IAdminTopicBService {
      * @throws Exception
      */
     Map listTopic(Map in) throws Exception;
+
+    Map getTopic(Map in) throws Exception;
+
+    void activeTopic(Map in) throws Exception;
 }

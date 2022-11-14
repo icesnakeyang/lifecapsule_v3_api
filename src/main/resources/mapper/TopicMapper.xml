@@ -35,6 +35,11 @@
                 and pid is null
             </otherwise>
         </choose>
+        <choose>
+            <when test="status!=null">
+                and status=#{status}
+            </when>
+        </choose>
         order by create_time desc
         limit #{size}
         offset #{offset}

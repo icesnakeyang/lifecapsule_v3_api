@@ -20,6 +20,7 @@ public interface ITopicService {
      * @param qIn size
      *            offset
      *            pid
+     *            status
      * @return
      */
     ArrayList<TopicView> listTopic(Map qIn) throws Exception;

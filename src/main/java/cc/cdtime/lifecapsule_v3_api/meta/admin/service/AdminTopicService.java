@@ -26,4 +26,21 @@ public class AdminTopicService implements IAdminTopicService {
         ArrayList<TopicView> topicViews = adminTopicDao.listTopic(qIn);
         return topicViews;
     }
+
+    @Override
+    public Integer totalTopic(Map qIn) throws Exception {
+        Integer total = adminTopicDao.totalTopic(qIn);
+        return total;
+    }
+
+    @Override
+    public TopicView getTopic(String topicId) throws Exception {
+        TopicView topicView = adminTopicDao.getTopic(topicId);
+        return topicView;
+    }
+
+    @Override
+    public void deleteTopic(String topicId) throws Exception {
+        adminTopicDao.deleteTopic(topicId);
+    }
 }
