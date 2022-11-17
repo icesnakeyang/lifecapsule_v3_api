@@ -86,7 +86,6 @@ public class NoteSendBService implements INoteSendBService {
     }
 
 
-
     @Override
     public Map searchUser(Map in) throws Exception {
         String token = in.get("token").toString();
@@ -335,15 +334,10 @@ public class NoteSendBService implements INoteSendBService {
         /**
          * 把用户秘钥加密发送回前端
          */
-        if (noteSendLogView.getTriggerType() != null) {
-            if (noteSendLogView.getTriggerType().equals(ESTags.TIMER_TYPE_PRIMARY.toString()) ||
-                    noteSendLogView.getTriggerType().equals(ESTags.TIMER_TYPE_DATETIME.toString())) {
-                if (noteSendLogView.getUserEncodeKey() != null) {
-                    //用AES秘钥加密笔记内容的AES秘钥
-                    String outCode = GogoTools.encryptAESKey(noteSendLogView.getUserEncodeKey(), strAESKey);
-                    noteSendLogView.setUserEncodeKey(outCode);
-                }
-            }
+        if (noteSendLogView.getUserEncodeKey() != null) {
+            //用AES秘钥加密笔记内容的AES秘钥
+            String outCode = GogoTools.encryptAESKey(noteSendLogView.getUserEncodeKey(), strAESKey);
+            noteSendLogView.setUserEncodeKey(outCode);
         }
 
         if (noteSendLogView.getRecipientId() != null) {

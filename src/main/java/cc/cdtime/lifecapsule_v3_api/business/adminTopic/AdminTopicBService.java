@@ -52,10 +52,14 @@ public class AdminTopicBService implements IAdminTopicBService {
         Integer offset = (pageIndex - 1) * pageSize;
         qIn.put("offset", offset);
         qIn.put("size", pageSize);
-        if (includeChildren) {
-            qIn.put("isRoot", false);
-        } else {
+        if(includeChildren==null){
             qIn.put("isRoot", true);
+        }else{
+            if(includeChildren){
+                qIn.put("isRoot", false);
+            }else{
+                qIn.put("isRoot", true);
+            }
         }
         if (status != null && !status.equals("")) {
             qIn.put("status", status);

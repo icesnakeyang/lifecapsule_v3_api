@@ -53,7 +53,7 @@ public class EmailBService implements IEmailBService {
                 throw new Exception("10053");
             }
         }
-        if (actType.equals("BIND") && emailView!=null) {
+        if (actType.equals("BIND") && emailView != null) {
             /**
              * 要绑定的email已经存在了
              */
@@ -90,11 +90,7 @@ public class EmailBService implements IEmailBService {
         qIn.put("subject", "[LifeCapsule] Please verify your email");
         qIn.put("code", code);
 
-        try {
-            iEmailToolService.sendMail(qIn);
-        }catch (Exception e){
-
-        }
+        iEmailToolService.sendMail(qIn);
 
         /**
          * 保存emailcode，等待用户验证
