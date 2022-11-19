@@ -90,7 +90,11 @@ public class EmailBService implements IEmailBService {
         qIn.put("subject", "[LifeCapsule] Please verify your email");
         qIn.put("code", code);
 
-        iEmailToolService.sendMail(qIn);
+        try {
+            iEmailToolService.sendMail(qIn);
+        } catch (Exception ex) {
+            System.out.println("send email failed:" + ex.getMessage());
+        }
 
         /**
          * 保存emailcode，等待用户验证

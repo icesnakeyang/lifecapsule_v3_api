@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.cash.dao.CashDao">
+    <!--配置表和对象的字段映射 -->
+    <resultMap id="cashMap" type="cc.cdtime.lifecapsule_v3_api.meta.cash.entity.CashView">
+        <result property="userId" column="user_id"/>
+        <result property="cashLedgerId" column="cash_ledger_id"/>
+        <result property="cashAccountId" column="cash_account_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="amountIn" column="amount_in"/>
+        <result property="amountOut" column="amount_out"/>
+        <result property="cashCategoryId" column="cash_category_id"/>
+        <result property="cashCategoryName" column="cash_category_name"/>
+    </resultMap>
+
+    <!--创建一单用户现金流水记录-->
+    <insert id="createCashLedger" parameterType="cc.cdtime.lifecapsule_v3_api.meta.cash.entity.CashLedger">
+        insert into cash_ledger
+        (cash_ledger_id, user_id, create_time,
+         amount_in, amount_out, cash_category_id,
+         remark)
+        values (#{cashLedgerId}, #{userId}, #{createTime},
+                #{amountIn}, #{amountOut}, #{cashCategoryId},
+                #{remark})
+    </insert>
+
+    <!--创建用户的现金汇总账户-->
+    <insert id="createCashAccount" parameterType="cc.cdtime.lifecapsule_v3_api.meta.cash.entity.CashAccount">
+        insert into cash_account
+        (cash_account_id, user_id, amount_in,
+         amount_out, balance)
+        values (#{cashAccountId}, #{userId}, #{amountIn},
+                #{amountOut}, #{balance})
+    </insert>
+
+    <!--读取一个用户的现金总账-->
+    <select id="getCashAccount" parameterType="map" resultMap="cashMap">
+        select * from cash_acount
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+    </select>
+
+    <!--修改用户现金总账-->
+    <update id="updateCashAccount" parameterType="map">
+        update cash_account
+        <set>
+            <if test="amountIn!=null">
+                amount_in=#{amountId},
+            </if>
+            <if test="amountOut!=null">
+                amount_out=#{amountOut},
+            </if>
+            <if test="balance!=null">
+                balance=#{balance}
+            </if>
+        </set>
+        where 1=1
+        <choose>
+            <when test="cashAccountId!=null">
+                and cash_account_id=#{cashAccountId}
+            </when>
+        </choose>
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+    </update>
+
+    <!--创建一个账户类别-->
+    <insert id="createCashCategory" parameterType="cc.cdtime.lifecapsule_v3_api.meta.cash.entity.CashCategory">
+        insert into cash_category
+            (user_id, cash_category_name, cash_category_id, status)
+        values (#{userId}, #{cashCategoryName}, #{cashCategoryId}, #{status})
+    </insert>
+
+    <!--查询现金账户分类列表-->
+    <select id="listCashCategory" parameterType="map" resultMap="cashMap">
+        select * from cash_category
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+    </select>
+
+    <!--修改现金账户分类-->
+    <update id="updateCashCategory" parameterType="map">
+        update cash_category
+        <set>
+            <if test="cashCategoryName!=null">
+                cash_category_name=#{cashCategoryName}
+            </if>
+        </set>
+        where cash_category_id=#{cashCategoryId}
+    </update>
+
+    <!--物理删除一个现金账户分类-->
+    <delete id="deleteCashCategory" parameterType="java.lang.String">
+        delete
+        from cash_category
+        where cash_category_id = #{cashCategoryId}
+    </delete>
+
+    <!--查询一个现金账户分类信息-->
+    <select id="getCashCategory" parameterType="map" resultMap="cashMap">
+        select * from cash_category
+        where 1=1
+        <choose>
+            <when test="default">
+                and user_id=#{userId}
+                and status='DEFAULT'
+            </when>
+        </choose>
+        <choose>
+            <when test="cashCategoryId!=null">
+                and cash_category_id=#{cashCategoryId}
+            </when>
+        </choose>
+        <choose>
+            <when test="categoryName!=null">
+                and cash_category_name=#{categoryName}
+                and user_id=#{userId}
+            </when>
+        </choose>
+    </select>
+</mapper>

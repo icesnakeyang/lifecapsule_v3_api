@@ -294,4 +294,31 @@ public class WebUserController {
         }
         return response;
     }
+
+    /**
+     * 用户请求发送邮箱验证码
+     *
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/sendVerifyCodeToEmail")
+    public Response sendVerifyCodeToEmail(@RequestBody UserAccountRequest request) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            in.put("email", request.getEmail());
+            in.put("actType", request.getActType());
+
+            iWebUserBService.sendVerifyCodeToEmail(in);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("Web user sendVerifyCodeToEmail error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
 }

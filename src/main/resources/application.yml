@@ -4,7 +4,8 @@ spring:
   datasource:
 #    url: jdbc:postgresql://localhost:5432/lifecapsule3
 #    url: jdbc:postgresql://pgm-8psc6119ll3w80043o.pgsql.kualalumpur.rds.aliyuncs.com:5432/lifecapsule3
-    url: jdbc:postgresql://pgm-2vc85ouuoz41kx5fco.pgsql.cn-chengdu.rds.aliyuncs.com:5432/lifecapsule3
+#    url: jdbc:postgresql://pgm-2vc85ouuoz41kx5fco.pgsql.cn-chengdu.rds.aliyuncs.com:5432/lifecapsule3
+    url: jdbc:postgresql://pgm-8ps2yprfn93vq2fo1o.pgsql.kualalumpur.rds.aliyuncs.com:5432/lifecapsule4
     username: gogoyangsoft
 #    username: postgres
 #    username: icesnakeyang

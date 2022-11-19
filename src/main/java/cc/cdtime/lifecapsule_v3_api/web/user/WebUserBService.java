@@ -1,9 +1,11 @@
 package cc.cdtime.lifecapsule_v3_api.web.user;
 
+import cc.cdtime.lifecapsule_v3_api.business.email.IEmailBService;
 import cc.cdtime.lifecapsule_v3_api.business.userAccount.IUserAccountBService;
 import cc.cdtime.lifecapsule_v3_api.framework.constant.ESTags;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
 import cc.cdtime.lifecapsule_v3_api.middle.user.IUserMiddle;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -13,11 +15,14 @@ import java.util.Map;
 public class WebUserBService implements IWebUserBService {
     private final IUserMiddle iUserMiddle;
     private final IUserAccountBService iUserAccountBService;
+    private final IEmailBService iEmailBService;
 
-    public WebUserBService(IUserMiddle iUserMiddle, IUserAccountBService
-            iUserAccountBService) {
+    public WebUserBService(IUserMiddle iUserMiddle,
+                           IUserAccountBService
+            iUserAccountBService, IEmailBService iEmailBService) {
         this.iUserMiddle = iUserMiddle;
         this.iUserAccountBService = iUserAccountBService;
+        this.iEmailBService = iEmailBService;
     }
 
     @Override
@@ -78,5 +83,10 @@ public class WebUserBService implements IWebUserBService {
         in.put("frontEnd", ESTags.WEB_CLIENT.toString());
         Map out = iUserAccountBService.signByEmail(in);
         return out;
+    }
+
+    @Override
+    public void sendVerifyCodeToEmail(Map in) throws Exception {
+        iEmailBService.sendVerifyCodeToEmail(in);
     }
 }
