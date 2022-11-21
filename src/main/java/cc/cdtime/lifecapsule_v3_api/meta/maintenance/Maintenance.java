@@ -7,5 +7,4 @@ public class Maintenance {
     private Integer ids;
     private String note_id;
     private String user_id;
-    private String category_id;
 }

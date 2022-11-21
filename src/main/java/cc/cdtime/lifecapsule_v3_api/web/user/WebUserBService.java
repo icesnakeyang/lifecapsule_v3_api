@@ -26,27 +26,6 @@ public class WebUserBService implements IWebUserBService {
     }
 
     @Override
-    public Map register(Map in) throws Exception {
-        in.put("frontEnd", ESTags.WEB_CLIENT.toString());
-        Map out = iUserAccountBService.registerByLoginName(in);
-        return out;
-    }
-
-    @Override
-    public Map login(Map in) throws Exception {
-        in.put("frontEnd", ESTags.WEB_CLIENT.toString());
-        Map out = iUserAccountBService.loginByLoginName(in);
-        return out;
-    }
-
-    @Override
-    public Map registerByLoginName(Map in) throws Exception {
-        in.put("frontEnd", ESTags.WEB_CLIENT.toString());
-        Map out = iUserAccountBService.registerByLoginName(in);
-        return out;
-    }
-
-    @Override
     public Map getUserInfoByToken(Map in) throws Exception {
         Map out = iUserAccountBService.getUserInfo(in);
         return out;

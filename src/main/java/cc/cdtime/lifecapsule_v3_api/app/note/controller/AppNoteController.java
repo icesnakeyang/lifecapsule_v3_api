@@ -3,16 +3,12 @@ package cc.cdtime.lifecapsule_v3_api.app.note.controller;
 import cc.cdtime.lifecapsule_v3_api.app.note.business.IAppNoteBService;
 import cc.cdtime.lifecapsule_v3_api.framework.common.ICommonService;
 import cc.cdtime.lifecapsule_v3_api.framework.constant.ESTags;
-import cc.cdtime.lifecapsule_v3_api.framework.vo.CategoryRequest;
 import cc.cdtime.lifecapsule_v3_api.framework.vo.NoteRequest;
 import cc.cdtime.lifecapsule_v3_api.framework.vo.Response;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.swing.plaf.metal.MetalFileChooserUI;
-import javax.xml.crypto.dsig.spec.ExcC14NParameterSpec;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,7 +53,6 @@ public class AppNoteController {
             in.put("token", token);
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
-            in.put("categoryId", request.getCategoryId());
             in.put("searchKey", request.getSearchKey());
             in.put("tagList", request.getTagList());
 
@@ -103,7 +98,6 @@ public class AppNoteController {
         try {
             String token = httpServletRequest.getHeader("token");
             in.put("token", token);
-            in.put("categoryId", request.getCategoryId());
             in.put("searchKey", request.getSearchKey());
 
             Map out = iAppNoteBService.totalMyNote(in);
@@ -225,7 +219,6 @@ public class AppNoteController {
             in.put("keyToken", request.getKeyToken());
             in.put("encryptKey", request.getEncryptKey());
             in.put("encrypt", request.getEncrypt());
-            in.put("categoryId", request.getCategoryId());
             in.put("tagList", request.getTagList());
 
             logMap.put("UserActType", ESTags.USER_SAVE_NOTE);

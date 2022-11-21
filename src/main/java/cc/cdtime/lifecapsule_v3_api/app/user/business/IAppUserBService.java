@@ -22,24 +22,6 @@ public interface IAppUserBService {
     Map signInByToken(Map in) throws Exception;
 
     /**
-     * 用户通过用户登录名和密码登录
-     *
-     * @param in
-     * @return
-     * @throws Exception
-     */
-    Map loginByLoginName(Map in) throws Exception;
-
-    /**
-     * 用户通过用户登录名和密码注册账号
-     *
-     * @param in
-     * @return
-     * @throws Exception
-     */
-    Map registerByLoginName(Map in) throws Exception;
-
-    /**
      * App用户查询自己的个人信息
      *
      * @param in

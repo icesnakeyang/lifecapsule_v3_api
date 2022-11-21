@@ -47,6 +47,7 @@ public class AppCashController {
             in.put("amountOut", request.getAmountOut());
             in.put("ledgerType", request.getLedgerType());
             in.put("remark", request.getRemark());
+            in.put("cashCategoryId", request.getCashCategoryId());
 
             logMap.put("", ESTags.CASH_CREATE_LEDGER);
             logMap.put("token", token);
@@ -145,7 +146,7 @@ public class AppCashController {
         try {
             String token = httpServletRequest.getHeader("token");
             in.put("token", token);
-            in.put("categoryName", request.getCategoryName());
+            in.put("cashCategoryName", request.getCashCategoryName());
             iAppCashBService.createMyCashCategory(in);
         } catch (Exception ex) {
             try {
@@ -157,4 +158,139 @@ public class AppCashController {
         }
         return response;
     }
+
+    /**
+     * app用户修改一个现金账户分类
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/updateMyCashCategory")
+    public Response updateMyCashCategory(@RequestBody CashRequest request,
+                                         HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("cashCategoryId", request.getCashCategoryId());
+            in.put("cashCategoryName", request.getCashCategoryName());
+            iAppCashBService.updateMyCashCategory(in);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("App updateMyCashCategory error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
+     * app用户查询自己的现金流水账列表
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/listMyCashLedger")
+    public Response listMyCashLedger(@RequestBody CashRequest request,
+                                     HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        Map logMap = new HashMap();
+        Map memoMap = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("pageIndex", request.getPageIndex());
+            in.put("pageSize", request.getPageSize());
+
+            logMap.put("UserActType", ESTags.USER_LIST_CASH_LEDGER);
+            logMap.put("token", token);
+
+            Map out = iAppCashBService.listMyCashLedger(in);
+            response.setData(out);
+
+            logMap.put("result", ESTags.SUCCESS);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("App listMyCashLedger error:" + ex.getMessage());
+            }
+            logMap.put("result", ESTags.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonService.createUserActLog(logMap);
+        } catch (Exception ex3) {
+            log.error("App listMyCashLedger user act error:" + ex3.getMessage());
+        }
+        return response;
+    }
+
+    /**
+     * app用户查询自己的现金汇总账户
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @GetMapping("/getMyCashAccount")
+    public Response getMyCashAccount(HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+
+            Map out = iAppCashBService.getMyCashAccount(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("App getMyCashAccount error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
+     * app用户查询自己的现金账分类详情
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/getMyCashCategory")
+    public Response getMyCashCategory(@RequestBody CashRequest request,
+                                      HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("cashCategoryId", request.getCashCategoryId());
+
+            Map out = iAppCashBService.getMyCashCategory(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("App getMyCashCategory error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+
 }

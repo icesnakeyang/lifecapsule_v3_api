@@ -85,7 +85,6 @@ public class WebCreativeNoteController {
             in.put("detail3", request.getDetail3());
             in.put("detail4", request.getDetail4());
             in.put("noteId", request.getNoteId());
-            in.put("categoryId", request.getCategoryId());
             in.put("encryptKey", request.getEncryptKey());
             in.put("keyToken", request.getKeyToken());
             in.put("tasks", request.getTasks());

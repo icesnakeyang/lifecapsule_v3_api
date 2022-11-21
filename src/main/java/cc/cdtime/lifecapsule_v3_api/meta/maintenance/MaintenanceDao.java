@@ -1,6 +1,5 @@
 package cc.cdtime.lifecapsule_v3_api.meta.maintenance;
 
-import cc.cdtime.lifecapsule_v3_api.meta.category.entity.CategoryView;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
 import org.apache.ibatis.annotations.Mapper;
@@ -15,8 +14,6 @@ public interface MaintenanceDao {
     void updateNoteOld(Map qIn);
 
     ArrayList<UserView> listUserOld();
-
-    ArrayList<CategoryView> listCategoryOld();
 
     ArrayList<NoteView> listAllNote();
 }

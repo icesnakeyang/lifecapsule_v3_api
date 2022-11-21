@@ -2,28 +2,21 @@ package cc.cdtime.lifecapsule_v3_api.business.recipient;
 
 import cc.cdtime.lifecapsule_v3_api.framework.constant.ESTags;
 import cc.cdtime.lifecapsule_v3_api.framework.tools.GogoTools;
-import cc.cdtime.lifecapsule_v3_api.meta.category.entity.Category;
 import cc.cdtime.lifecapsule_v3_api.meta.contact.entity.Contact;
 import cc.cdtime.lifecapsule_v3_api.meta.contact.entity.ContactView;
-import cc.cdtime.lifecapsule_v3_api.meta.email.entity.UserEmail;
-import cc.cdtime.lifecapsule_v3_api.meta.email.entity.UserEmailView;
-import cc.cdtime.lifecapsule_v3_api.meta.email.service.IUserEmailService;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
 import cc.cdtime.lifecapsule_v3_api.meta.recipient.entity.NoteRecipient;
 import cc.cdtime.lifecapsule_v3_api.meta.recipient.entity.RecipientView;
-import cc.cdtime.lifecapsule_v3_api.meta.trigger.entity.TriggerView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserBase;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserLogin;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserLoginLog;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
-import cc.cdtime.lifecapsule_v3_api.middle.category.ICategoryMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.contact.IContactMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.note.INoteMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.recipient.IRecipientMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.timer.ITimerMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.trigger.ITriggerMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.user.IUserMiddle;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,10 +29,8 @@ import java.util.Map;
 public class RecipientBService implements IRecipientBService {
     private final IRecipientMiddle iRecipientMiddle;
     private final IUserMiddle iUserMiddle;
-    private final ITriggerMiddle iTriggerMiddle;
     private final INoteMiddle iNoteMiddle;
     private final IContactMiddle iContactMiddle;
-    private final ICategoryMiddle iCategoryMiddle;
     private final ITimerMiddle iTimerMiddle;
 
     public RecipientBService(IRecipientMiddle iRecipientMiddle,
@@ -47,14 +38,11 @@ public class RecipientBService implements IRecipientBService {
                              ITriggerMiddle iTriggerMiddle,
                              INoteMiddle iNoteMiddle,
                              IContactMiddle iContactMiddle,
-                             ICategoryMiddle iCategoryMiddle,
                              ITimerMiddle iTimerMiddle) {
         this.iRecipientMiddle = iRecipientMiddle;
         this.iUserMiddle = iUserMiddle;
-        this.iTriggerMiddle = iTriggerMiddle;
         this.iNoteMiddle = iNoteMiddle;
         this.iContactMiddle = iContactMiddle;
-        this.iCategoryMiddle = iCategoryMiddle;
         this.iTimerMiddle = iTimerMiddle;
     }
 
@@ -336,16 +324,6 @@ public class RecipientBService implements IRecipientBService {
         iUserMiddle.createUserBase(userBase);
 
         /**
-         * 创建默认笔记分类
-         */
-        Category category = new Category();
-        category.setCategoryId(GogoTools.UUID32());
-        category.setUserId(userId);
-        category.setCategoryName(ESTags.DEFAULT.toString());
-        category.setNoteType(ESTags.NORMAL.toString());
-        iCategoryMiddle.createCategory(category);
-
-        /**
          * 创建用户登录信息
          */
         UserLogin userLogin = new UserLogin();
@@ -375,8 +353,6 @@ public class RecipientBService implements IRecipientBService {
         Map out = new HashMap();
         out.put("token", token);
         out.put("nickname", userBase.getNickname());
-        out.put("defaultCategoryId", category.getCategoryId());
-        out.put("defaultCategoryName", category.getCategoryName());
         out.put("timerPrimary", map.get("timerTime"));
         out.put("userId", userId);
 

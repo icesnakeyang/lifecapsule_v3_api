@@ -120,22 +120,6 @@ public class AppUserBService implements IAppUserBService {
         return out;
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public Map loginByLoginName(Map in) throws Exception {
-        in.put("frontEnd", ESTags.MOBILE_CLIENT.toString());
-        Map out = iUserAccountBService.loginByLoginName(in);
-        return out;
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public Map registerByLoginName(Map in) throws Exception {
-        in.put("frontEnd", ESTags.MOBILE_CLIENT.toString());
-        Map out = iUserAccountBService.registerByLoginName(in);
-        return out;
-    }
-
     /**
      * App用户查询自己的个人信息
      *

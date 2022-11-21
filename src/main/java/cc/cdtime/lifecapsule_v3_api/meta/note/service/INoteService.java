@@ -27,7 +27,6 @@ public interface INoteService {
      * 查询笔记列表
      *
      * @param qIn userId
-     *            categoryId
      *            keyword
      *            tagList
      *            tagName
@@ -41,7 +40,6 @@ public interface INoteService {
      * 统计笔记数量
      *
      * @param qIn userId
-     *            categoryId
      *            keyword
      *            tagList
      * @return
@@ -54,7 +52,6 @@ public interface INoteService {
      * @param qIn title
      *            encrypt
      *            userEncodeKey
-     *            categoryId
      *            content
      */
     void updateNoteInfo(Map qIn) throws Exception;

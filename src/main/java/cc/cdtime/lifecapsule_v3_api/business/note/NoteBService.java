@@ -2,29 +2,19 @@ package cc.cdtime.lifecapsule_v3_api.business.note;
 
 import cc.cdtime.lifecapsule_v3_api.framework.constant.ESTags;
 import cc.cdtime.lifecapsule_v3_api.framework.tools.GogoTools;
-import cc.cdtime.lifecapsule_v3_api.meta.category.entity.Category;
-import cc.cdtime.lifecapsule_v3_api.meta.category.entity.CategoryView;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteInfo;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
-import cc.cdtime.lifecapsule_v3_api.meta.recipient.entity.RecipientView;
 import cc.cdtime.lifecapsule_v3_api.meta.tag.entity.TagBase;
 import cc.cdtime.lifecapsule_v3_api.meta.tag.entity.TagNote;
 import cc.cdtime.lifecapsule_v3_api.meta.tag.entity.TagView;
-import cc.cdtime.lifecapsule_v3_api.meta.trigger.entity.TriggerView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
-import cc.cdtime.lifecapsule_v3_api.middle.category.ICategoryMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.note.INoteMiddle;
-import cc.cdtime.lifecapsule_v3_api.middle.recipient.IRecipientMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.security.ISecurityMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.tag.ITagMiddle;
-import cc.cdtime.lifecapsule_v3_api.middle.task.ITaskMiddle;
-import cc.cdtime.lifecapsule_v3_api.middle.trigger.ITriggerMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.user.IUserMiddle;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.HTML;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,18 +25,15 @@ public class NoteBService implements INoteBService {
     private final IUserMiddle iUserMiddle;
     private final INoteMiddle iNoteMiddle;
     private final ISecurityMiddle iSecurityMiddle;
-    private final ICategoryMiddle iCategoryMiddle;
     private final ITagMiddle iTagMiddle;
 
     public NoteBService(IUserMiddle iUserMiddle,
                         INoteMiddle iNoteMiddle,
                         ISecurityMiddle iSecurityMiddle,
-                        ICategoryMiddle iCategoryMiddle,
                         ITagMiddle iTagMiddle) {
         this.iUserMiddle = iUserMiddle;
         this.iNoteMiddle = iNoteMiddle;
         this.iSecurityMiddle = iSecurityMiddle;
-        this.iCategoryMiddle = iCategoryMiddle;
         this.iTagMiddle = iTagMiddle;
     }
 
@@ -55,7 +42,6 @@ public class NoteBService implements INoteBService {
         String token = in.get("token").toString();
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
-        String categoryId = (String) in.get("categoryId");
         ArrayList tagList = (ArrayList) in.get("tagList");
         String searchKey = (String) in.get("searchKey");
 
@@ -71,9 +57,6 @@ public class NoteBService implements INoteBService {
         Integer offset = (pageIndex - 1) * pageSize;
         qIn.put("offset", offset);
         qIn.put("size", pageSize);
-        if (categoryId != null) {
-            qIn.put("categoryId", categoryId);
-        }
         if (tagList != null && tagList.size() > 0) {
             qIn.put("tagList", tagList);
         }
@@ -148,7 +131,6 @@ public class NoteBService implements INoteBService {
         Integer encrypt = (Integer) in.get("encrypt");
         String encryptKey = (String) in.get("encryptKey");
         String keyToken = (String) in.get("keyToken");
-        String categoryId = (String) in.get("categoryId");
         ArrayList tagList = (ArrayList) in.get("tagList");
 
         /**
@@ -175,13 +157,6 @@ public class NoteBService implements INoteBService {
              */
             if (strAESKey != null) {
                 in.put("strAESKey", strAESKey);
-            }
-            if (categoryId == null) {
-                /**
-                 * 没有指定分类，默认分类
-                 */
-                CategoryView categoryView = iCategoryMiddle.getDefaultCategory(userView.getUserId());
-                in.put("categoryId", categoryView.getCategoryId());
             }
             noteId = createNote(in);
 
@@ -227,7 +202,6 @@ public class NoteBService implements INoteBService {
     @Override
     public Map totalNote(Map in) throws Exception {
         String token = in.get("token").toString();
-        String categoryId = (String) in.get("categoryId");
         String keyword = (String) in.get("keyword");
 
         Map qIn = new HashMap();
@@ -239,9 +213,6 @@ public class NoteBService implements INoteBService {
 
         qIn = new HashMap();
         qIn.put("userId", userView.getUserId());
-        if (categoryId != null) {
-            qIn.put("categoryId", categoryId);
-        }
         if (keyword != null && !keyword.equals("")) {
             qIn.put("keyword", keyword);
         }
@@ -281,7 +252,6 @@ public class NoteBService implements INoteBService {
 
         Map note = new HashMap();
         note.put("noteId", noteView.getNoteId());
-        note.put("categoryId", noteView.getCategoryId());
         note.put("categoryName", noteView.getCategoryName());
         note.put("createTime", noteView.getCreateTime());
         note.put("title", noteView.getTitle());
@@ -364,7 +334,6 @@ public class NoteBService implements INoteBService {
 
     private String createNote(Map in) throws Exception {
         String content = in.get("content").toString();
-        String categoryId = in.get("categoryId").toString();
         String userId = in.get("userId").toString();
         Integer encrypt = (Integer) in.get("encrypt");
         String strAESKey = (String) in.get("strAESKey");
@@ -373,38 +342,6 @@ public class NoteBService implements INoteBService {
         NoteInfo noteInfo = new NoteInfo();
         noteInfo.setNoteId(GogoTools.UUID32());
         noteInfo.setContent(content);
-        if (categoryId == null) {
-            /**
-             * 没有categoryId，就用默认的
-             */
-            Map qIn = new HashMap();
-            qIn.put("userId", userId);
-            qIn.put("categoryName", ESTags.DEFAULT.toString());
-            ArrayList<CategoryView> categoryViews = iCategoryMiddle.listCategory(qIn);
-            if (categoryViews.size() > 0) {
-                noteInfo.setCategoryId(categoryViews.get(0).getCategoryId());
-            } else {
-                /**
-                 * 该用户还没有default分类，添加一个
-                 */
-                Category category = new Category();
-                category.setCategoryId(GogoTools.UUID32());
-                category.setCategoryName(ESTags.DEFAULT.toString());
-                category.setUserId(userId);
-                category.setNoteType(ESTags.NORMAL.toString());
-                iCategoryMiddle.createCategory(category);
-                noteInfo.setCategoryId(category.getCategoryId());
-            }
-        } else {
-            //上传了categoryId
-            Map qIn2 = new HashMap();
-            qIn2.put("categoryId", categoryId);
-            CategoryView categoryView = iCategoryMiddle.getCategory(qIn2, false, userId);
-            /**
-             * 如果用户上传了一个错误的categoryId要怎么处理呢？
-             */
-            noteInfo.setCategoryId(categoryView.getCategoryId());
-        }
 
         noteInfo.setEncrypt(encrypt);
 
@@ -430,7 +367,6 @@ public class NoteBService implements INoteBService {
         Integer encrypt = (Integer) in.get("encrypt");
         String encryptKey = (String) in.get("encryptKey");
         String keyToken = (String) in.get("keyToken");
-        String categoryId = (String) in.get("categoryId");
         String userId = in.get("userId").toString();
         String strAESKey = (String) in.get("strAESKey");
 
@@ -455,47 +391,6 @@ public class NoteBService implements INoteBService {
             if (title != null) {
                 qInEdit.put("title", title);
                 cc++;
-            }
-        }
-
-        if (categoryId == null) {
-            /**
-             * 没有categoryId，就用默认的
-             */
-            Map qIn = new HashMap();
-            qIn.put("userId", userId);
-            qIn.put("categoryName", ESTags.DEFAULT.toString());
-            ArrayList<CategoryView> categoryViews = iCategoryMiddle.listCategory(qIn);
-            if (categoryViews.size() > 0) {
-                categoryId = categoryViews.get(0).getCategoryId();
-            } else {
-                /**
-                 * 该用户还没有default分类，添加一个
-                 */
-                Category category = new Category();
-                category.setCategoryId(GogoTools.UUID32());
-                category.setCategoryName(ESTags.DEFAULT.toString());
-                category.setUserId(userId);
-                category.setNoteType(ESTags.NORMAL.toString());
-                iCategoryMiddle.createCategory(category);
-                categoryId = category.getCategoryId();
-            }
-            qInEdit.put("categoryId", categoryId);
-            cc++;
-        } else {
-            //上传了categoryId
-            if (noteView.getCategoryId() == null) {
-                //原来没有，直接保存
-                qInEdit.put("categoryId", categoryId);
-                cc++;
-            } else {
-                //原来有，比较是否一致，不一致就修改
-                if (!noteView.getCategoryId().equals(categoryId)) {
-                    qInEdit.put("categoryId", categoryId);
-                    cc++;
-                } else {
-                    //一致，不修改
-                }
             }
         }
 

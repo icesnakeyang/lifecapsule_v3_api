@@ -10,7 +10,6 @@ import java.util.Date;
  */
 @Data
 public class NoteRequest extends Request {
-    private String categoryId;
     private String noteId;
     private String keyToken;
     private String encryptKey;

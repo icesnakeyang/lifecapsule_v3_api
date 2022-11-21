@@ -2,22 +2,16 @@ package cc.cdtime.lifecapsule_v3_api.admin.maintenance;
 
 import cc.cdtime.lifecapsule_v3_api.framework.tools.GogoTools;
 import cc.cdtime.lifecapsule_v3_api.meta.admin.entity.AdminUserView;
-import cc.cdtime.lifecapsule_v3_api.meta.category.entity.Category;
-import cc.cdtime.lifecapsule_v3_api.meta.category.entity.CategoryView;
 import cc.cdtime.lifecapsule_v3_api.meta.maintenance.IMaintenanceService;
-import cc.cdtime.lifecapsule_v3_api.meta.maintenance.Maintenance;
-import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteInfo;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserBase;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserEncodeKey;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserLoginName;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
 import cc.cdtime.lifecapsule_v3_api.middle.admin.IAdminUserMiddle;
-import cc.cdtime.lifecapsule_v3_api.middle.category.ICategoryMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.note.INoteMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.user.IUserEncodeKeyMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.user.IUserMiddle;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,20 +22,17 @@ public class AdminMaintenanceBService implements IAdminMaintenanceBService {
     private final IAdminUserMiddle iAdminUserMiddle;
     private final IMaintenanceService iMaintenanceService;
     private final IUserMiddle iUserMiddle;
-    private final ICategoryMiddle iCategoryMiddle;
     private final INoteMiddle iNoteMiddle;
     private final IUserEncodeKeyMiddle iUserEncodeKeyMiddle;
 
     public AdminMaintenanceBService(IAdminUserMiddle iAdminUserMiddle,
                                     IMaintenanceService iMaintenanceService,
                                     IUserMiddle iUserMiddle,
-                                    ICategoryMiddle iCategoryMiddle,
                                     INoteMiddle iNoteMiddle,
                                     IUserEncodeKeyMiddle iUserEncodeKeyMiddle) {
         this.iAdminUserMiddle = iAdminUserMiddle;
         this.iMaintenanceService = iMaintenanceService;
         this.iUserMiddle = iUserMiddle;
-        this.iCategoryMiddle = iCategoryMiddle;
         this.iNoteMiddle = iNoteMiddle;
         this.iUserEncodeKeyMiddle = iUserEncodeKeyMiddle;
     }

@@ -69,15 +69,39 @@ public class CashMiddle implements ICashMiddle {
     }
 
     @Override
-    public CashView getCashCategory(Map qIn, Boolean returnNull) throws Exception {
+    public CashView getCashCategory(Map qIn, Boolean returnNull, String userId) throws Exception {
         CashView cashView = iCashService.getCashCategory(qIn);
-        if(cashView==null){
-            if(returnNull){
+        if (cashView == null) {
+            if (returnNull) {
                 return null;
             }
             //没有查询到该现金账户分类
             throw new Exception("10069");
         }
+        if (userId != null) {
+            if (!cashView.getUserId().equals(userId)) {
+                //不是自己创建的分类
+                throw new Exception("10071");
+            }
+        }
         return cashView;
+    }
+
+    @Override
+    public Map sumAccountBalance(Map qIn) throws Exception {
+        Map out = iCashService.sumAccountBalance(qIn);
+        return out;
+    }
+
+    @Override
+    public ArrayList<CashView> listCashLedger(Map qIn) throws Exception {
+        ArrayList<CashView> cashViews = iCashService.listCashLedger(qIn);
+        return cashViews;
+    }
+
+    @Override
+    public Integer totalCashLedger(Map qIn) throws Exception {
+        Integer total = iCashService.totalCashLedger(qIn);
+        return total;
     }
 }

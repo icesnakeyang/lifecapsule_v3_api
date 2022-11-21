@@ -7,12 +7,6 @@ public interface IWebNoteBService {
 
     Map getMyNote(Map in) throws Exception;
 
-    Map listMyCategory(Map in) throws Exception;
-
-    void saveMyCategory(Map in) throws Exception;
-
-    void deleteMyCategory(Map in) throws Exception;
-
     Map saveMyNote(Map in) throws Exception;
 
     /**

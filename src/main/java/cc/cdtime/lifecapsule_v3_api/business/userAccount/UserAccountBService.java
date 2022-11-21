@@ -3,18 +3,14 @@ package cc.cdtime.lifecapsule_v3_api.business.userAccount;
 import cc.cdtime.lifecapsule_v3_api.business.common.IUserComBService;
 import cc.cdtime.lifecapsule_v3_api.framework.constant.ESTags;
 import cc.cdtime.lifecapsule_v3_api.framework.tools.GogoTools;
-import cc.cdtime.lifecapsule_v3_api.meta.category.entity.Category;
-import cc.cdtime.lifecapsule_v3_api.meta.category.entity.CategoryView;
 import cc.cdtime.lifecapsule_v3_api.meta.email.entity.EmailLog;
 import cc.cdtime.lifecapsule_v3_api.meta.email.entity.UserEmail;
 import cc.cdtime.lifecapsule_v3_api.meta.email.entity.UserEmailView;
 import cc.cdtime.lifecapsule_v3_api.meta.timer.entity.TimerView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.*;
-import cc.cdtime.lifecapsule_v3_api.middle.category.ICategoryMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.email.IEmailMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.timer.ITimerMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.user.IUserMiddle;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,143 +23,17 @@ import java.util.Map;
 public class UserAccountBService implements IUserAccountBService {
     private final IUserMiddle iUserMiddle;
     private final ITimerMiddle iTimerMiddle;
-    private final ICategoryMiddle iCategoryMiddle;
     private final IEmailMiddle iEmailMiddle;
     private final IUserComBService iUserComBService;
 
     public UserAccountBService(IUserMiddle iUserMiddle,
                                ITimerMiddle iTimerMiddle,
-                               ICategoryMiddle iCategoryMiddle,
                                IEmailMiddle iEmailMiddle,
                                IUserComBService iUserComBService) {
         this.iUserMiddle = iUserMiddle;
         this.iTimerMiddle = iTimerMiddle;
-        this.iCategoryMiddle = iCategoryMiddle;
         this.iEmailMiddle = iEmailMiddle;
         this.iUserComBService = iUserComBService;
-    }
-
-    @Override
-    public Map loginByLoginName(Map in) throws Exception {
-        String loginName = in.get("loginName").toString();
-        String password = in.get("password").toString();
-        String frontEnd = in.get("frontEnd").toString();
-
-        Map qIn = new HashMap();
-        qIn.put("loginName", loginName);
-        qIn.put("password", GogoTools.encoderByMd5(password));
-        UserView userView = iUserMiddle.getLoginName(qIn);
-        if (userView == null) {
-            //用户名或密码不正确
-            throw new Exception("10005");
-        }
-
-        Map params = new HashMap();
-        params.put("frontEnd", frontEnd);
-        String token = loginUser(userView.getUserId(), params);
-
-        Map out = new HashMap();
-        out.put("token", token);
-
-        /////////////////////
-
-        /**
-         * 查询用户的主计时器到期时间
-         */
-        qIn = new HashMap();
-        qIn.put("userId", userView.getUserId());
-        qIn.put("type", ESTags.TIMER_TYPE_PRIMARY);
-        TimerView timerView = iTimerMiddle.getUserTimer(qIn, true);
-        if (timerView == null) {
-            /**
-             * 没有主计时器，就创建一个
-             */
-            Map map = iTimerMiddle.createUserTimer(userView.getUserId());
-            out.put("timerPrimary", map.get("timerTime"));
-        } else {
-            out.put("timerPrimary", timerView.getTimerTime().getTime());
-        }
-        //////////////////////
-
-        /**
-         * 读取用户的账号信息
-         */
-        Map user = new HashMap();
-        user.put("loginName", userView.getLoginName());
-        user.put("nickname", userView.getNickname());
-        out.put("user", user);
-
-        CategoryView categoryView = iCategoryMiddle.getDefaultCategory(userView.getUserId());
-
-        out.put("defaultCategoryId", categoryView.getCategoryId());
-        qIn = new HashMap();
-        qIn.put("userId", userView.getUserId());
-        ArrayList<CategoryView> categoryViews = iCategoryMiddle.listCategory(qIn);
-
-        out.put("categoryList", categoryViews);
-
-        return out;
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public Map registerByLoginName(Map in) throws Exception {
-        String loginName = in.get("loginName").toString();
-        String password = in.get("password").toString();
-        String deviceName = (String) in.get("deviceName");
-        String deviceCode = (String) in.get("deviceCode");
-        String frontEnd = in.get("frontEnd").toString();
-
-        /**
-         * 1、检查loginName是否已经注册过了
-         * 2、注册流程
-         *      user_base表，创建用户基础信息表，生成userId
-         *      user_login_name表，创建用户的用户名，密码表记录，用于用户名密码登录
-         *      user_login表，登录用户，记录用户目前的登录状态，生成token
-         *      user_login_log表，记录登录日志
-         */
-
-        Map qIn = new HashMap();
-        qIn.put("loginName", loginName);
-        UserView userView = iUserMiddle.getLoginName(qIn);
-        if (userView != null) {
-            //该账号已经被注册了
-            throw new Exception("10006");
-        }
-
-        UserBase userBase = new UserBase();
-        userBase.setUserId(GogoTools.UUID32());
-        userBase.setCreateTime(new Date());
-        iUserMiddle.createUserBase(userBase);
-
-        String userId = userBase.getUserId();
-
-        UserLoginName userLoginName = new UserLoginName();
-        userLoginName.setLoginName(loginName);
-        userLoginName.setUserId(userId);
-        userLoginName.setPassword(GogoTools.encoderByMd5(password));
-        iUserMiddle.createUserLoginName(userLoginName);
-
-        Map params = new HashMap();
-        params.put("frontEnd", frontEnd);
-        String token = loginUser(userLoginName.getUserId(), params);
-
-        /**
-         * 创建默认笔记分类
-         */
-        Category category = new Category();
-        category.setCategoryId(GogoTools.UUID32());
-        category.setUserId(userId);
-        category.setCategoryName(ESTags.DEFAULT.toString());
-        category.setNoteType(ESTags.NORMAL.toString());
-        iCategoryMiddle.createCategory(category);
-
-        Map out = new HashMap();
-        out.put("token", token);
-        out.put("loginName", loginName);
-        out.put("defaultCategoryId", category.getCategoryId());
-
-        return out;
     }
 
     @Override
@@ -226,15 +96,6 @@ public class UserAccountBService implements IUserAccountBService {
          * 用户账户认证状态
          * todo
          */
-
-
-        /**
-         * 用户的默认categoryId
-         */
-        CategoryView categoryView = iCategoryMiddle.getDefaultCategory(userView.getUserId());
-        user.put("defaultCategoryId", categoryView.getCategoryId());
-        user.put("defaultCategoryName", categoryView.getCategoryName());
-
 
         Map out = new HashMap();
         out.put("user", user);
@@ -703,16 +564,6 @@ public class UserAccountBService implements IUserAccountBService {
         iUserMiddle.createUserBase(userBase);
 
         /**
-         * 创建默认笔记分类
-         */
-        Category category = new Category();
-        category.setCategoryId(GogoTools.UUID32());
-        category.setUserId(userId);
-        category.setCategoryName(ESTags.DEFAULT.toString());
-        category.setNoteType(ESTags.NORMAL.toString());
-        iCategoryMiddle.createCategory(category);
-
-        /**
          * 创建用户登录信息
          */
         UserLogin userLogin = new UserLogin();
@@ -742,8 +593,6 @@ public class UserAccountBService implements IUserAccountBService {
         Map out = new HashMap();
         out.put("token", token);
         out.put("nickname", userBase.getNickname());
-        out.put("defaultCategoryId", category.getCategoryId());
-        out.put("defaultCategoryName", category.getCategoryName());
         out.put("timerPrimary", map.get("timerTime"));
         out.put("userId", userId);
 

@@ -11,7 +11,6 @@ public class CreativeNoteRequest {
     private String detail3;
     private String detail4;
     private String noteId;
-    private String categoryId;
     private String encryptKey;
     private String keyToken;
     /**

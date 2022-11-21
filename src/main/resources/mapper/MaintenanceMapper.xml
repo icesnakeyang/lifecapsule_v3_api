@@ -10,19 +10,11 @@
         <result property="deviceId" column="device_id"/>
     </resultMap>
 
-    <resultMap id="categoryMap" type="cc.cdtime.lifecapsule_v3_api.meta.category.entity.CategoryView">
-        <result property="categoryId" column="category_id"/>
-        <result property="userId" column="user_id"/>
-        <result property="noteType" column="note_type"/>
-        <result property="categoryName" column="category_name"/>
-    </resultMap>
-
     <resultMap id="noteMap" type="cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView">
         <result property="noteId" column="note_id"/>
         <result property="userId" column="user_id"/>
         <result property="createTime" column="create_time"/>
         <result property="userEncodeKey" column="user_encode_key"/>
-        <result property="categoryId" column="category_id"/>
     </resultMap>
 
     <select id="listNoteOld" resultMap="noteMap">
@@ -44,11 +36,6 @@
         </set>
         where ids=#{ids}
     </update>
-
-    <select id="listCategoryOld" resultMap="categoryMap">
-        select *
-        from category_old
-    </select>
 
     <select id="listAllNote" resultMap="noteMap">
         select *

@@ -50,7 +50,7 @@ public class EmailToolService implements IEmailToolService {
             }
         });
 
-        session.setDebug(false);
+        session.setDebug(true);
 
         MimeMessage msg = new MimeMessage(session);
         msg.setFrom(new InternetAddress(from));

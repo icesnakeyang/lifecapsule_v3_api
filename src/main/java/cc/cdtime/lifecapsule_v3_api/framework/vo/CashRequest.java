@@ -8,5 +8,6 @@ public class CashRequest extends Request {
     private Double amountOut;
     private String ledgerType;
     private String remark;
-    private String categoryName;
+    private String CashCategoryName;
+    private String cashCategoryId;
 }

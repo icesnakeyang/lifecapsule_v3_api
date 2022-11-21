@@ -73,4 +73,22 @@ public class CashService implements ICashService {
         CashView cashView = cashDao.getCashCategory(qIn);
         return cashView;
     }
+
+    @Override
+    public Map sumAccountBalance(Map qIn) throws Exception {
+        Map out = cashDao.sumAccountBalance(qIn);
+        return out;
+    }
+
+    @Override
+    public ArrayList<CashView> listCashLedger(Map qIn) throws Exception {
+        ArrayList<CashView> cashViews = cashDao.listCashLedger(qIn);
+        return cashViews;
+    }
+
+    @Override
+    public Integer totalCashLedger(Map qIn) throws Exception {
+        Integer total = cashDao.totalCashLedger(qIn);
+        return total;
+    }
 }

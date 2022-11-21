@@ -6,7 +6,6 @@
         <result property="noteId" column="note_id"/>
         <result property="userId" column="user_Id"/>
         <result property="createTime" column="create_time"/>
-        <result property="categoryId" column="category_id"/>
         <result property="categoryName" column="category_name"/>
         <result property="userId" column="user_id"/>
         <result property="noteType" column="note_type"/>
@@ -20,10 +19,10 @@
         insert into note_info
         (note_id, user_id, title,
          create_time, status, encrypt,
-         category_id, pid)
+         pid)
         values (#{noteId}, #{userId}, #{title},
                 #{createTime}, #{status}, #{encrypt},
-                #{categoryId}, #{pid})
+                #{pid})
     </insert>
 
     <!--查询一条笔记简要信息-->
@@ -42,7 +41,6 @@
         n.create_time,
         status,
         encrypt,
-        n.category_id,
         nickname
         from note_info n
         left join user_base ub on n.user_id = ub.user_id
@@ -95,11 +93,6 @@
             </when>
         </choose>
         <choose>
-            <when test="categoryId!=null">
-                and category_id=#{categoryId}
-            </when>
-        </choose>
-        <choose>
             <when test="keyword!=null">
                 and title like concat('%',#{keyword}, '%')
             </when>
@@ -131,10 +124,7 @@
                 encrypt=#{encrypt},
             </if>
             <if test="userEncodeKey!=null">
-                user_encode_key=#{userEncodeKey},
-            </if>
-            <if test="categoryId!=null">
-                category_id=#{categoryId}
+                user_encode_key=#{userEncodeKey}
             </if>
         </set>
         where note_id=#{noteId}

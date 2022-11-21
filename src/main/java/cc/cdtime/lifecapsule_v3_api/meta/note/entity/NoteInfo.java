@@ -16,7 +16,6 @@ public class NoteInfo {
     private Date createTime;
     private String status;
     private Integer encrypt;
-    private String categoryId;
     private String content;
     private String userEncodeKey;
     /**

@@ -55,9 +55,6 @@ public class NoteService implements INoteService {
         if (qIn.get("userEncodeKey") != null) {
             cc++;
         }
-        if (qIn.get("categoryId") != null) {
-            cc++;
-        }
         if (cc > 0) {
             noteDao.updateNoteInfo(qIn);
         }

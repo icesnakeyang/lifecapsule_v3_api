@@ -28,7 +28,6 @@ public interface INoteMiddle {
      * 查询笔记列表
      *
      * @param qIn userId
-     *            categoryId
      *            keyword
      *            tagList
      *            tagName
@@ -42,7 +41,6 @@ public interface INoteMiddle {
      * 统计笔记数量
      *
      * @param qIn userId
-     *            categoryId
      *            keyword
      *            tagList
      * @return
@@ -55,7 +53,6 @@ public interface INoteMiddle {
      * @param qIn title
      *            encrypt
      *            userEncodeKey
-     *            categoryId
      *            content
      *            noteId
      */

@@ -49,14 +49,6 @@ public class CashBService implements ICashBService {
         qIn.put("userId", userView.getUserId());
         CashView cashView = iCashMiddle.getCashAccount(qIn, true);
 
-        if (cashView == null) {
-            //当前用户还没有现金账户，创建一个
-            CashAccount cashAccount = new CashAccount();
-            cashAccount.setCashAccountId(GogoTools.UUID32());
-            cashAccount.setUserId(userView.getUserId());
-            iCashMiddle.createCashAccount(new CashAccount());
-        }
-
         if (cashCategoryId == null) {
             /**
              * 没有指定现金账户分类，设置为默认分类
@@ -64,7 +56,7 @@ public class CashBService implements ICashBService {
             //读取用户的默认分类
             qIn = new HashMap();
             qIn.put("default", true);
-            CashView cashCategoryDefault = iCashMiddle.getCashCategory(qIn, true);
+            CashView cashCategoryDefault = iCashMiddle.getCashCategory(qIn, true, null);
             if (cashCategoryDefault == null) {
                 //还没有默认分类，创建一个
                 CashCategory cashCategory = new CashCategory();
@@ -96,23 +88,34 @@ public class CashBService implements ICashBService {
         /**
          * 刷新现金总账
          */
-        if (cashView != null) {
+        if (cashView == null) {
+            //没有account，先创建
+            //当前用户还没有现金账户，创建一个
+            CashAccount cashAccount = new CashAccount();
+            cashAccount.setCashAccountId(GogoTools.UUID32());
+            cashAccount.setUserId(userView.getUserId());
+            cashAccount.setAmountIn(amountIn);
+            cashAccount.setAmountOut(amountOut);
+            cashAccount.setBalance(amountIn - amountOut);
+            iCashMiddle.createCashAccount(cashAccount);
+        } else {
+            //有account刷新
+
             qIn = new HashMap();
-            qIn.put("cashAccountId", cashView.getCashAccountId());
-            Double moneyIn = cashView.getAmountIn();
-            Double moneyOut = cashView.getAmountOut();
-            Double balance = cashView.getBalance();
-            if (amountIn != null) {
-                moneyIn += amountIn;
-                qIn.put("amountIn", moneyIn);
-                balance += amountIn;
+            qIn.put("userId", userView.getUserId());
+            Map accMap = iCashMiddle.sumAccountBalance(qIn);
+            Double accIn = (Double) accMap.get("totalin");
+            Double accOut = (Double) accMap.get("totalout");
+            if (accIn == null) {
+                accIn = 0.0;
             }
-            if (amountOut != null) {
-                moneyOut += amountOut;
-                qIn.put("amountOut", moneyOut);
-                balance -= amountOut;
+            if (accOut == null) {
+                accOut = 0.0;
             }
+            Double balance = accIn - accOut;
             qIn.put("balance", balance);
+            qIn.put("amountIn", accIn);
+            qIn.put("amountOut", accOut);
             iCashMiddle.updateCashAccount(qIn);
         }
     }
@@ -129,7 +132,7 @@ public class CashBService implements ICashBService {
         qIn = new HashMap();
         qIn.put("userId", userView.getUserId());
         qIn.put("default", true);
-        CashView cashView = iCashMiddle.getCashCategory(qIn, false);
+        CashView cashView = iCashMiddle.getCashCategory(qIn, false,null);
 
         Map out = new HashMap();
 
@@ -175,7 +178,7 @@ public class CashBService implements ICashBService {
     @Override
     public void createMyCashCategory(Map in) throws Exception {
         String token = in.get("token").toString();
-        String categoryName = in.get("categoryName").toString();
+        String cashCategoryName = in.get("cashCategoryName").toString();
 
         Map qIn = new HashMap();
         qIn.put("token", token);
@@ -186,8 +189,8 @@ public class CashBService implements ICashBService {
          */
         qIn = new HashMap();
         qIn.put("userId", userView.getUserId());
-        qIn.put("categoryName", categoryName);
-        CashView cashView = iCashMiddle.getCashCategory(qIn, true);
+        qIn.put("cashCategoryName", cashCategoryName);
+        CashView cashView = iCashMiddle.getCashCategory(qIn, true, null);
         if (cashView != null) {
             //category已经存在了
             throw new Exception("10070");
@@ -195,9 +198,87 @@ public class CashBService implements ICashBService {
 
         CashCategory cashCategory = new CashCategory();
         cashCategory.setCashCategoryId(GogoTools.UUID32());
-        cashCategory.setCashCategoryName(categoryName);
+        cashCategory.setCashCategoryName(cashCategoryName);
         cashCategory.setStatus(ESTags.ACTIVE.toString());
         cashCategory.setUserId(userView.getUserId());
         iCashMiddle.createCashCategory(cashCategory);
+    }
+
+    @Override
+    public Map listMyCashLedger(Map in) throws Exception {
+        String token = in.get("token").toString();
+        Integer pageIndex = (Integer) in.get("pageIndex");
+        Integer pageSize = (Integer) in.get("pageSize");
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        UserView userView = iUserMiddle.getUser(qIn, false, true);
+
+        Integer offset = (pageIndex - 1) * pageSize;
+        qIn.put("offset", offset);
+        qIn.put("size", pageSize);
+        qIn.put("userId", userView.getUserId());
+        ArrayList<CashView> cashViews = iCashMiddle.listCashLedger(qIn);
+
+        Map out = new HashMap();
+        out.put("cashLedgerList", cashViews);
+
+        return out;
+    }
+
+    @Override
+    public Map getMyCashAccount(Map in) throws Exception {
+        String token = in.get("token").toString();
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        UserView userView = iUserMiddle.getUser(qIn, false, true);
+
+        qIn = new HashMap();
+        qIn.put("userId", userView.getUserId());
+        CashView cashView = iCashMiddle.getCashAccount(qIn, false);
+
+        Map out = new HashMap();
+        out.put("cashAccount", cashView);
+
+        return out;
+    }
+
+    @Override
+    public Map getMyCashCategory(Map in) throws Exception {
+        String token = in.get("token").toString();
+        String cashCategoryId = in.get("cashCategoryId").toString();
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        UserView userView = iUserMiddle.getUser(qIn, false, true);
+
+        qIn = new HashMap();
+        qIn.put("cashCategoryId", cashCategoryId);
+        CashView cashView = iCashMiddle.getCashCategory(qIn, false, userView.getUserId());
+        Map out = new HashMap();
+        out.put("cashCategory", cashView);
+
+        return out;
+    }
+
+    @Override
+    public void updateCashCategory(Map in) throws Exception {
+        String token = in.get("token").toString();
+        String cashCategoryId = in.get("cashCategoryId").toString();
+        String cashCategoryName = in.get("cashCategoryName").toString();
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        UserView userView = iUserMiddle.getUser(qIn, false, true);
+
+        qIn = new HashMap();
+        qIn.put("cashCategoryId", cashCategoryId);
+        CashView cashView = iCashMiddle.getCashCategory(qIn, false, userView.getUserId());
+
+        if (!cashView.getCashCategoryName().equals(cashCategoryName)) {
+            qIn.put("cashCategoryName", cashCategoryName);
+            iCashMiddle.updateCashCategory(qIn);
+        }
     }
 }

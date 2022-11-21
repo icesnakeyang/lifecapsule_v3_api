@@ -1,9 +1,7 @@
 package cc.cdtime.lifecapsule_v3_api.meta.maintenance;
 
-import cc.cdtime.lifecapsule_v3_api.meta.category.entity.CategoryView;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,12 +30,6 @@ public class MaintenanceService implements IMaintenanceService {
     public ArrayList<UserView> listUserOld() throws Exception {
         ArrayList<UserView> userViews = maintenanceDao.listUserOld();
         return userViews;
-    }
-
-    @Override
-    public ArrayList<CategoryView> listCategoryOld() throws Exception {
-        ArrayList<CategoryView> categoryViews = maintenanceDao.listCategoryOld();
-        return categoryViews;
     }
 
     @Override

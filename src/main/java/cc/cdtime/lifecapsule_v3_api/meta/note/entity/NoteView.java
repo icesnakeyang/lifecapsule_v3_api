@@ -15,7 +15,6 @@ public class NoteView {
     private String status;
     private Integer encrypt;
     private String userEncodeKey;
-    private String categoryId;
     private String content;
     private String categoryName;
     private String noteType;

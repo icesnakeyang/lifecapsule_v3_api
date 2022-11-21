@@ -35,4 +35,27 @@ public class AppCashBService implements IAppCashBService {
     public void createMyCashCategory(Map in) throws Exception {
         iCashBService.createMyCashCategory(in);
     }
+
+    @Override
+    public Map listMyCashLedger(Map in) throws Exception {
+        Map out = iCashBService.listMyCashLedger(in);
+        return out;
+    }
+
+    @Override
+    public Map getMyCashAccount(Map in) throws Exception {
+        Map out = iCashBService.getMyCashAccount(in);
+        return out;
+    }
+
+    @Override
+    public Map getMyCashCategory(Map in) throws Exception {
+        Map out = iCashBService.getMyCashCategory(in);
+        return out;
+    }
+
+    @Override
+    public void updateMyCashCategory(Map in) throws Exception {
+        iCashBService.updateCashCategory(in);
+    }
 }

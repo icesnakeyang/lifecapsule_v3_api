@@ -28,7 +28,6 @@ public interface NoteDao {
      * 查询笔记列表
      *
      * @param qIn userId
-     *            categoryId
      *            keyword
      *            tagName
      *            offset
@@ -41,7 +40,6 @@ public interface NoteDao {
      * 统计笔记数量
      *
      * @param qIn userId
-     *            categoryId
      *            keyword
      * @return
      */
@@ -53,7 +51,6 @@ public interface NoteDao {
      * @param qIn title
      *            encrypt
      *            userEncodeKey
-     *            categoryId
      *            noteId
      */
     void updateNoteInfo(Map qIn);
