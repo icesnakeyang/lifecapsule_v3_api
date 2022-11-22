@@ -113,4 +113,17 @@ public interface CashDao {
      */
     Integer totalCashLedger(Map qIn);
 
+    CashView getCashLedger(String cashLedgerId);
+
+    /**
+     * 修改流水账记录
+     *
+     * @param qIn amountIn
+     *            amountOut
+     *            cashCategoryId
+     *            remark
+     *            cashLedgerId
+     */
+    void updateCashLedger(Map qIn);
+
 }

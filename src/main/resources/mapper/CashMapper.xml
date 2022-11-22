@@ -181,4 +181,39 @@
             </when>
         </choose>
     </select>
+
+    <select id="getCashLedger" parameterType="java.lang.String" resultMap="cashMap">
+        select cl.ids,
+               cash_ledger_id,
+               cl.user_id,
+               create_time,
+               amount_in,
+               amount_out,
+               cc.cash_category_id,
+               remark,
+               cash_category_name
+        from cash_ledger cl
+                 left join cash_category cc on cl.cash_category_id = cc.cash_category_id
+        where cash_ledger_id = #{cashLedgerId}
+    </select>
+
+    <!--修改流水账记录-->
+    <update id="updateCashLedger" parameterType="map">
+        update cash_ledger
+        <set>
+            <if test="amountIn!=null">
+                amount_in=#{amountIn},
+            </if>
+            <if test="amountOut!=null">
+                amount_out=#{amountOut},
+            </if>
+            <if test="cashCategoryId!=null">
+                cash_category_id=#{cashCategoryId},
+            </if>
+            <if test="remark!=null">
+                remark=#{remark}
+            </if>
+        </set>
+        where cash_ledger_id=#{cashLedgerId}
+    </update>
 </mapper>

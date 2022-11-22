@@ -91,4 +91,15 @@ public class CashService implements ICashService {
         Integer total = cashDao.totalCashLedger(qIn);
         return total;
     }
+
+    @Override
+    public CashView getCashLedger(String cashLedgerId) throws Exception {
+        CashView cashView = cashDao.getCashLedger(cashLedgerId);
+        return cashView;
+    }
+
+    @Override
+    public void updateCashLedger(Map qIn) throws Exception {
+        cashDao.updateCashLedger(qIn);
+    }
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 @Service
 public class CashMiddle implements ICashMiddle {
@@ -103,5 +104,31 @@ public class CashMiddle implements ICashMiddle {
     public Integer totalCashLedger(Map qIn) throws Exception {
         Integer total = iCashService.totalCashLedger(qIn);
         return total;
+    }
+
+    @Override
+    public CashView getCashLedger(String cashLedgerId, Boolean returnNull, String userId) throws Exception {
+        CashView cashView = iCashService.getCashLedger((cashLedgerId));
+        if (cashView == null) {
+            if (returnNull) {
+                return null;
+            }
+            /**
+             * 没有查询到该笔现金流水
+             */
+            throw new Exception("10072");
+        }
+        if (userId != null) {
+            if (!cashView.getUserId().equals(userId)) {
+                //不是自己的现金流水账
+                throw new Exception("10073");
+            }
+        }
+        return cashView;
+    }
+
+    @Override
+    public void updateCashLedger(Map qIn) throws Exception {
+        iCashService.updateCashLedger(qIn);
     }
 }

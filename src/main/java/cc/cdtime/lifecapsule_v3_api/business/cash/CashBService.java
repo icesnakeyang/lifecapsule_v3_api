@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -132,7 +133,7 @@ public class CashBService implements ICashBService {
         qIn = new HashMap();
         qIn.put("userId", userView.getUserId());
         qIn.put("default", true);
-        CashView cashView = iCashMiddle.getCashCategory(qIn, false,null);
+        CashView cashView = iCashMiddle.getCashCategory(qIn, false, null);
 
         Map out = new HashMap();
 
@@ -219,9 +220,11 @@ public class CashBService implements ICashBService {
         qIn.put("size", pageSize);
         qIn.put("userId", userView.getUserId());
         ArrayList<CashView> cashViews = iCashMiddle.listCashLedger(qIn);
+        Integer total = iCashMiddle.totalCashLedger(qIn);
 
         Map out = new HashMap();
         out.put("cashLedgerList", cashViews);
+        out.put("totalCashLedger", total);
 
         return out;
     }
@@ -280,5 +283,53 @@ public class CashBService implements ICashBService {
             qIn.put("cashCategoryName", cashCategoryName);
             iCashMiddle.updateCashCategory(qIn);
         }
+    }
+
+    @Override
+    public Map getCashLedger(Map in) throws Exception {
+        String token = in.get("token").toString();
+        String cashLedgerId = in.get("cashLedgerId").toString();
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        UserView userView = iUserMiddle.getUser(qIn, false, true);
+
+        CashView cashView = iCashMiddle.getCashLedger(cashLedgerId, false, userView.getUserId());
+
+        Map out = new HashMap();
+        out.put("cashLedger", cashView);
+
+        return out;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void updateMyCashLedger(Map in) throws Exception {
+        String token = in.get("token").toString();
+        String cashLedgerId = in.get("cashLedgerId").toString();
+        Double amountIn = (Double) in.get("amountIn");
+        Double amountOut = (Double) in.get("amountOut");
+        String cashCategoryId = in.get("cashCategoryId").toString();
+        String remark = (String) in.get("remark");
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        UserView userView = iUserMiddle.getUser(qIn, false, true);
+
+        CashView cashView = iCashMiddle.getCashLedger(cashLedgerId, false, userView.getUserId());
+
+        qIn = new HashMap();
+        qIn.put("cashCategoryId", cashCategoryId);
+        if (amountIn == null) {
+            amountIn = 0.0;
+        }
+        qIn.put("amountIn", amountIn);
+        if (amountOut == null) {
+            amountOut = 0.0;
+        }
+        qIn.put("amountOut", amountOut);
+        qIn.put("remark", remark);
+        qIn.put("cashLedgerId", cashLedgerId);
+        iCashMiddle.updateCashLedger(qIn);
     }
 }

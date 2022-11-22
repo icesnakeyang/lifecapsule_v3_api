@@ -110,4 +110,17 @@ public interface ICashMiddle {
      * @return
      */
     Integer totalCashLedger(Map qIn) throws Exception;
+
+    CashView getCashLedger(String cashLedgerId, Boolean returnNull, String userId) throws Exception;
+
+    /**
+     * 修改流水账记录
+     *
+     * @param qIn amountIn
+     *            amountOut
+     *            cashCategoryId
+     *            remark
+     *            cashLedgerId
+     */
+    void updateCashLedger(Map qIn) throws Exception;
 }

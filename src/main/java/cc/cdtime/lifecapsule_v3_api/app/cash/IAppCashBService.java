@@ -24,4 +24,8 @@ public interface IAppCashBService {
     Map getMyCashCategory(Map in) throws Exception;
 
     void updateMyCashCategory(Map in) throws Exception;
+
+    Map getMyCashLedger(Map in) throws Exception;
+
+    void updateMyCashLedger(Map in) throws Exception;
 }

@@ -292,5 +292,100 @@ public class AppCashController {
         return response;
     }
 
+    /**
+     * app用户查询自己的现金流水账详情
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/getMyCashLedger")
+    public Response getMyCashLedger(@RequestBody CashRequest request,
+                                    HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        Map logMap = new HashMap();
+        Map memoMap = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("cashLedgerId", request.getCashLedgerId());
+
+            logMap.put("UserActType", ESTags.USER_GET_CASH_LEDGER);
+            logMap.put("token", token);
+            memoMap.put("cashLedgerId", request.getCashLedgerId());
+
+            Map out = iAppCashBService.getMyCashLedger(in);
+            response.setData(out);
+
+            logMap.put("result", ESTags.SUCCESS);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("App getMyCashLedger error:" + ex.getMessage());
+            }
+            logMap.put("result", ESTags.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonService.createUserActLog(logMap);
+        } catch (Exception ex3) {
+            log.error("App getMyCashLedger user act error:" + ex3.getMessage());
+        }
+        return response;
+    }
+
+    /**
+     * app用户修改自己的现金流水账记录
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/updateMyCashLedger")
+    public Response updateMyCashLedger(@RequestBody CashRequest request,
+                                       HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        Map logMap = new HashMap();
+        Map memoMap = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("cashLedgerId", request.getCashLedgerId());
+            in.put("amountIn", request.getAmountIn());
+            in.put("amountOut", request.getAmountOut());
+            in.put("cashCategoryId", request.getCashCategoryId());
+            in.put("remark", request.getRemark());
+
+            logMap.put("UserActType", ESTags.UPDATE_CASH_LEDGER);
+            logMap.put("token", token);
+            memoMap.put("cashLedgerId", request.getCashLedgerId());
+
+            iAppCashBService.updateMyCashLedger(in);
+
+            logMap.put("result", ESTags.SUCCESS);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("App updateMyCashLedger error:" + ex.getMessage());
+            }
+            logMap.put("result", ESTags.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonService.createUserActLog(logMap);
+        } catch (Exception ex3) {
+            log.error("App updateMyCashLedger user act error:" + ex3.getMessage());
+        }
+        return response;
+    }
+
 
 }

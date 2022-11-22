@@ -10,4 +10,5 @@ public class CashRequest extends Request {
     private String remark;
     private String CashCategoryName;
     private String cashCategoryId;
+    private String cashLedgerId;
 }
