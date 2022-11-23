@@ -29,7 +29,7 @@ public interface ICashMiddle {
      * @param qIn userId
      * @return
      */
-    CashView getCashAccount(Map qIn, Boolean returnNull) throws Exception;
+    CashView getCashAccount(Map qIn, Boolean returnNull, String userId) throws Exception;
 
     /**
      * 修改用户现金总账
@@ -123,4 +123,6 @@ public interface ICashMiddle {
      *            cashLedgerId
      */
     void updateCashLedger(Map qIn) throws Exception;
+
+    CashView initCashAccount(String userId) throws Exception;
 }

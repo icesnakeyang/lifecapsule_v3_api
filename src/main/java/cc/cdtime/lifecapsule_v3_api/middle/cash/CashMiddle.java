@@ -1,5 +1,7 @@
 package cc.cdtime.lifecapsule_v3_api.middle.cash;
 
+import cc.cdtime.lifecapsule_v3_api.framework.constant.ESTags;
+import cc.cdtime.lifecapsule_v3_api.framework.tools.GogoTools;
 import cc.cdtime.lifecapsule_v3_api.meta.cash.entity.CashAccount;
 import cc.cdtime.lifecapsule_v3_api.meta.cash.entity.CashCategory;
 import cc.cdtime.lifecapsule_v3_api.meta.cash.entity.CashLedger;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -31,7 +34,7 @@ public class CashMiddle implements ICashMiddle {
     }
 
     @Override
-    public CashView getCashAccount(Map qIn, Boolean returnNull) throws Exception {
+    public CashView getCashAccount(Map qIn, Boolean returnNull, String userId) throws Exception {
         CashView cashView = iCashService.getCashAccount(qIn);
         if (cashView == null) {
             if (returnNull) {
@@ -39,6 +42,12 @@ public class CashMiddle implements ICashMiddle {
             }
             //该用户没有现金账户
             throw new Exception("10067");
+        }
+        if (userId != null) {
+            if (!cashView.getUserId().equals(userId)) {
+                //不是自己的账户
+                throw new Exception("10074");
+            }
         }
         return cashView;
     }
@@ -130,5 +139,34 @@ public class CashMiddle implements ICashMiddle {
     @Override
     public void updateCashLedger(Map qIn) throws Exception {
         iCashService.updateCashLedger(qIn);
+    }
+
+    @Override
+    public CashView initCashAccount(String userId) throws Exception {
+        CashAccount cashAccount = new CashAccount();
+        cashAccount.setCashAccountId(GogoTools.UUID32());
+        cashAccount.setBalance(0.0);
+        cashAccount.setAmountOut(0.0);
+        cashAccount.setAmountIn(0.0);
+        cashAccount.setUserId(userId);
+        createCashAccount(cashAccount);
+
+        //创建一个默认现金账户分类
+        CashCategory cashCategory = new CashCategory();
+        cashCategory.setCashCategoryName(ESTags.DEFAULT.toString());
+        cashCategory.setCashCategoryId(GogoTools.UUID32());
+        cashCategory.setUserId(userId);
+        cashCategory.setStatus(ESTags.DEFAULT.toString());
+        createCashCategory(cashCategory);
+
+        CashView cashView = new CashView();
+        cashView.setCashAccountId(cashAccount.getCashAccountId());
+        cashView.setCashCategoryId(cashCategory.getCashCategoryId());
+        cashView.setCashCategoryName(cashCategory.getCashCategoryName());
+        cashView.setAmountIn(cashAccount.getAmountIn());
+        cashView.setAmountOut(cashAccount.getAmountOut());
+        cashView.setBalance(cashAccount.getBalance());
+
+        return cashView;
     }
 }

@@ -11,7 +11,7 @@ public interface ITaskMiddle {
      *
      * @param task
      */
-    void createTask(Task task) throws Exception;
+    void createTaskQuad(Task task) throws Exception;
 
     /**
      * 读取任务列表
@@ -66,4 +66,6 @@ public interface ITaskMiddle {
      *            taskId
      */
     void deleteTask(Map qIn) throws Exception;
+
+    void createTask(Task task) throws Exception;
 }

@@ -13,7 +13,7 @@
         <result property="userEncodeKey" column="user_encode_key"/>
     </resultMap>
 
-    <!--创建一个新任务-->
+    <!--读取任务列表-->
     <select id="listTask" parameterType="map" resultMap="taskMap">
         select * from task
         where 1=1
@@ -92,12 +92,12 @@
     <!--读取任务列表-->
     <insert id="createTask" parameterType="cc.cdtime.lifecapsule_v3_api.meta.task.entity.Task">
         insert into task
-        (task_id, user_id, note_id,
+        (task_id, user_id,
          priority, status, task_type,
          user_encode_key,
          pid, create_time, task_title,
          important, complete, important_level)
-        values (#{taskId}, #{userId}, #{noteId},
+        values (#{taskId}, #{userId},
                 #{priority}, #{status}, #{taskType},
                 #{userEncodeKey},
                 #{pid}, #{createTime}, #{taskTitle},

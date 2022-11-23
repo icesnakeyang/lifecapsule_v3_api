@@ -45,6 +45,14 @@ public enum ESTags {
      */
     TASK_QUAD,
     /**
+     * 使命任务
+     */
+    TASK_MIND,
+    /**
+     * 待办任务
+     */
+    TASK_TODO,
+    /**
      * 网页端用户
      */
     WEB_CLIENT,

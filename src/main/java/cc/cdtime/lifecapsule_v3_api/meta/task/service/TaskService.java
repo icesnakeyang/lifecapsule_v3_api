@@ -18,11 +18,14 @@ public class TaskService implements ITaskService {
     }
 
     @Override
-    public void createTask(Task task) throws Exception {
+    public void createTaskQuad(Task task) throws Exception {
         /**
          * 确定important和importantLevel
          */
         if (task.getImportant() == null) {
+            /**
+             * 如果没有指定重要度，就默认重要且紧急
+             */
             task.setImportant(ESTags.IMPORTANT_AND_URGENT.toString());
             task.setImportantLevel(0);
         } else {
@@ -140,5 +143,10 @@ public class TaskService implements ITaskService {
     @Override
     public void deleteTaskContent(String taskId) throws Exception {
         taskDao.deleteTaskContent(taskId);
+    }
+
+    @Override
+    public void createTask(Task task) throws Exception {
+        taskDao.createTask(task);
     }
 }

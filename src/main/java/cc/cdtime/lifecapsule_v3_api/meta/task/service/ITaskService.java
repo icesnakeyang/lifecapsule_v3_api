@@ -12,7 +12,7 @@ public interface ITaskService {
      *
      * @param task
      */
-    void createTask(Task task) throws Exception;
+    void createTaskQuad(Task task) throws Exception;
 
     /**
      * 读取任务列表
@@ -74,4 +74,6 @@ public interface ITaskService {
      * @param taskId
      */
     void deleteTaskContent(String taskId) throws Exception;
+
+    void createTask(Task task) throws Exception;
 }

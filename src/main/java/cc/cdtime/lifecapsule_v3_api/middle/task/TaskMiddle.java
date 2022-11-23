@@ -1,26 +1,56 @@
 package cc.cdtime.lifecapsule_v3_api.middle.task;
 
+import cc.cdtime.lifecapsule_v3_api.framework.tools.GogoTools;
+import cc.cdtime.lifecapsule_v3_api.meta.content.entity.Content;
+import cc.cdtime.lifecapsule_v3_api.meta.content.service.IContentService;
 import cc.cdtime.lifecapsule_v3_api.meta.task.entity.Task;
 import cc.cdtime.lifecapsule_v3_api.meta.task.service.ITaskService;
+import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserEncodeKey;
+import cc.cdtime.lifecapsule_v3_api.meta.user.service.IUserEncodeKeyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class TaskMiddle implements ITaskMiddle{
+public class TaskMiddle implements ITaskMiddle {
     private final ITaskService iTaskService;
+    private final IContentService iContentService;
+    private final IUserEncodeKeyService iUserEncodeKeyService;
 
-    public TaskMiddle(ITaskService iTaskService) {
+    public TaskMiddle(ITaskService iTaskService,
+                      IContentService iContentService,
+                      IUserEncodeKeyService iUserEncodeKeyService) {
         this.iTaskService = iTaskService;
+        this.iContentService = iContentService;
+        this.iUserEncodeKeyService = iUserEncodeKeyService;
     }
 
     @Override
     public void createTask(Task task) throws Exception {
+        iTaskService.createTaskQuad(task);
+    }
+
+    @Override
+    public void createTaskQuad(Task task) throws Exception {
         iTaskService.createTask(task);
+        if (task.getContent() != null) {
+            Content content = new Content();
+            content.setContent(task.getContent());
+            content.setIndexId(task.getTaskId());
+            iContentService.createContent(content);
+            UserEncodeKey userEncodeKey = new UserEncodeKey();
+            userEncodeKey.setEncodeKeyId(GogoTools.UUID32());
+            userEncodeKey.setUserId(task.getUserId());
+            userEncodeKey.setEncodeKey(task.getUserEncodeKey());
+            userEncodeKey.setCreateTime(new Date());
+            userEncodeKey.setIndexId(task.getTaskId());
+            iUserEncodeKeyService.createUserEncodeKey(userEncodeKey);
+        }
     }
 
     @Override

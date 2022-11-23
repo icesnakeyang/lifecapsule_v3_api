@@ -48,29 +48,12 @@ public class CashBService implements ICashBService {
          */
         qIn = new HashMap();
         qIn.put("userId", userView.getUserId());
-        CashView cashView = iCashMiddle.getCashAccount(qIn, true);
-
-        if (cashCategoryId == null) {
+        CashView cashView = iCashMiddle.getCashAccount(qIn, true, userView.getUserId());
+        if (cashView == null) {
             /**
-             * 没有指定现金账户分类，设置为默认分类
+             * 还没有现金账户，创建一个
              */
-            //读取用户的默认分类
-            qIn = new HashMap();
-            qIn.put("default", true);
-            CashView cashCategoryDefault = iCashMiddle.getCashCategory(qIn, true, null);
-            if (cashCategoryDefault == null) {
-                //还没有默认分类，创建一个
-                CashCategory cashCategory = new CashCategory();
-                cashCategory.setCashCategoryName(ESTags.DEFAULT.toString());
-                cashCategory.setCashCategoryId(GogoTools.UUID32());
-                cashCategory.setUserId(userView.getUserId());
-                cashCategory.setStatus(ESTags.DEFAULT.toString());
-                iCashMiddle.createCashCategory(cashCategory);
-                cashCategoryId = cashCategory.getCashCategoryId();
-            } else {
-                //已经有默认分类了
-                cashCategoryId = cashCategoryDefault.getCashCategoryId();
-            }
+            iCashMiddle.initCashAccount(userView.getUserId());
         }
 
         /**
@@ -133,7 +116,7 @@ public class CashBService implements ICashBService {
         qIn = new HashMap();
         qIn.put("userId", userView.getUserId());
         qIn.put("default", true);
-        CashView cashView = iCashMiddle.getCashCategory(qIn, false, null);
+        CashView cashView = iCashMiddle.getCashCategory(qIn, false, userView.getUserId());
 
         Map out = new HashMap();
 
@@ -239,11 +222,23 @@ public class CashBService implements ICashBService {
 
         qIn = new HashMap();
         qIn.put("userId", userView.getUserId());
-        CashView cashView = iCashMiddle.getCashAccount(qIn, false);
+        CashView cashView = iCashMiddle.getCashAccount(qIn, true, userView.getUserId());
 
+        if (cashView == null) {
+            /**
+             * 还没有现金账户，创建一个
+             */
+            cashView = iCashMiddle.initCashAccount(userView.getUserId());
+        } else {
+            qIn = new HashMap();
+            qIn.put("default", true);
+            qIn.put("userId", userView.getUserId());
+            CashView cashView1 = iCashMiddle.getCashCategory(qIn, false, userView.getUserId());
+            cashView.setCashCategoryId(cashView1.getCashCategoryId());
+            cashView.setCashCategoryName(cashView1.getCashCategoryName());
+        }
         Map out = new HashMap();
         out.put("cashAccount", cashView);
-
         return out;
     }
 
