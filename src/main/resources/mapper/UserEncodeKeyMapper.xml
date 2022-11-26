@@ -3,34 +3,22 @@
 <mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.user.dao.UserEncodeKeyDao">
     <!--配置表和对象的字段映射 -->
     <resultMap id="userEncodeKeyMap" type="cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserEncodeKeyView">
-        <result property="encodeKeyId" column="encode_key_id"/>
-        <result property="userId" column="user_id"/>
-        <result property="createTime" column="create_time"/>
+        <result property="indexId" column="index_id"/>
         <result property="encodeKey" column="encode_key"/>
     </resultMap>
 
     <insert id="createUserEncodeKey" useGeneratedKeys="true"
             parameterType="cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserEncodeKey">
         insert into user_encode_key
-            (encode_key_id, user_id, create_time, encode_key, index_id)
-        values (#{encodeKeyId}, #{userId}, #{createTime}, #{encodeKey}, #{indexId})
+            (encode_key, index_id)
+        values (#{encodeKey}, #{indexId})
     </insert>
 
     <!--读取一个用户秘钥记录-->
-    <select id="getUserEncodeKey" parameterType="map" resultMap="userEncodeKeyMap">
+    <select id="getUserEncodeKey" parameterType="java.lang.String" resultMap="userEncodeKeyMap">
         select *
         from user_encode_key
-        where 1=1
-        <choose>
-            <when test="encodeKeyId!=null">
-                and encode_key_id= #{encodeKeyId}
-            </when>
-        </choose>
-        <choose>
-            <when test="indexId!=null">
-                and index_id=#{indexId}
-            </when>
-        </choose>
+        where index_id = #{indexId}
     </select>
 
     <update id="updateUserEncodeKey" parameterType="map">

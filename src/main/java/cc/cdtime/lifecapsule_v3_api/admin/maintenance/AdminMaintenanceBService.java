@@ -156,9 +156,6 @@ public class AdminMaintenanceBService implements IAdminMaintenanceBService {
                 UserEncodeKey userEncodeKey = new UserEncodeKey();
                 userEncodeKey.setIndexId(noteView.getNoteId());
                 userEncodeKey.setEncodeKey(noteView.getUserEncodeKey());
-                userEncodeKey.setUserId(noteView.getUserId());
-                userEncodeKey.setEncodeKeyId(GogoTools.UUID32());
-                userEncodeKey.setCreateTime(new Date());
                 iUserEncodeKeyMiddle.createUserEncodeKey(userEncodeKey);
             }
 

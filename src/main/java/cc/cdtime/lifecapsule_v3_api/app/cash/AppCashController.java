@@ -147,6 +147,7 @@ public class AppCashController {
             String token = httpServletRequest.getHeader("token");
             in.put("token", token);
             in.put("cashCategoryName", request.getCashCategoryName());
+            in.put("remark", request.getRemark());
             iAppCashBService.createMyCashCategory(in);
         } catch (Exception ex) {
             try {
@@ -176,6 +177,7 @@ public class AppCashController {
             in.put("token", token);
             in.put("cashCategoryId", request.getCashCategoryId());
             in.put("cashCategoryName", request.getCashCategoryName());
+            in.put("remark", request.getRemark());
             iAppCashBService.updateMyCashCategory(in);
         } catch (Exception ex) {
             try {

@@ -74,8 +74,8 @@
     <!--创建一个账户类别-->
     <insert id="createCashCategory" parameterType="cc.cdtime.lifecapsule_v3_api.meta.cash.entity.CashCategory">
         insert into cash_category
-            (user_id, cash_category_name, cash_category_id, status)
-        values (#{userId}, #{cashCategoryName}, #{cashCategoryId}, #{status})
+            (user_id, cash_category_name, cash_category_id, status, remark)
+        values (#{userId}, #{cashCategoryName}, #{cashCategoryId}, #{status}, #{remark})
     </insert>
 
     <!--查询现金账户分类列表-->
@@ -94,7 +94,10 @@
         update cash_category
         <set>
             <if test="cashCategoryName!=null">
-                cash_category_name=#{cashCategoryName}
+                cash_category_name=#{cashCategoryName},
+            </if>
+            <if test="remark!=null">
+                remark=#{remark}
             </if>
         </set>
         where cash_category_id=#{cashCategoryId}
@@ -146,7 +149,7 @@
         amount_in,
         amount_out,
         cc.cash_category_id,
-        remark,
+        cl.remark,
         cash_category_name
         from cash_ledger cl
         left join cash_category cc on cl.cash_category_id=cc.cash_category_id
@@ -190,7 +193,7 @@
                amount_in,
                amount_out,
                cc.cash_category_id,
-               remark,
+               cl.remark,
                cash_category_name
         from cash_ledger cl
                  left join cash_category cc on cl.cash_category_id = cc.cash_category_id

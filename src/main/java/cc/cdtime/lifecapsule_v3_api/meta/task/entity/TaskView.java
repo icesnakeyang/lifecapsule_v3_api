@@ -5,13 +5,15 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class TaskTodoView {
+public class TaskView {
     private Integer ids;
     private String userId;
-    private String title;
+    private String taskTitle;
     private Boolean complete;
     private Integer priority;
     private Date createTime;
     private String taskId;
     private String content;
+    private String userEncodeKey;
+    private String status;
 }

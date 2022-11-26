@@ -9,4 +9,5 @@ public class CashCategory {
     private String cashCategoryName;
     private String userId;
     private String status;
+    private String remark;
 }

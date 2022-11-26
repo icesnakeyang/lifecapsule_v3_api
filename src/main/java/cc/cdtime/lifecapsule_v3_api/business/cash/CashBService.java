@@ -84,23 +84,7 @@ public class CashBService implements ICashBService {
             iCashMiddle.createCashAccount(cashAccount);
         } else {
             //有account刷新
-
-            qIn = new HashMap();
-            qIn.put("userId", userView.getUserId());
-            Map accMap = iCashMiddle.sumAccountBalance(qIn);
-            Double accIn = (Double) accMap.get("totalin");
-            Double accOut = (Double) accMap.get("totalout");
-            if (accIn == null) {
-                accIn = 0.0;
-            }
-            if (accOut == null) {
-                accOut = 0.0;
-            }
-            Double balance = accIn - accOut;
-            qIn.put("balance", balance);
-            qIn.put("amountIn", accIn);
-            qIn.put("amountOut", accOut);
-            iCashMiddle.updateCashAccount(qIn);
+            refreshAccount(userView.getUserId());
         }
     }
 
@@ -163,6 +147,7 @@ public class CashBService implements ICashBService {
     public void createMyCashCategory(Map in) throws Exception {
         String token = in.get("token").toString();
         String cashCategoryName = in.get("cashCategoryName").toString();
+        String remark = (String) in.get("remark");
 
         Map qIn = new HashMap();
         qIn.put("token", token);
@@ -185,6 +170,7 @@ public class CashBService implements ICashBService {
         cashCategory.setCashCategoryName(cashCategoryName);
         cashCategory.setStatus(ESTags.ACTIVE.toString());
         cashCategory.setUserId(userView.getUserId());
+        cashCategory.setRemark(remark);
         iCashMiddle.createCashCategory(cashCategory);
     }
 
@@ -265,6 +251,7 @@ public class CashBService implements ICashBService {
         String token = in.get("token").toString();
         String cashCategoryId = in.get("cashCategoryId").toString();
         String cashCategoryName = in.get("cashCategoryName").toString();
+        String remark = (String) in.get("remark");
 
         Map qIn = new HashMap();
         qIn.put("token", token);
@@ -274,10 +261,10 @@ public class CashBService implements ICashBService {
         qIn.put("cashCategoryId", cashCategoryId);
         CashView cashView = iCashMiddle.getCashCategory(qIn, false, userView.getUserId());
 
-        if (!cashView.getCashCategoryName().equals(cashCategoryName)) {
-            qIn.put("cashCategoryName", cashCategoryName);
-            iCashMiddle.updateCashCategory(qIn);
-        }
+        qIn.put("cashCategoryName", cashCategoryName);
+        qIn.put("remark", remark);
+        iCashMiddle.updateCashCategory(qIn);
+
     }
 
     @Override
@@ -326,5 +313,29 @@ public class CashBService implements ICashBService {
         qIn.put("remark", remark);
         qIn.put("cashLedgerId", cashLedgerId);
         iCashMiddle.updateCashLedger(qIn);
+
+        /**
+         * 刷新account 余额
+         */
+        refreshAccount(userView.getUserId());
+    }
+
+    private void refreshAccount(String userId) throws Exception {
+        Map qIn = new HashMap();
+        qIn.put("userId", userId);
+        Map accMap = iCashMiddle.sumAccountBalance(qIn);
+        Double accIn = (Double) accMap.get("totalin");
+        Double accOut = (Double) accMap.get("totalout");
+        if (accIn == null) {
+            accIn = 0.0;
+        }
+        if (accOut == null) {
+            accOut = 0.0;
+        }
+        Double balance = accIn - accOut;
+        qIn.put("balance", balance);
+        qIn.put("amountIn", accIn);
+        qIn.put("amountOut", accOut);
+        iCashMiddle.updateCashAccount(qIn);
     }
 }

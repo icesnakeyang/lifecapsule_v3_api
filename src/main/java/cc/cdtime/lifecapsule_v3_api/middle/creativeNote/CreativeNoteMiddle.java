@@ -40,8 +40,6 @@ public class CreativeNoteMiddle implements ICreativeNoteMiddle {
 
         UserEncodeKey userEncodeKey = new UserEncodeKey();
         userEncodeKey.setEncodeKey(creativeNote.getUserEncodeKey());
-        userEncodeKey.setEncodeKeyId(GogoTools.UUID32());
-        userEncodeKey.setCreateTime(new Date());
         userEncodeKey.setIndexId(creativeNote.getCreativeNoteId());
         iUserEncodeKeyService.createUserEncodeKey(userEncodeKey);
     }

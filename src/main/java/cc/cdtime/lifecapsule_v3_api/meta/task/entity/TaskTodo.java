@@ -5,16 +5,18 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * todoList task
+ * todolist
  */
 @Data
 public class TaskTodo {
     private Integer ids;
-    private String userId;
-    private String title;
-    private Boolean complete;
-    private Integer priority;
-    private Date createTime;
     private String taskId;
+    private String userId;
+    private String taskTitle;
     private String content;
+    private Date createTime;
+    private Integer priority;
+    private Boolean complete;
+    private String userEncodeKey;
+    private String noteId;
 }

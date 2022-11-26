@@ -59,9 +59,6 @@ public class NoteMiddle implements INoteMiddle {
                  * 创建用户秘钥表user_encode_key
                  */
                 UserEncodeKey userEncodeKey = new UserEncodeKey();
-                userEncodeKey.setUserId(noteInfo.getUserId());
-                userEncodeKey.setEncodeKeyId(GogoTools.UUID32());
-                userEncodeKey.setCreateTime(new Date());
                 userEncodeKey.setEncodeKey(noteInfo.getUserEncodeKey());
                 userEncodeKey.setIndexId(noteInfo.getNoteId());
                 iUserEncodeKeyService.createUserEncodeKey(userEncodeKey);
@@ -87,7 +84,7 @@ public class NoteMiddle implements INoteMiddle {
          */
         qIn = new HashMap();
         qIn.put("indexId", noteView.getNoteId());
-        UserEncodeKeyView userEncodeKeyView = iUserEncodeKeyService.getUserEncodeKey(qIn);
+        UserEncodeKeyView userEncodeKeyView = iUserEncodeKeyService.getUserEncodeKey(noteView.getNoteId());
         if (userEncodeKeyView != null) {
             if (userEncodeKeyView.getEncodeKey() != null) {
                 noteView.setUserEncodeKey(userEncodeKeyView.getEncodeKey());

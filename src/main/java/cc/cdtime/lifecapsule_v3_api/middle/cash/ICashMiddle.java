@@ -61,6 +61,7 @@ public interface ICashMiddle {
      * 修改现金账户分类
      *
      * @param qIn cashCategoryName
+     *            remark
      *            cashCategoryId
      */
     void updateCashCategory(Map qIn) throws Exception;

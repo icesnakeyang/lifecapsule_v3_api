@@ -12,14 +12,6 @@ public interface ITaskTodoBService {
      */
     Map listTaskTodo(Map in) throws Exception;
 
-    /**
-     * 新增或者保存一个待办任务
-     *
-     * @param in
-     * @throws Exception
-     */
-    void saveTaskTodo(Map in) throws Exception;
-
     Map getTaskTodo(Map in) throws Exception;
 
     /**
@@ -29,4 +21,10 @@ public interface ITaskTodoBService {
      * @throws Exception
      */
     void deleteTaskTodo(Map in) throws Exception;
+
+    void createMyTaskTodo(Map in) throws Exception;
+
+    void updateTaskTodoComplete(Map in) throws Exception;
+
+    void updateMyTaskTodo(Map in) throws Exception;
 }

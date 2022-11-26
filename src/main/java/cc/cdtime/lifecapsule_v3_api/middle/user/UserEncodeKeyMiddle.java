@@ -22,8 +22,8 @@ public class UserEncodeKeyMiddle implements IUserEncodeKeyMiddle {
     }
 
     @Override
-    public UserEncodeKeyView getUserEncodeKey(Map qIn) throws Exception {
-        UserEncodeKeyView userEncodeKeyView = iUserEncodeKeyService.getUserEncodeKey(qIn);
+    public UserEncodeKeyView getUserEncodeKey(String indexId) throws Exception {
+        UserEncodeKeyView userEncodeKeyView = iUserEncodeKeyService.getUserEncodeKey(indexId);
         return userEncodeKeyView;
     }
 

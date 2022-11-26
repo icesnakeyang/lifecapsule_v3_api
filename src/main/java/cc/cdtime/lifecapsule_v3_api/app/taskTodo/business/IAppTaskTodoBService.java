@@ -13,14 +13,6 @@ public interface IAppTaskTodoBService {
     Map listMyTaskTodo(Map in) throws Exception;
 
     /**
-     * 手机端用户创建或者保存自己的代办任务列表
-     *
-     * @param in
-     * @throws Exception
-     */
-    void saveMyTaskTodo(Map in) throws Exception;
-
-    /**
      * 手机端用户读取一个代办任务详情
      *
      * @param in
@@ -36,4 +28,10 @@ public interface IAppTaskTodoBService {
      * @throws Exception
      */
     void deleteMyTaskTodo(Map in) throws Exception;
+
+    void createMyTaskTodo(Map in) throws Exception;
+
+    void updateTaskTodoComplete(Map in) throws Exception;
+
+    void updateMyTaskTodo(Map in) throws Exception;
 }

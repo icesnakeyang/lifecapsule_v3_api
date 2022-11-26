@@ -13,11 +13,10 @@ public interface UserEncodeKeyDao {
     /**
      * 读取一个用户秘钥记录
      *
-     * @param qIn encodeKeyId
-     *            indexId
+     * @param indexId
      * @return
      */
-    UserEncodeKeyView getUserEncodeKey(Map qIn);
+    UserEncodeKeyView getUserEncodeKey(String indexId);
 
     /**
      * @param qIn encodeKey

@@ -3,9 +3,11 @@ package cc.cdtime.lifecapsule_v3_api.middle.task;
 import cc.cdtime.lifecapsule_v3_api.meta.content.entity.Content;
 import cc.cdtime.lifecapsule_v3_api.meta.content.service.IContentService;
 import cc.cdtime.lifecapsule_v3_api.meta.task.entity.TaskTodo;
-import cc.cdtime.lifecapsule_v3_api.meta.task.entity.TaskTodoView;
+import cc.cdtime.lifecapsule_v3_api.meta.task.entity.TaskView;
 import cc.cdtime.lifecapsule_v3_api.meta.task.service.ITaskTodoService;
-import org.springframework.beans.factory.annotation.Autowired;
+import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserEncodeKey;
+import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserEncodeKeyView;
+import cc.cdtime.lifecapsule_v3_api.meta.user.service.IUserEncodeKeyService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,10 +18,14 @@ import java.util.Map;
 public class TaskTodoMiddle implements ITaskTodoMiddle {
     private final ITaskTodoService iTaskTodoService;
     private final IContentService iContentService;
+    private final IUserEncodeKeyService iUserEncodeKeyService;
 
-    public TaskTodoMiddle(ITaskTodoService iTaskTodoService, IContentService iContentService) {
+    public TaskTodoMiddle(ITaskTodoService iTaskTodoService,
+                          IContentService iContentService,
+                          IUserEncodeKeyService iUserEncodeKeyService) {
         this.iTaskTodoService = iTaskTodoService;
         this.iContentService = iContentService;
+        this.iUserEncodeKeyService = iUserEncodeKeyService;
     }
 
     @Override
@@ -30,13 +36,18 @@ public class TaskTodoMiddle implements ITaskTodoMiddle {
             content.setContent(taskTodo.getContent());
             content.setIndexId(taskTodo.getTaskId());
             iContentService.createContent(content);
+
+            UserEncodeKey userEncodeKey = new UserEncodeKey();
+            userEncodeKey.setEncodeKey(taskTodo.getUserEncodeKey());
+            userEncodeKey.setIndexId(taskTodo.getTaskId());
+            iUserEncodeKeyService.createUserEncodeKey(userEncodeKey);
         }
     }
 
     @Override
-    public ArrayList<TaskTodoView> listTaskTodo(Map qIn) throws Exception {
-        ArrayList<TaskTodoView> taskTodoViews = iTaskTodoService.listTaskTodo(qIn);
-        return taskTodoViews;
+    public ArrayList<TaskView> listTaskTodo(Map qIn) throws Exception {
+        ArrayList<TaskView> taskViews = iTaskTodoService.listTaskTodo(qIn);
+        return taskViews;
     }
 
     @Override
@@ -63,7 +74,7 @@ public class TaskTodoMiddle implements ITaskTodoMiddle {
         }
         Content contentDB = iContentService.getContent(taskId);
         String content = (String) qIn.get("content");
-        if (content!= null) {
+        if (content != null) {
             /**
              * 提交内容不为空，则判断数据库为空，修改，不为空，比较是否一致，不一致修改
              */
@@ -74,40 +85,62 @@ public class TaskTodoMiddle implements ITaskTodoMiddle {
                 iContentService.createContent(content1);
             } else {
                 if (!content.equals(contentDB.getContent())) {
-                    qIn = new HashMap();
-                    qIn.put("indexId", taskId);
-                    qIn.put("content", content);
-                    iContentService.updateContent(qIn);
+                    Map qIn2 = new HashMap();
+                    qIn2.put("indexId", taskId);
+                    qIn2.put("content", content);
+                    iContentService.updateContent(qIn2);
+                }
+            }
+        }
+        String userEncodeKey = (String) qIn.get("userEncodeKey");
+        if (userEncodeKey != null) {
+            UserEncodeKeyView userEncodeKeyView = iUserEncodeKeyService.getUserEncodeKey(taskId);
+            if (userEncodeKeyView == null) {
+                UserEncodeKey userEncodeKey1 = new UserEncodeKey();
+                userEncodeKey1.setEncodeKey(userEncodeKey);
+                userEncodeKey1.setIndexId(taskId);
+                iUserEncodeKeyService.createUserEncodeKey(userEncodeKey1);
+            } else {
+                if (!userEncodeKeyView.getEncodeKey().equals(userEncodeKey)) {
+                    Map qIn3 = new HashMap();
+                    qIn3.put("encodeKey", userEncodeKey);
+                    qIn3.put("indexId", taskId);
+                    iUserEncodeKeyService.updateUserEncodeKey(qIn3);
                 }
             }
         }
     }
 
     @Override
-    public TaskTodoView getTaskTodo(String taskId, Boolean returnNull, String userId) throws Exception {
-        TaskTodoView taskTodoView = iTaskTodoService.getTaskTodo(taskId);
-        if (taskTodoView == null) {
+    public TaskView getTaskTodo(String taskId, Boolean returnNull, String userId) throws Exception {
+        TaskView taskView = iTaskTodoService.getTaskTodo(taskId);
+        if (taskView == null) {
             if (returnNull) {
-                //没有查询到待办任务
-                throw new Exception("10023");
+                return null;
             }
+            throw new Exception("10031");
         }
         if (userId != null) {
-            if (!taskTodoView.getUserId().equals(userId)) {
-                //不能查询不是自己的待办任务
-                throw new Exception("10024");
+            if (!taskView.getUserId().equals(userId)) {
+                //不能查询不属于自己的任务
+                throw new Exception("10036");
             }
         }
         Content content = iContentService.getContent(taskId);
         if (content != null) {
-            taskTodoView.setContent(content.getContent());
+            taskView.setContent(content.getContent());
+            UserEncodeKeyView userEncodeKeyView = iUserEncodeKeyService.getUserEncodeKey(taskId);
+            if (userEncodeKeyView != null) {
+                taskView.setUserEncodeKey(userEncodeKeyView.getEncodeKey());
+            }
         }
-        return taskTodoView;
+        return taskView;
     }
 
     @Override
     public void deleteTaskTodo(String taskId) throws Exception {
         iTaskTodoService.deleteTaskTodo(taskId);
         iContentService.deleteContent(taskId);
+        iUserEncodeKeyService.deleteUserEncodeKey(taskId);
     }
 }

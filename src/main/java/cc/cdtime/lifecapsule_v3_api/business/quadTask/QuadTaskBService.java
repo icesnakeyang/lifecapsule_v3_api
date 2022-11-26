@@ -2,11 +2,11 @@ package cc.cdtime.lifecapsule_v3_api.business.quadTask;
 
 import cc.cdtime.lifecapsule_v3_api.framework.constant.ESTags;
 import cc.cdtime.lifecapsule_v3_api.framework.tools.GogoTools;
-import cc.cdtime.lifecapsule_v3_api.meta.task.entity.Task;
-import cc.cdtime.lifecapsule_v3_api.meta.task.entity.TaskTodoView;
+import cc.cdtime.lifecapsule_v3_api.meta.task.entity.TaskQuad;
+import cc.cdtime.lifecapsule_v3_api.meta.task.entity.TaskView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
 import cc.cdtime.lifecapsule_v3_api.middle.security.ISecurityMiddle;
-import cc.cdtime.lifecapsule_v3_api.middle.task.ITaskMiddle;
+import cc.cdtime.lifecapsule_v3_api.middle.task.ITaskQuadMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.user.IUserMiddle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,15 +19,15 @@ import java.util.Map;
 @Service
 public class QuadTaskBService implements IQuadTaskBService {
     private final IUserMiddle iUserMiddle;
-    private final ITaskMiddle iTaskMiddle;
     private final ISecurityMiddle iSecurityMiddle;
+    private final ITaskQuadMiddle iTaskQuadMiddle;
 
     public QuadTaskBService(IUserMiddle iUserMiddle,
-                            ITaskMiddle iTaskMiddle,
-                            ISecurityMiddle iSecurityMiddle) {
+                            ISecurityMiddle iSecurityMiddle,
+                            ITaskQuadMiddle iTaskQuadMiddle) {
         this.iUserMiddle = iUserMiddle;
-        this.iTaskMiddle = iTaskMiddle;
         this.iSecurityMiddle = iSecurityMiddle;
+        this.iTaskQuadMiddle = iTaskQuadMiddle;
     }
 
     @Override
@@ -58,12 +58,12 @@ public class QuadTaskBService implements IQuadTaskBService {
         }
         qIn.put("opdc", true);
         qIn.put("important", important);
-        ArrayList<Task> tasks = iTaskMiddle.listTask(qIn);
+        ArrayList<TaskView> tasks = iTaskQuadMiddle.listTaskQuad(qIn);
 
         Map out = new HashMap();
         out.put("taskList", tasks);
 
-        Integer total = iTaskMiddle.totalTask(qIn);
+        Integer total = iTaskQuadMiddle.totalTaskQuad(qIn);
         out.put("totalTask", total);
 
         return out;
@@ -92,19 +92,18 @@ public class QuadTaskBService implements IQuadTaskBService {
         /**
          * 保存task
          */
-        Task task = new Task();
-        task.setTaskId(GogoTools.UUID32());
-        task.setUserId(userView.getUserId());
-        task.setTaskTitle(taskTitle);
-        task.setPriority(0);
-        task.setStatus(ESTags.PROGRESS.toString());
-        task.setTaskType(ESTags.TASK_QUAD.toString());
-        task.setCreateTime(new Date());
-        task.setImportant(important);
-        task.setEndTime(endTime);
-        task.setUserEncodeKey(strAESKey);
-        task.setContent(content);
-        iTaskMiddle.createTask(task);
+        TaskQuad taskQuad = new TaskQuad();
+        taskQuad.setTaskId(GogoTools.UUID32());
+        taskQuad.setUserId(userView.getUserId());
+        taskQuad.setTaskTitle(taskTitle);
+        taskQuad.setPriority(0);
+        taskQuad.setStatus(ESTags.PROGRESS.toString());
+        taskQuad.setCreateTime(new Date());
+        taskQuad.setImportant(important);
+        taskQuad.setEndTime(endTime);
+        taskQuad.setUserEncodeKey(strAESKey);
+        taskQuad.setContent(content);
+        iTaskQuadMiddle.createTaskQuad(taskQuad);
     }
 
     @Override
@@ -132,7 +131,7 @@ public class QuadTaskBService implements IQuadTaskBService {
         //读取任务
         qIn = new HashMap();
         qIn.put("taskId", taskId);
-        Task task = iTaskMiddle.getTask(qIn, false, userView.getUserId());
+        TaskQuad taskQuad = iTaskQuadMiddle.getTaskQuad(qIn, false, userView.getUserId());
 
         /**
          * 根据keyToken读取私钥
@@ -154,7 +153,7 @@ public class QuadTaskBService implements IQuadTaskBService {
         qIn.put("endTime", endTime);
         qIn.put("userEncodeKey", strAESKey);
         qIn.put("content", content);
-        iTaskMiddle.updateTask(qIn);
+        iTaskQuadMiddle.updateTaskQuad(qIn);
     }
 
     @Override
@@ -170,7 +169,7 @@ public class QuadTaskBService implements IQuadTaskBService {
 
         qIn = new HashMap();
         qIn.put("taskId", taskId);
-        Task task = iTaskMiddle.getTask(qIn, false, userView.getUserId());
+        TaskQuad taskQuad = iTaskQuadMiddle.getTaskQuad(qIn, false, userView.getUserId());
 
         /**
          * 获取用户临时上传的加密笔记AES秘钥的AES秘钥
@@ -178,14 +177,14 @@ public class QuadTaskBService implements IQuadTaskBService {
         String strAESKey = iSecurityMiddle.takeNoteAES(keyToken, encryptKey);
 
         //用AES秘钥加密笔记内容的AES秘钥
-        String data = task.getUserEncodeKey();
-        if (task.getUserEncodeKey() != null) {
+        String data = taskQuad.getUserEncodeKey();
+        if (taskQuad.getUserEncodeKey() != null) {
             String outCode = GogoTools.encryptAESKey(data, strAESKey);
-            task.setUserEncodeKey(outCode);
+            taskQuad.setUserEncodeKey(outCode);
         }
 
         Map out = new HashMap();
-        out.put("taskQuad", task);
+        out.put("taskQuad", taskQuad);
 
         return out;
     }
@@ -202,13 +201,13 @@ public class QuadTaskBService implements IQuadTaskBService {
 
         qIn = new HashMap();
         qIn.put("taskId", taskId);
-        Task task = iTaskMiddle.getTask(qIn, false, userView.getUserId());
+        TaskQuad taskQuad = iTaskQuadMiddle.getTaskQuad(qIn, false, userView.getUserId());
 
-        if(!status.equals(task.getStatus())){
+        if(!status.equals(taskQuad.getStatus())){
             if(status.equals(ESTags.COMPLETE.toString())||
             status.equals(ESTags.PROGRESS.toString())){
                 qIn.put("status", status);
-                iTaskMiddle.updateTask(qIn);
+                iTaskQuadMiddle.updateTaskQuad(qIn);
             }
         }
     }
@@ -224,9 +223,9 @@ public class QuadTaskBService implements IQuadTaskBService {
 
         qIn = new HashMap();
         qIn.put("taskId", taskId);
-        Task task = iTaskMiddle.getTask(qIn, false, userView.getUserId());
+        TaskQuad taskQuad = iTaskQuadMiddle.getTaskQuad(qIn, false, userView.getUserId());
 
-        iTaskMiddle.deleteTask(qIn);
+        iTaskQuadMiddle.deleteTaskQuad(qIn);
     }
 
     @Override
@@ -246,20 +245,20 @@ public class QuadTaskBService implements IQuadTaskBService {
          */
         qIn = new HashMap();
         qIn.put("taskId", taskId);
-        Task task = iTaskMiddle.getTask(qIn, false, userView.getUserId());
+        TaskQuad taskQuad = iTaskQuadMiddle.getTaskQuad(qIn, false, userView.getUserId());
 
         /**
          * 增加优先级
          */
         qIn = new HashMap();
-        qIn.put("taskId", task.getTaskId());
-        Integer pp = task.getPriority();
+        qIn.put("taskId", taskQuad.getTaskId());
+        Integer pp = taskQuad.getPriority();
         if (pp == null) {
             pp = 0;
         }
         pp++;
         qIn.put("priority", pp);
-        iTaskMiddle.updateTask(qIn);
+        iTaskQuadMiddle.updateTaskQuad(qIn);
     }
 
     @Override
@@ -279,19 +278,19 @@ public class QuadTaskBService implements IQuadTaskBService {
          */
         qIn = new HashMap();
         qIn.put("taskId", taskId);
-        Task task = iTaskMiddle.getTask(qIn, false, userView.getUserId());
+        TaskQuad taskQuad = iTaskQuadMiddle.getTaskQuad(qIn, false, userView.getUserId());
 
         /**
          * 减少优先级
          */
         qIn = new HashMap();
-        qIn.put("taskId", task.getTaskId());
-        Integer pp = task.getPriority();
+        qIn.put("taskId", taskQuad.getTaskId());
+        Integer pp = taskQuad.getPriority();
         if (pp == null) {
             pp = 0;
         }
         pp--;
         qIn.put("priority", pp);
-        iTaskMiddle.updateTask(qIn);
+        iTaskQuadMiddle.updateTaskQuad(qIn);
     }
 }

@@ -22,8 +22,8 @@ public class UserEncodeKeyService implements IUserEncodeKeyService {
     }
 
     @Override
-    public UserEncodeKeyView getUserEncodeKey(Map qIn) throws Exception {
-        UserEncodeKeyView userEncodeKeyView = userEncodeKeyDao.getUserEncodeKey(qIn);
+    public UserEncodeKeyView getUserEncodeKey(String indexId) throws Exception {
+        UserEncodeKeyView userEncodeKeyView = userEncodeKeyDao.getUserEncodeKey(indexId);
         return userEncodeKeyView;
     }
 

@@ -47,9 +47,6 @@ public class TriggerMiddle implements ITriggerMiddle {
         if (trigger.getUserEncodeKey() != null) {
             UserEncodeKey userEncodeKey = new UserEncodeKey();
             userEncodeKey.setEncodeKey(trigger.getUserEncodeKey());
-            userEncodeKey.setEncodeKeyId(GogoTools.UUID32());
-            userEncodeKey.setUserId(trigger.getUserId());
-            userEncodeKey.setCreateTime(new Date());
             userEncodeKey.setIndexId(trigger.getTriggerId());
             iUserEncodeKeyService.createUserEncodeKey(userEncodeKey);
         }
@@ -114,7 +111,7 @@ public class TriggerMiddle implements ITriggerMiddle {
             triggerView.setNoteContent(content.getContent());
             Map qIn = new HashMap();
             qIn.put("indexId", triggerId);
-            UserEncodeKeyView userEncodeKeyView = iUserEncodeKeyService.getUserEncodeKey(qIn);
+            UserEncodeKeyView userEncodeKeyView = iUserEncodeKeyService.getUserEncodeKey(triggerId);
             if (userEncodeKeyView != null) {
                 triggerView.setUserEncodeKey(userEncodeKeyView.getEncodeKey());
             }

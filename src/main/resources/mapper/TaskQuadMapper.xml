@@ -1,18 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.task.dao.TaskDao">
+<mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.task.dao.TaskTodoDao">
     <!--配置表和对象的字段映射 -->
-    <resultMap id="taskMap" type="cc.cdtime.lifecapsule_v3_api.meta.task.entity.Task">
-        <result property="taskId" column="task_id"/>
+    <resultMap id="taskMap" type="cc.cdtime.lifecapsule_v3_api.meta.task.entity.TaskView">
         <result property="userId" column="user_id"/>
-        <result property="createTime" column="create_time"/>
-        <result property="taskType" column="task_type"/>
-        <result property="endTime" column="end_time"/>
+        <result property="recipientId" column="recipient_id"/>
+        <result property="triggerId" column="trigger_id"/>
         <result property="noteId" column="note_id"/>
-        <result property="taskTitle" column="task_title"/>
-        <result property="userEncodeKey" column="user_encode_key"/>
+        <result property="triggerTime" column="trigger_time"/>
+        <result property="actTimes" column="act_times"/>
+        <result property="toEmail" column="to_email"/>
+        <result property="triggerType" column="trigger_type"/>
+        <result property="fromName" column="from_name"/>
+        <result property="toUserId" column="to_user_id"/>
+        <result property="refPid" column="ref_pid"/>
     </resultMap>
 
+    <!--创建四象限任务-->
+    <insert id="createTask" parameterType="cc.cdtime.lifecapsule_v3_api.meta.task.entity.TaskQuad">
+        insert into task_quad
+        (task_id, user_id, status, task_type,
+         create_time, task_title)
+        values (#{taskId}, #{userId},
+                #{status}, #{taskType},
+                #{createTime}, #{taskTitle})
+    </insert>
+
+    <!--====================================================================================-->
     <!--读取任务列表-->
     <select id="listTask" parameterType="map" resultMap="taskMap">
         select * from task
@@ -89,20 +103,6 @@
         </choose>
     </select>
 
-    <!--读取任务列表-->
-    <insert id="createTask" parameterType="cc.cdtime.lifecapsule_v3_api.meta.task.entity.Task">
-        insert into task
-        (task_id, user_id,
-         priority, status, task_type,
-         user_encode_key,
-         pid, create_time, task_title,
-         important, complete, important_level)
-        values (#{taskId}, #{userId},
-                #{priority}, #{status}, #{taskType},
-                #{userEncodeKey},
-                #{pid}, #{createTime}, #{taskTitle},
-                #{important}, #{complete}, #{importantLevel})
-    </insert>
 
     <insert id="createTaskContent" parameterType="map">
         insert into content_detail

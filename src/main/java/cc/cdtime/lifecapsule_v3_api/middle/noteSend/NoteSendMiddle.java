@@ -84,7 +84,7 @@ public class NoteSendMiddle implements INoteSendMiddle {
          */
         Map qIn = new HashMap();
         qIn.put("indexId", noteSendLogView.getTriggerId());
-        UserEncodeKeyView userEncodeKeyView = iUserEncodeKeyService.getUserEncodeKey(qIn);
+        UserEncodeKeyView userEncodeKeyView = iUserEncodeKeyService.getUserEncodeKey(noteSendLogView.getTriggerId());
         if (userEncodeKeyView != null) {
             noteSendLogView.setUserEncodeKey(userEncodeKeyView.getEncodeKey());
         }

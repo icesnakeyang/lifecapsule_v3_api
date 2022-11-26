@@ -2,7 +2,8 @@ package cc.cdtime.lifecapsule_v3_api.meta.task.service;
 
 import cc.cdtime.lifecapsule_v3_api.meta.task.dao.TaskTodoDao;
 import cc.cdtime.lifecapsule_v3_api.meta.task.entity.TaskTodo;
-import cc.cdtime.lifecapsule_v3_api.meta.task.entity.TaskTodoView;
+import cc.cdtime.lifecapsule_v3_api.meta.task.entity.TaskView;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,35 +18,35 @@ public class TaskTodoService implements ITaskTodoService {
     }
 
     @Override
-    public void createTaskTodo(TaskTodo taskTodo) throws Exception {
+    public void createTaskTodo(TaskTodo taskTodo) {
         taskTodoDao.createTaskTodo(taskTodo);
     }
 
     @Override
-    public ArrayList<TaskTodoView> listTaskTodo(Map qIn) throws Exception {
-        ArrayList<TaskTodoView> taskTodoViews = taskTodoDao.listTaskTodo(qIn);
-        return taskTodoViews;
+    public ArrayList<TaskView> listTaskTodo(Map qIn) {
+        ArrayList<TaskView> taskViews = taskTodoDao.listTaskTodo(qIn);
+        return taskViews;
     }
 
     @Override
-    public Integer totalTaskTodo(Map qIn) throws Exception {
+    public Integer totalTaskTodo(Map qIn) {
         Integer total = taskTodoDao.totalTaskTodo(qIn);
         return total;
     }
 
     @Override
-    public void updateTaskTodo(Map qIn) throws Exception {
+    public TaskView getTaskTodo(String taskId) {
+        TaskView taskView = taskTodoDao.getTaskTodo(taskId);
+        return taskView;
+    }
+
+    @Override
+    public void updateTaskTodo(Map qIn) {
         taskTodoDao.updateTaskTodo(qIn);
     }
 
     @Override
-    public TaskTodoView getTaskTodo(String taskId) throws Exception {
-        TaskTodoView taskTodoView = taskTodoDao.getTaskTodo(taskId);
-        return taskTodoView;
-    }
-
-    @Override
-    public void deleteTaskTodo(String taskId) throws Exception {
+    public void deleteTaskTodo(String taskId) {
         taskTodoDao.deleteTaskTodo(taskId);
     }
 }

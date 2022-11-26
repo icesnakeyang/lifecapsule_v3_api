@@ -1,7 +1,7 @@
 package cc.cdtime.lifecapsule_v3_api.meta.task.dao;
 
 import cc.cdtime.lifecapsule_v3_api.meta.task.entity.TaskTodo;
-import cc.cdtime.lifecapsule_v3_api.meta.task.entity.TaskTodoView;
+import cc.cdtime.lifecapsule_v3_api.meta.task.entity.TaskView;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.ArrayList;
@@ -10,49 +10,51 @@ import java.util.Map;
 @Mapper
 public interface TaskTodoDao {
     /**
-     * 创建一个待办任务
+     * 创建一个todo任务
      *
      * @param taskTodo
      */
     void createTaskTodo(TaskTodo taskTodo);
 
     /**
-     * 查询待办任务列表
+     * 读取todo任务列表
      *
      * @param qIn userId
-     *            complete
      *            size
      *            offset
      * @return
      */
-    ArrayList<TaskTodoView> listTaskTodo(Map qIn);
+    ArrayList<TaskView> listTaskTodo(Map qIn);
 
     /**
-     * 统计待办任务数量
+     * 统计todo任务总数
      *
      * @param qIn userId
-     *            complete
      * @return
      */
     Integer totalTaskTodo(Map qIn);
 
     /**
-     * 修改待办任务
-     *
-     * @param qIn title
-     *            complete
-     *            priority
-     *            taskId
-     */
-    void updateTaskTodo(Map qIn);
-
-    /**
-     * 查询一个代办任务
+     * 读取一个todo任务详情
      *
      * @param taskId
      * @return
      */
-    TaskTodoView getTaskTodo(String taskId);
+    TaskView getTaskTodo(String taskId);
 
+    /**
+     * 修改todo任务
+     *
+     * @param qIn title
+     *            priority
+     *            complete
+     */
+    void updateTaskTodo(Map qIn);
+
+    /**
+     * 物理删除一个todo任务
+     *
+     * @param taskId
+     */
     void deleteTaskTodo(String taskId);
 }

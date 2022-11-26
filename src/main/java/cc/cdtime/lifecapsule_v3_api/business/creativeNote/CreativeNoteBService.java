@@ -5,13 +5,14 @@ import cc.cdtime.lifecapsule_v3_api.framework.tools.GogoTools;
 import cc.cdtime.lifecapsule_v3_api.meta.creativeNote.entity.CreativeNote;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteInfo;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
-import cc.cdtime.lifecapsule_v3_api.meta.task.entity.Task;
+import cc.cdtime.lifecapsule_v3_api.meta.task.entity.TaskTodo;
+import cc.cdtime.lifecapsule_v3_api.meta.task.entity.TaskView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserEncodeKeyView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
 import cc.cdtime.lifecapsule_v3_api.middle.creativeNote.ICreativeNoteMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.note.INoteMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.security.ISecurityMiddle;
-import cc.cdtime.lifecapsule_v3_api.middle.task.ITaskMiddle;
+import cc.cdtime.lifecapsule_v3_api.middle.task.ITaskTodoMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.user.IUserEncodeKeyMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.user.IUserMiddle;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,21 +30,21 @@ public class CreativeNoteBService implements ICreativeNoteBService {
     private final IUserMiddle iUserMiddle;
     private final ISecurityMiddle iSecurityMiddle;
     private final INoteMiddle iNoteMiddle;
-    private final ITaskMiddle iTaskMiddle;
     private final IUserEncodeKeyMiddle iUserEncodeKeyMiddle;
+    private final ITaskTodoMiddle iTaskTodoMiddle;
 
     public CreativeNoteBService(ICreativeNoteMiddle iCreativeNoteMiddle,
                                 IUserMiddle iUserMiddle,
                                 ISecurityMiddle iSecurityMiddle,
                                 INoteMiddle iNoteMiddle,
-                                ITaskMiddle iTaskMiddle,
-                                IUserEncodeKeyMiddle iUserEncodeKeyMiddle) {
+                                IUserEncodeKeyMiddle iUserEncodeKeyMiddle,
+                                ITaskTodoMiddle iTaskTodoMiddle) {
         this.iCreativeNoteMiddle = iCreativeNoteMiddle;
         this.iUserMiddle = iUserMiddle;
         this.iSecurityMiddle = iSecurityMiddle;
         this.iNoteMiddle = iNoteMiddle;
-        this.iTaskMiddle = iTaskMiddle;
         this.iUserEncodeKeyMiddle = iUserEncodeKeyMiddle;
+        this.iTaskTodoMiddle = iTaskTodoMiddle;
     }
 
     @Override
@@ -117,7 +118,7 @@ public class CreativeNoteBService implements ICreativeNoteBService {
         if (data == null) {
             qIn = new HashMap();
             qIn.put("indexId", creativeNotes.get(0).getCreativeNoteId());
-            UserEncodeKeyView userEncodeKeyView = iUserEncodeKeyMiddle.getUserEncodeKey(qIn);
+            UserEncodeKeyView userEncodeKeyView = iUserEncodeKeyMiddle.getUserEncodeKey(creativeNotes.get(0).getCreativeNoteId());
             data = userEncodeKeyView.getEncodeKey();
         }
         String outCode = GogoTools.encryptAESKey(data, strAESKey);
@@ -230,11 +231,11 @@ public class CreativeNoteBService implements ICreativeNoteBService {
              * 遍历前端提交的tasks，如果taskId=null，新增
              */
             qIn.put("noteId", noteView.getNoteId());
-            ArrayList<Task> tasksDB = iTaskMiddle.listTask(qIn);
+            ArrayList<TaskView> tasksDB = iTaskTodoMiddle.listTaskTodo(qIn);
             if (tasksDB.size() > 0) {
                 //遍历数据库里旧的任务
                 for (int iDB = 0; iDB < tasksDB.size(); iDB++) {
-                    Task taskDB = tasksDB.get(iDB);
+                    TaskView taskDB = tasksDB.get(iDB);
                     //遍历前端提交的任务
                     int ss = 0;
                     for (int iSubmit = 0; iSubmit < tasksMap.size(); iSubmit++) {
@@ -272,7 +273,7 @@ public class CreativeNoteBService implements ICreativeNoteBService {
                                     }
                                 }
                                 qIn.put("taskId", taskMap.get("taskId"));
-                                iTaskMiddle.updateTask(qIn);
+                                iTaskTodoMiddle.updateTaskTodo(qIn);
 
                                 //匹配成功，ss+1
                                 ss++;
@@ -283,7 +284,7 @@ public class CreativeNoteBService implements ICreativeNoteBService {
                         //遍历完所有提交的任务，没有该task，则删除
                         qIn = new HashMap();
                         qIn.put("taskId", taskDB.getTaskId());
-                        iTaskMiddle.deleteTask(qIn);
+                        iTaskTodoMiddle.deleteTaskTodo(taskDB.getTaskId());
                     }
                 }
             }
@@ -379,14 +380,14 @@ public class CreativeNoteBService implements ICreativeNoteBService {
                 throw new Exception("10033");
             }
             Boolean complete = (Boolean) taskMap.get("complete");
-            Task task = new Task();
+            TaskTodo task = new TaskTodo();
             task.setCreateTime(new Date());
             task.setUserId(userId);
             task.setNoteId(noteId);
-            task.setStatus(ESTags.PROGRESS.toString());
+//            task.(ESTags.PROGRESS.toString());
             task.setTaskId(GogoTools.UUID32());
             task.setTaskTitle(taskTitle);
-            task.setTaskType(ESTags.ACTION_10_SEC.toString());
+//            task.setTaskType(ESTags.ACTION_10_SEC.toString());
             /**
              * 优先级默认为1，如果以后要增加优先级，就调大这个值，值越高，优先级越高
              */
@@ -395,8 +396,8 @@ public class CreativeNoteBService implements ICreativeNoteBService {
              * 任务的象限
              * 默认为重要且紧急的任务
              */
-            task.setImportant(ESTags.IMPORTANT_AND_URGENT.toString());
-            iTaskMiddle.createTask(task);
+//            task.setImportant(ESTags.IMPORTANT_AND_URGENT.toString());
+//            iTaskMiddle.createTask(task);
         }
     }
 }

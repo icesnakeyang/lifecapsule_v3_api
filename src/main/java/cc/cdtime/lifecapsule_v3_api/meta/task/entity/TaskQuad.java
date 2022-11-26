@@ -5,30 +5,20 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * 待办任务
+ * 四象限任务
  */
 @Data
-public class Task {
+public class TaskQuad{
     private Integer ids;
     private String taskId;
     private String userId;
     private String taskTitle;
+    private String content;
     private Date createTime;
-    /**
-     * 任务优先级
-     */
     private Integer priority;
     private String important;
     private String status;
-    private String taskType;
-    /**
-     * 父任务
-     */
-    private String pid;
-    private Date endTime;
-    private String noteId;
-    private String userEncodeKey;
-    private String content;
-    private Boolean complete = false;
     private Integer importantLevel;
+    private Date endTime;
+    private String userEncodeKey;
 }

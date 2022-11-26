@@ -1,8 +1,7 @@
 package cc.cdtime.lifecapsule_v3_api.middle.task;
 
 import cc.cdtime.lifecapsule_v3_api.meta.task.entity.TaskTodo;
-import cc.cdtime.lifecapsule_v3_api.meta.task.entity.TaskTodoView;
-import ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy;
+import cc.cdtime.lifecapsule_v3_api.meta.task.entity.TaskView;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -23,7 +22,7 @@ public interface ITaskTodoMiddle {
      *            offset
      * @return
      */
-    ArrayList<TaskTodoView> listTaskTodo(Map qIn) throws Exception;
+    ArrayList<TaskView> listTaskTodo(Map qIn) throws Exception;
 
     /**
      * 统计待办任务数量
@@ -50,7 +49,7 @@ public interface ITaskTodoMiddle {
      * @param taskId
      * @return
      */
-    TaskTodoView getTaskTodo(String taskId, Boolean returnNull, String userId) throws Exception;
+    TaskView getTaskTodo(String taskId, Boolean returnNull, String userId) throws Exception;
 
     void deleteTaskTodo(String taskId) throws Exception;
 }

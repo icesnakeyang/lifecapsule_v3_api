@@ -10,12 +10,8 @@ public interface IUserEncodeKeyMiddle {
 
     /**
      * 读取一个用户秘钥记录
-     *
-     * @param qIn encodeKeyId
-     *            indexId
-     * @return
      */
-    UserEncodeKeyView getUserEncodeKey(Map qIn) throws Exception;
+    UserEncodeKeyView getUserEncodeKey(String indexId) throws Exception;
 
     void updateUserEncodeKey(Map qIn) throws Exception;
 }

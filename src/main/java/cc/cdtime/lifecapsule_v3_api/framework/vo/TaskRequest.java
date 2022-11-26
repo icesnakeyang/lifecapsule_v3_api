@@ -13,4 +13,6 @@ public class TaskRequest extends Request {
     private Boolean hideComplete;
     private String content;
     private Boolean complete;
+    private String keyToken;
+    private String encryptKey;
 }

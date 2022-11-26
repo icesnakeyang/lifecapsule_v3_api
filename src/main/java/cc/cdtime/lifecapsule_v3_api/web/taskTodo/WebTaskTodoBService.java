@@ -20,11 +20,6 @@ public class WebTaskTodoBService implements IWebTaskTodoBService {
     }
 
     @Override
-    public void saveMyTaskTodo(Map in) throws Exception {
-        iTaskTodoBService.saveTaskTodo(in);
-    }
-
-    @Override
     public Map getMyTaskTodo(Map in) throws Exception {
         Map out = iTaskTodoBService.getTaskTodo(in);
         return out;

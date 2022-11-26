@@ -75,7 +75,6 @@ public class WebTaskTodoController {
             in.put("title", request.getTitle());
             in.put("content", request.getContent());
 
-            iWebTaskTodoBService.saveMyTaskTodo(in);
         } catch (Exception ex) {
             try {
                 response.setCode(Integer.parseInt(ex.getMessage()));
