@@ -44,12 +44,10 @@ public class TriggerMiddle implements ITriggerMiddle {
         content2.setContent(trigger.getNoteContent());
         content2.setIndexId(trigger.getTriggerId());
         iContentService.createContent(content2);
-        if (trigger.getUserEncodeKey() != null) {
-            UserEncodeKey userEncodeKey = new UserEncodeKey();
-            userEncodeKey.setEncodeKey(trigger.getUserEncodeKey());
-            userEncodeKey.setIndexId(trigger.getTriggerId());
-            iUserEncodeKeyService.createUserEncodeKey(userEncodeKey);
-        }
+        UserEncodeKey userEncodeKey = new UserEncodeKey();
+        userEncodeKey.setEncodeKey(trigger.getUserEncodeKey());
+        userEncodeKey.setIndexId(trigger.getTriggerId());
+        iUserEncodeKeyService.createUserEncodeKey(userEncodeKey);
     }
 
     @Override

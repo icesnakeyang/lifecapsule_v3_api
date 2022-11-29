@@ -128,7 +128,6 @@ public class NoteBService implements INoteBService {
         String noteId = (String) in.get("noteId");
         String title = (String) in.get("title");
         String content = (String) in.get("content");
-        Integer encrypt = (Integer) in.get("encrypt");
         String encryptKey = (String) in.get("encryptKey");
         String keyToken = (String) in.get("keyToken");
         ArrayList tagList = (ArrayList) in.get("tagList");
@@ -138,11 +137,9 @@ public class NoteBService implements INoteBService {
          * 用私钥解开用户用公钥加密的用户AES私钥
          */
         String strAESKey = null;
-        if (encrypt != null && encrypt == 1) {
-            String privateKey = iSecurityMiddle.getRSAKey(keyToken);
-            strAESKey = GogoTools.decryptRSAByPrivateKey(encryptKey, privateKey);
-            iSecurityMiddle.deleteRSAKey(keyToken);
-        }
+        String privateKey = iSecurityMiddle.getRSAKey(keyToken);
+        strAESKey = GogoTools.decryptRSAByPrivateKey(encryptKey, privateKey);
+        iSecurityMiddle.deleteRSAKey(keyToken);
 
         /**
          * 首先读取用户信息
@@ -335,7 +332,6 @@ public class NoteBService implements INoteBService {
     private String createNote(Map in) throws Exception {
         String content = in.get("content").toString();
         String userId = in.get("userId").toString();
-        Integer encrypt = (Integer) in.get("encrypt");
         String strAESKey = (String) in.get("strAESKey");
         String title = (String) in.get("title");
 
@@ -343,14 +339,8 @@ public class NoteBService implements INoteBService {
         noteInfo.setNoteId(GogoTools.UUID32());
         noteInfo.setContent(content);
 
-        noteInfo.setEncrypt(encrypt);
-
-        if (encrypt != null && encrypt == 1) {
-            /**
-             * 把秘钥保存到userencodekey表
-             */
-            noteInfo.setUserEncodeKey(strAESKey);
-        }
+        noteInfo.setEncrypt(1);
+        noteInfo.setUserEncodeKey(strAESKey);
         noteInfo.setCreateTime(new Date());
         noteInfo.setStatus(ESTags.ACTIVE.toString());
         noteInfo.setUserId(userId);
@@ -364,7 +354,6 @@ public class NoteBService implements INoteBService {
         String noteId = in.get("noteId").toString();
         String title = (String) in.get("title");
         String content = (String) in.get("content");
-        Integer encrypt = (Integer) in.get("encrypt");
         String encryptKey = (String) in.get("encryptKey");
         String keyToken = (String) in.get("keyToken");
         String userId = in.get("userId").toString();
@@ -394,18 +383,7 @@ public class NoteBService implements INoteBService {
             }
         }
 
-        /**
-         * 比较当前笔记是否加密
-         * encrypt==1 加密
-         * encrypt==0 不加密
-         */
-        if (encrypt != null) {
-            qInEdit.put("encrypt", encrypt);
-            if (encrypt == 1) {
-                qInEdit.put("encodeKey", strAESKey);
-            }
-            cc++;
-        }
+        qInEdit.put("encodeKey", strAESKey);
 
         if (noteView.getContent() != null) {
             /**

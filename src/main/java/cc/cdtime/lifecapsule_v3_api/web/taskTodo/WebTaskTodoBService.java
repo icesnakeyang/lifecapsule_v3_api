@@ -29,4 +29,19 @@ public class WebTaskTodoBService implements IWebTaskTodoBService {
     public void deleteMyTaskTodo(Map in) throws Exception {
         iTaskTodoBService.deleteTaskTodo(in);
     }
+
+    @Override
+    public void updateMyTaskTodoCompleteStatus(Map in) throws Exception {
+        iTaskTodoBService.updateTaskTodoComplete(in);
+    }
+
+    @Override
+    public void createMyTaskTodo(Map in) throws Exception {
+        iTaskTodoBService.createMyTaskTodo(in);
+    }
+
+    @Override
+    public void updateMyTaskTodo(Map in) throws Exception {
+        iTaskTodoBService.updateMyTaskTodo(in);
+    }
 }

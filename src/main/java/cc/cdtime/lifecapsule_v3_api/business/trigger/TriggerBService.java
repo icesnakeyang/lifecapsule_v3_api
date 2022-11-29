@@ -370,6 +370,7 @@ public class TriggerBService implements ITriggerBService {
         iTriggerMiddle.deleteTrigger(triggerId);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void createTriggerInstant(Map in) throws Exception {
         String token = in.get("token").toString();
@@ -379,6 +380,8 @@ public class TriggerBService implements ITriggerBService {
         String noteContent = in.get("noteContent").toString();
         String fromName = (String) in.get("fromName");
         String toName = (String) in.get("toName");
+        String encryptKey = (String) in.get("encryptKey");
+        String keyToken = (String) in.get("keyToken");
 
         Map qIn = new HashMap();
         qIn.put("token", token);
@@ -404,9 +407,9 @@ public class TriggerBService implements ITriggerBService {
             contact.setContactId(GogoTools.UUID32());
             contact.setEmail(toEmail);
             contact.setUserId(userView.getUserId());
+            contact.setContactName(toName);
             iContactMiddle.createContact(contact);
         }
-
 
         /**
          * 新建触发器
@@ -415,6 +418,15 @@ public class TriggerBService implements ITriggerBService {
          * 3、创建一个content，indexId=triggerId
          * 4、创建一个UserEncodeKey，indexId=triggerId
          */
+        /**
+         * 根据keyToken读取私钥
+         * 用私钥解开用户用公钥加密的用户AES私钥
+         */
+        String strAESKey = null;
+        String privateKey = iSecurityMiddle.getRSAKey(keyToken);
+        strAESKey = GogoTools.decryptRSAByPrivateKey(encryptKey, privateKey);
+        iSecurityMiddle.deleteRSAKey(keyToken);
+
         NoteTrigger noteTrigger = new NoteTrigger();
         noteTrigger.setTriggerId(GogoTools.UUID32());
         noteTrigger.setTriggerType(ESTags.INSTANT_MESSAGE.toString());
@@ -428,6 +440,7 @@ public class TriggerBService implements ITriggerBService {
         noteTrigger.setNoteId(noteView.getNoteId());
         noteTrigger.setFromName(fromName);
         noteTrigger.setToName(toName);
+        noteTrigger.setUserEncodeKey(strAESKey);
         iTriggerMiddle.createTrigger(noteTrigger);
     }
 

@@ -12,8 +12,10 @@
     <!--创建一个todo任务-->
     <insert id="createTaskTodo" parameterType="cc.cdtime.lifecapsule_v3_api.meta.task.entity.TaskTodo">
         insert into task_todo
-            (user_id, task_title, create_time, task_id)
-        values (#{userId}, #{taskTitle}, #{createTime}, #{taskId})
+        (user_id, task_title, create_time, task_id,
+         priority, complete)
+        values (#{userId}, #{taskTitle}, #{createTime}, #{taskId},
+                #{priority}, #{complete})
     </insert>
 
     <!--读取todo任务列表-->
@@ -23,6 +25,11 @@
         <choose>
             <when test="userId!=null">
                 and user_id=#{userId}
+            </when>
+        </choose>
+        <choose>
+            <when test="complete!=null">
+                and complete is false
             </when>
         </choose>
         order by complete, create_time desc

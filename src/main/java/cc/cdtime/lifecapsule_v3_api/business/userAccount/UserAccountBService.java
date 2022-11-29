@@ -387,7 +387,7 @@ public class UserAccountBService implements IUserAccountBService {
         String newToken = GogoTools.UUID32();
         if (token != null) {
             qIn.put("token", token);
-            UserView userView = iUserMiddle.getUser(qIn, true, false);
+            UserView userView = iUserMiddle.getUserTiny(qIn, true, false);
             if (userView != null) {
                 oldUserId = userView.getUserId();
             }

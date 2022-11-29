@@ -116,6 +116,7 @@ public class TaskTodoBService implements ITaskTodoBService {
         String content = (String) in.get("content");
         String encryptKey = (String) in.get("encryptKey");
         String keyToken = (String) in.get("keyToken");
+        Integer priority = (Integer) in.get("priority");
 
         /**
          * 根据keyToken读取私钥
@@ -139,6 +140,12 @@ public class TaskTodoBService implements ITaskTodoBService {
         taskTodo.setUserId(userView.getUserId());
         taskTodo.setContent(content);
         taskTodo.setUserEncodeKey(strAESKey);
+        if (priority == null) {
+            taskTodo.setPriority(0);
+        } else {
+            taskTodo.setPriority(priority);
+        }
+        taskTodo.setComplete(false);
         iTaskTodoMiddle.createTaskTodo(taskTodo);
     }
 

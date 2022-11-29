@@ -108,7 +108,6 @@ public class WebNoteController {
             in.put("encryptKey", request.getEncryptKey());
             in.put("title", request.getTitle());
             in.put("content", request.getContent());
-            in.put("encrypt", request.getEncrypt());
             in.put("tagList", request.getTagList());
 
             Map out = iWebNoteBService.saveMyNote(in);

@@ -170,7 +170,7 @@ public class UserMiddle implements IUserMiddle {
             }
         }
         if (userView == null) {
-            //没有查询到用户信息
+            //没有查询到用户信息，登录信息过期
             throw new Exception("10047");
         }
         UserView userViewBase = iUserBaseService.getUserBase(userView.getUserId());
