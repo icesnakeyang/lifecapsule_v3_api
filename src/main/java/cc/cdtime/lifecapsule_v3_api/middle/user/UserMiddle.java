@@ -53,8 +53,7 @@ public class UserMiddle implements IUserMiddle {
     }
 
     @Override
-    public UserView getUserTiny(Map qIn, Boolean returnNull, Boolean isLogin) throws Exception {
-        String userId = (String) qIn.get("userId");
+    public UserView getUserTiny(String userId, Boolean returnNull, Boolean isLogin) throws Exception {
         UserView userView = iUserBaseService.getUserBase(userId);
         if (userView == null) {
             if (returnNull) {
@@ -135,6 +134,7 @@ public class UserMiddle implements IUserMiddle {
         String userId = (String) qIn.get("userId");
         String token = (String) qIn.get("token");
         String email = (String) qIn.get("email");
+        String loginName = (String) qIn.get("loginName");
 
         /**
          * 获取用户基础信息
@@ -166,6 +166,11 @@ public class UserMiddle implements IUserMiddle {
                     if (userEmailView != null) {
                         userView = iUserBaseService.getUserBase(userEmailView.getUserId());
                     }
+                } else {
+                    /**
+                     * 通过loginName读取用户
+                     */
+                    userView = iUserLoginNameService.getLoginName(qIn);
                 }
             }
         }
@@ -173,12 +178,17 @@ public class UserMiddle implements IUserMiddle {
             //没有查询到用户信息，登录信息过期
             throw new Exception("10047");
         }
+
+        /**
+         * 获取用户基本信息
+         */
         UserView userViewBase = iUserBaseService.getUserBase(userView.getUserId());
         userView.setCreateTime(userViewBase.getCreateTime());
         userView.setNickname(userViewBase.getNickname());
         qIn = new HashMap();
         qIn.put("userId", userView.getUserId());
         qIn.put("type", ESTags.TIMER_TYPE_PRIMARY.toString());
+        //获取用户的主倒计时结束时间
         TimerView timerView = iUserTimerService.getUserTimer(qIn);
         if (timerView == null) {
             Map timer = iTimerMiddle.createUserTimer(userView.getUserId());
@@ -276,5 +286,10 @@ public class UserMiddle implements IUserMiddle {
     @Override
     public void createUserLoginHistory(UserLoginHistory userLoginHistory) throws Exception {
         iUserLoginHistoryService.createUserLoginHistory(userLoginHistory);
+    }
+
+    @Override
+    public void updateLoginName(Map qIn) throws Exception {
+        iUserLoginNameService.updateLoginName(qIn);
     }
 }

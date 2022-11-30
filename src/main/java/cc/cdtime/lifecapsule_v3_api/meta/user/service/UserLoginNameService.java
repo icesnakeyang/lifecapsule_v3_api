@@ -26,4 +26,9 @@ public class UserLoginNameService implements IUserLoginNameService {
         UserView userView = userLoginNameDao.getLoginName(qIn);
         return userView;
     }
+
+    @Override
+    public void updateLoginName(Map qIn) throws Exception {
+        userLoginNameDao.updateLoginName(qIn);
+    }
 }

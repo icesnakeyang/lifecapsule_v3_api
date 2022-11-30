@@ -169,9 +169,7 @@ public class NoteSendBService implements INoteSendBService {
             Map log = new HashMap();
             log.put("title", views.get(i).getTitle());
             log.put("sendUserId", views.get(i).getSendUserId());
-            qIn = new HashMap();
-            qIn.put("userId", views.get(i).getSendUserId());
-            UserView sender = iUserMiddle.getUserTiny(qIn, false, false);
+            UserView sender = iUserMiddle.getUserTiny(views.get(i).getSendUserId(), false, false);
             log.put("sendUserId", sender.getUserId());
             log.put("sendUserNickname", sender.getNickname());
             log.put("sendTime", views.get(i).getSendTime());

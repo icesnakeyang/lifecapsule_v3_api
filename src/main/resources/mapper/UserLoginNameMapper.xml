@@ -42,4 +42,18 @@
             </when>
         </choose>
     </select>
+
+    <!--修改用户登录名密码-->
+    <update id="updateLoginName" parameterType="map">
+        update user_login_name
+        <set>
+            <if test="loginName!=null">
+                login_name=#{loginName},
+            </if>
+            <if test="password!=null">
+                password=#{password}
+            </if>
+        </set>
+        where user_id=#{userId}
+    </update>
 </mapper>

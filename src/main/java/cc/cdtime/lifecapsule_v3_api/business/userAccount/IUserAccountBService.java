@@ -50,6 +50,7 @@ public interface IUserAccountBService {
     Map bindEmail(Map in) throws Exception;
 
     Map signByEmail(Map in) throws Exception;
+    Map signByLoginName(Map in) throws Exception;
 
     /**
      * 用户通过token获取用户登录信息，查看是否需要口令登录
@@ -59,4 +60,12 @@ public interface IUserAccountBService {
      * @throws Exception
      */
     Map getUserLoginByToken(Map in) throws Exception;
+
+    /**
+     * 用户设置登录名和密码
+     * 只适用未设置登录名的用户，如果修改账号，使用changePassword接口
+     * @param in
+     * @throws Exception
+     */
+    void setLoginNamePassword(Map in) throws Exception;
 }

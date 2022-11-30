@@ -387,7 +387,7 @@ public class UserAccountBService implements IUserAccountBService {
         String newToken = GogoTools.UUID32();
         if (token != null) {
             qIn.put("token", token);
-            UserView userView = iUserMiddle.getUserTiny(qIn, true, false);
+            UserView userView = iUserMiddle.getUserLogin(qIn, true);
             if (userView != null) {
                 oldUserId = userView.getUserId();
             }
@@ -469,12 +469,79 @@ public class UserAccountBService implements IUserAccountBService {
     }
 
     @Override
+    public Map signByLoginName(Map in) throws Exception {
+        String loginName = in.get("loginName").toString();
+        String password = in.get("password").toString();
+        String token = (String) in.get("token");
+
+        Map qIn = new HashMap();
+        qIn.put("loginName", loginName);
+        qIn.put("password", GogoTools.encoderByMd5(password));
+        UserView userView = iUserMiddle.getLoginName(qIn);
+        if (userView == null) {
+            //用户名或密码错误
+            throw new Exception("10076");
+        }
+
+        String oldUserId = null;
+        String oldToken = token;
+
+        qIn = new HashMap();
+        if (token != null) {
+            qIn.put("token", token);
+            UserView userViewOld = iUserMiddle.getUserLogin(qIn, true);
+            if (userViewOld != null) {
+                oldUserId = userViewOld.getUserId();
+            }
+        }
+
+        /**
+         * 保存登录日志
+         */
+        String newToken = loginUser(userView.getUserId(), in);
+
+        /**
+         * 保存登录历史记录
+         */
+        UserLoginHistory userLoginHistory = new UserLoginHistory();
+        userLoginHistory.setCreateTime(new Date());
+        userLoginHistory.setNewUserId(userView.getUserId());
+        userLoginHistory.setOldUserId(oldUserId);
+        userLoginHistory.setNewToken(newToken);
+        userLoginHistory.setOldToken(oldToken);
+        iUserMiddle.createUserLoginHistory(userLoginHistory);
+
+        /**
+         * 登录日志user_login_log和登录历史记录user_login_history的区别是
+         * 用户每次通过token，用户名密码，email等登录都会被记录在登录日志里
+         * 登录历史记录是用户主动操作的一次登录，既用户通过用户名密码，或者邮件认证，对登录信息进行了确认
+         * 日常检测token是在user_login_log表里，而user_login_history是用户登录行为的记录
+         */
+
+        Map out = new HashMap();
+        out.put("token", newToken);
+        out.put("nickname", userView.getNickname());
+        if (userView.getTimerPrimary() == null) {
+            qIn = new HashMap();
+            qIn.put("userId", userView.getUserId());
+            qIn.put("type", ESTags.TIMER_TYPE_PRIMARY);
+            TimerView timerView = iTimerMiddle.getUserTimer(qIn, false);
+            out.put("timerPrimary", timerView.getTimerTime().getTime());
+        } else {
+            out.put("timerPrimary", userView.getTimerPrimary().getTime());
+        }
+        out.put("loginName", userView.getLoginName());
+
+        return out;
+    }
+
+    @Override
     public Map getUserLoginByToken(Map in) throws Exception {
         String token = in.get("token").toString();
 
         Map qIn = new HashMap();
         qIn.put("token", token);
-        UserView userView = iUserMiddle.getUserLogin(qIn, false);
+        UserView userView = iUserMiddle.getUser(qIn, false, true);
 
         Map out = new HashMap();
         if (userView.getOpenPassword() != null) {
@@ -484,6 +551,76 @@ public class UserAccountBService implements IUserAccountBService {
         }
 
         return out;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void setLoginNamePassword(Map in) throws Exception {
+        String token = in.get("token").toString();
+        String loginName = in.get("loginName").toString();
+        String password = in.get("password").toString();
+
+        /**
+         * 使用token查询当前登录用户，获取userId
+         */
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        UserView userViewBase = iUserMiddle.getUser(qIn, false, false);
+
+        //通过userId查询是否有登录用户名
+        qIn = new HashMap();
+        qIn.put("userId", userViewBase.getUserId());
+        UserView userViewLoginName = iUserMiddle.getLoginName(qIn);
+
+        /**
+         * 查询该loginName是否已存在
+         */
+        qIn = new HashMap();
+        qIn.put("loginName", loginName);
+        UserView userLoginNameLib = iUserMiddle.getLoginName(qIn);
+
+        if (userLoginNameLib != null) {
+            /**
+             * 已存在，查询是否是当前用户的
+             */
+            if (userLoginNameLib.getUserId().equals(userViewBase.getUserId())) {
+                /**
+                 * 是当前用户的，修改密码
+                 */
+                qIn = new HashMap();
+                qIn.put("password", GogoTools.encoderByMd5(password));
+                qIn.put("userId", userViewBase.getUserId());
+                iUserMiddle.updateLoginName(qIn);
+            } else {
+                /**
+                 * 登录名已被其他用户注册了
+                 */
+                throw new Exception("10075");
+            }
+        } else {
+            /**
+             * 登录名不存在，如果用户有登录名，就直接覆盖掉，如果没有，就创建一个
+             */
+            if (userViewLoginName != null) {
+                /**
+                 * 覆盖
+                 */
+                qIn = new HashMap();
+                qIn.put("loginName", loginName);
+                qIn.put("password", GogoTools.encoderByMd5(password));
+                qIn.put("userId", userViewBase.getUserId());
+                iUserMiddle.updateLoginName(qIn);
+            } else {
+                /**
+                 * 创建登录名
+                 */
+                UserLoginName userLoginName = new UserLoginName();
+                userLoginName.setLoginName(loginName);
+                userLoginName.setUserId(userViewBase.getUserId());
+                userLoginName.setPassword(GogoTools.encoderByMd5(password));
+                iUserMiddle.createUserLoginName(userLoginName);
+            }
+        }
     }
 
     private String loginUser(String userId, Map params) throws Exception {

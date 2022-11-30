@@ -19,7 +19,7 @@ public class WebUserBService implements IWebUserBService {
 
     public WebUserBService(IUserMiddle iUserMiddle,
                            IUserAccountBService
-            iUserAccountBService, IEmailBService iEmailBService) {
+                                   iUserAccountBService, IEmailBService iEmailBService) {
         this.iUserMiddle = iUserMiddle;
         this.iUserAccountBService = iUserAccountBService;
         this.iEmailBService = iEmailBService;
@@ -67,5 +67,16 @@ public class WebUserBService implements IWebUserBService {
     @Override
     public void sendVerifyCodeToEmail(Map in) throws Exception {
         iEmailBService.sendVerifyCodeToEmail(in);
+    }
+
+    @Override
+    public Map signByLoginName(Map in) throws Exception {
+        Map out = iUserAccountBService.signByLoginName(in);
+        return out;
+    }
+
+    @Override
+    public void setLoginNamePassword(Map in) throws Exception {
+        iUserAccountBService.setLoginNamePassword(in);
     }
 }

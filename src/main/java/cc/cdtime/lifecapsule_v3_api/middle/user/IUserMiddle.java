@@ -15,14 +15,17 @@ public interface IUserMiddle {
      */
     void createUserBase(UserBase userBase) throws Exception;
 
+
     /**
      * 获取用户简要信息
      *
-     * @param qIn
+     * @param userid
+     * @param returnNull
+     * @param isLogin
      * @return
      * @throws Exception
      */
-    UserView getUserTiny(Map qIn, Boolean returnNull, Boolean isLogin) throws Exception;
+    UserView getUserTiny(String userid, Boolean returnNull, Boolean isLogin) throws Exception;
 
     /**
      * 记录用户登录日志
@@ -165,4 +168,13 @@ public interface IUserMiddle {
     void setEmailStatus(Map qIn) throws Exception;
 
     void createUserLoginHistory(UserLoginHistory userLoginHistory) throws Exception;
+
+    /**
+     * 修改用户登录名密码
+     *
+     * @param qIn loginName
+     *            password
+     *            userId
+     */
+    void updateLoginName(Map qIn) throws Exception;
 }

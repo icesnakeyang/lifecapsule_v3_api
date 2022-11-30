@@ -24,4 +24,13 @@ public interface UserLoginNameDao {
      * @return
      */
     UserView getLoginName(Map qIn);
+
+    /**
+     * 修改用户登录名密码
+     *
+     * @param qIn loginName
+     *            password
+     *            userId
+     */
+    void updateLoginName(Map qIn);
 }

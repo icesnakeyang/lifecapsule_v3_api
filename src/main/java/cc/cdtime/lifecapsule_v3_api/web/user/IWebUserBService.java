@@ -29,4 +29,8 @@ public interface IWebUserBService {
     Map signByEmail(Map in) throws Exception;
 
     void sendVerifyCodeToEmail(Map in) throws Exception;
+
+    Map signByLoginName(Map in) throws Exception;
+
+    void setLoginNamePassword(Map in) throws Exception;
 }

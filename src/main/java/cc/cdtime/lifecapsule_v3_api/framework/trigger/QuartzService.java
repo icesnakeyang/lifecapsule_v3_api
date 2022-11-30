@@ -48,7 +48,7 @@ public class QuartzService {
      * @throws Exception
      */
     @Transactional(rollbackFor = Exception.class)
-    @Scheduled(cron = "0 */1 * * * ?")
+    @Scheduled(cron = "0 */5 * * * ?")
     public void primaryTimerJob() throws Exception {
         log.info("primary timer trigger");
 
@@ -105,7 +105,7 @@ public class QuartzService {
      * @throws Exception
      */
     @Transactional(rollbackFor = Exception.class)
-    @Scheduled(cron = "0 */1 * * * ?")
+    @Scheduled(cron = "0 */5 * * * ?")
     public void specificTimeJob() throws Exception {
         log.info("specific time trigger");
         Map qIn = new HashMap();
@@ -135,7 +135,7 @@ public class QuartzService {
      * @throws Exception
      */
     @Transactional(rollbackFor = Exception.class)
-    @Scheduled(cron = "0 */1 * * * ?")
+    @Scheduled(cron = "0 */5 * * * ?")
     public void instantMessageJob() throws Exception {
         log.info("Send instant message");
         Map qIn = new HashMap();

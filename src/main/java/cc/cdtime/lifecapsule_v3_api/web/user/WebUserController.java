@@ -140,6 +140,7 @@ public class WebUserController {
 
     /**
      * web 用户保存昵称
+     *
      * @param request
      * @param httpServletRequest
      * @return
@@ -179,7 +180,7 @@ public class WebUserController {
             in.put("email", request.getEmail());
             in.put("emailCode", request.getEmailCode());
 
-            Map out=iWebUserBService.signByEmail(in);
+            Map out = iWebUserBService.signByEmail(in);
             response.setData(out);
         } catch (Exception ex) {
             try {
@@ -188,6 +189,46 @@ public class WebUserController {
                 response.setCode(10001);
                 log.error("Web user signByEmail error:" + ex.getMessage());
             }
+        }
+        return response;
+    }
+
+    /**
+     * web用户通过用户名密码登录
+     */
+    @ResponseBody
+    @PostMapping("/signByLoginName")
+    public Response signByLoginName(@RequestBody UserAccountRequest request) {
+        Response response = new Response();
+        Map in = new HashMap();
+        Map logMap = new HashMap();
+        Map memoMap = new HashMap();
+        try {
+            in.put("loginName", request.getLoginName());
+            in.put("password", request.getPassword());
+
+            logMap.put("UserActType", ESTags.LOGIN_BY_LOGIN_NAME);
+            memoMap.put("loginName", request.getLoginName());
+
+            Map out = iWebUserBService.signByLoginName(in);
+            response.setData(out);
+
+            logMap.put("result", ESTags.SUCCESS);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("Web user signByLoginName error:" + ex.getMessage());
+            }
+            logMap.put("result", ESTags.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonService.createUserActLog(logMap);
+        } catch (Exception ex3) {
+            log.error("Web user signByLoginName use act error:" + ex3.getMessage());
         }
         return response;
     }
@@ -215,6 +256,52 @@ public class WebUserController {
                 response.setCode(10001);
                 log.error("Web user sendVerifyCodeToEmail error:" + ex.getMessage());
             }
+        }
+        return response;
+    }
+
+    /**
+     * web端用户设置登录名和密码
+     * 只适用未设置登录名的用户，如果修改账号，使用changePassword接口
+     *
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/setLoginNamePassword")
+    public Response setLoginNamePassword(@RequestBody UserAccountRequest request,
+                                         HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        Map logMap = new HashMap();
+        Map memoMap = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("loginName", request.getLoginName());
+            in.put("password", request.getPassword());
+
+            logMap.put("token", token);
+            logMap.put("UserActType", ESTags.USER_SET_LOGIN_NAME_PASSWORD);
+
+            iWebUserBService.setLoginNamePassword(in);
+
+            logMap.put("result", ESTags.SUCCESS);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("Web user setLoginNamePassword error:" + ex.getMessage());
+            }
+            logMap.put("result", ESTags.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonService.createUserActLog(logMap);
+        } catch (Exception ex3) {
+            log.error("Web user setLoginNamePassword user act error:" + ex3.getMessage());
         }
         return response;
     }
