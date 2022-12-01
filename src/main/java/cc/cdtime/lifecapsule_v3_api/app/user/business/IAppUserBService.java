@@ -75,4 +75,6 @@ public interface IAppUserBService {
     void sendVerifyCodeToEmail(Map in) throws Exception;
 
     void saveNickname(Map in) throws Exception;
+
+    Map signByLoginNamePassword(Map in) throws Exception;
 }

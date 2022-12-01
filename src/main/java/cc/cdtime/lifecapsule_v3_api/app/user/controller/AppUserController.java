@@ -427,4 +427,32 @@ public class AppUserController {
         }
         return response;
     }
+
+    /**
+     * App用户通过登录名密码登录
+     */
+    @ResponseBody
+    @PostMapping("/signByLoginNamePassword")
+    public Response signByLoginNamePassword(@RequestBody UserAccountRequest request,
+                                HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("loginName", request.getLoginName());
+            in.put("password", request.getPassword());
+
+            Map out = iAppUserBService.signByLoginNamePassword(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("App user signByLoginNamePassword error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
 }

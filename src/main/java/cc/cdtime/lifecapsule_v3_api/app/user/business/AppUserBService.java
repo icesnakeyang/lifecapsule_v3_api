@@ -213,6 +213,12 @@ public class AppUserBService implements IAppUserBService {
         iUserProfileBService.saveNickname(in);
     }
 
+    @Override
+    public Map signByLoginNamePassword(Map in) throws Exception {
+        Map out = iUserAccountBService.signByLoginName(in);
+        return out;
+    }
+
     private void verifyToken() throws Exception {
         /**
          * 校验token的有效期
