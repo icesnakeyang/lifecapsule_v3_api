@@ -31,6 +31,7 @@ public interface INoteMiddle {
      *            keyword
      *            tagList
      *            tagName
+     *            noteType
      *            offset
      *            size
      * @return

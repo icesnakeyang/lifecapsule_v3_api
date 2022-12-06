@@ -104,7 +104,9 @@ public class TaskTodoBService implements ITaskTodoBService {
 
         TaskView taskTodoView = iTaskTodoMiddle.getTaskTodo(taskId, false, userView.getUserId());
 
-        iTaskTodoMiddle.deleteTaskTodo(taskId);
+        qIn = new HashMap();
+        qIn.put("taskId", taskId);
+        iTaskTodoMiddle.deleteTaskTodo(qIn);
 
     }
 

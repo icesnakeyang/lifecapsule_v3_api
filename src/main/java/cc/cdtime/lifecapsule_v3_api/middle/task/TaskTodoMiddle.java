@@ -138,9 +138,17 @@ public class TaskTodoMiddle implements ITaskTodoMiddle {
     }
 
     @Override
-    public void deleteTaskTodo(String taskId) throws Exception {
-        iTaskTodoService.deleteTaskTodo(taskId);
-        iContentService.deleteContent(taskId);
-        iUserEncodeKeyService.deleteUserEncodeKey(taskId);
+    public void deleteTaskTodo(Map qIn) throws Exception {
+        String taskId = (String) qIn.get("taskId");
+        String noteId = (String) qIn.get("noteId");
+        if (taskId == null && noteId == null) {
+            //必须指定taskId，或者noteId
+            throw new Exception("10078");
+        }
+        iTaskTodoService.deleteTaskTodo(qIn);
+        if (taskId != null) {
+            iContentService.deleteContent(taskId);
+            iUserEncodeKeyService.deleteUserEncodeKey(taskId);
+        }
     }
 }

@@ -19,10 +19,10 @@
         insert into note_info
         (note_id, user_id, title,
          create_time, status, encrypt,
-         pid)
+         pid, note_type)
         values (#{noteId}, #{userId}, #{title},
                 #{createTime}, #{status}, #{encrypt},
-                #{pid})
+                #{pid}, #{noteType})
     </insert>
 
     <!--查询一条笔记简要信息-->
@@ -69,6 +69,14 @@
                 )
             </when>
         </choose>
+        <choose>
+            <when test="noteType!=null">
+                and note_type=#{noteType}
+            </when>
+            <otherwise>
+                and note_type is null
+            </otherwise>
+        </choose>
         order by create_time desc
         <choose>
             <when test="offset!=null">
@@ -110,6 +118,14 @@
                 </foreach>
                 )
             </when>
+        </choose>
+        <choose>
+            <when test="noteType!=null">
+                and note_type=#{noteType}
+            </when>
+            <otherwise>
+                and note_type is null
+            </otherwise>
         </choose>
     </select>
 
@@ -173,6 +189,14 @@
                 and title like concat('%', #{titleKey},'%')
             </when>
         </choose>
+        <choose>
+            <when test="noteType!=null">
+                and note_type=#{noteType}
+            </when>
+            <otherwise>
+                and note_type is null
+            </otherwise>
+        </choose>
     </select>
 
     <!--随机查询笔记-->
@@ -180,6 +204,14 @@
         select *
         from note_info
         where user_id = #{userId}
+        <choose>
+            <when test="noteType!=null">
+                and note_type=#{noteType}
+            </when>
+            <otherwise>
+                and note_type is null
+            </otherwise>
+        </choose>
         order by random() limit #{size}
     </select>
 </mapper>

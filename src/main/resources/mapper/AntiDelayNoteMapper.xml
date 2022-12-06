@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.antiDelay.dao.AntiDelayDao">
+    <!--配置表和对象的字段映射 -->
+    <resultMap id="antiDelayMap" type="cc.cdtime.lifecapsule_v3_api.meta.antiDelay.entity.AntiDelayView">
+        <result property="antiDelayId" column="anti_delay_id"/>
+        <result property="antiDelayType" column="anti_delay_type"/>
+    </resultMap>
+
+    <!--创建一条方拖延笔记内容-->
+    <insert id="createAntiDelayNote" parameterType="cc.cdtime.lifecapsule_v3_api.meta.antiDelay.entity.AntiDelayNote">
+        insert into anti_delay_note
+            (note_id, anti_delay_type, anti_delay_id)
+        values (#{noteId}, #{antiDelayType}, #{antiDelayId})
+    </insert>
+
+    <!--读取防拖延笔记的子项内容列表-->
+    <select id="listAntiDelayNote" parameterType="map" resultMap="antiDelayMap">
+        select adn.ids,
+        ni.note_id,
+        anti_delay_type,
+        anti_delay_id,
+        user_id,
+        title,
+        create_time,
+        status,
+        note_type
+        from anti_delay_note adn
+        left join note_info ni on adn.note_id = ni.note_id
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+        <choose>
+            <when test="noteId!=null">
+                and adn.note_id=#{noteId}
+            </when>
+        </choose>
+    </select>
+
+    <select id="getAntiDelayNote" parameterType="java.lang.String" resultMap="antiDelayMap">
+        select *
+        from anti_delay_note
+        where anti_delay_id = #{antiDelayId}
+    </select>
+
+    <delete id="deleteAntiDelayNote" parameterType="java.lang.String">
+        delete
+        from anti_delay_note
+        where note_id = #{noteId}
+    </delete>
+
+</mapper>

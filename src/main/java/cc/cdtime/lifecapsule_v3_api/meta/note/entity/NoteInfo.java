@@ -22,4 +22,5 @@ public class NoteInfo {
      * 父笔记Id
      */
     private String pid;
+    private String noteType;
 }

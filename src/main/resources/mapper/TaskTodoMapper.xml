@@ -13,9 +13,9 @@
     <insert id="createTaskTodo" parameterType="cc.cdtime.lifecapsule_v3_api.meta.task.entity.TaskTodo">
         insert into task_todo
         (user_id, task_title, create_time, task_id,
-         priority, complete)
+         priority, complete, task_type, note_id)
         values (#{userId}, #{taskTitle}, #{createTime}, #{taskId},
-                #{priority}, #{complete})
+                #{priority}, #{complete}, #{taskType}, #{noteId})
     </insert>
 
     <!--读取todo任务列表-->
@@ -32,6 +32,11 @@
                 and complete is false
             </when>
         </choose>
+        <choose>
+            <when test="noteId!=null">
+                and note_id=#{noteId}
+            </when>
+        </choose>
         order by complete, create_time desc
         limit #{size} offset #{offset}
     </select>
@@ -42,6 +47,11 @@
         <choose>
             <when test="userId!=null">
                 and user_id=#{userId}
+            </when>
+        </choose>
+        <choose>
+            <when test="noteId!=null">
+                and note_id=#{noteId}
             </when>
         </choose>
     </select>
@@ -71,9 +81,20 @@
     </update>
 
     <!--物理删除一个todo任务-->
-    <delete id="deleteTaskTodo" parameterType="java.lang.String">
+    <delete id="deleteTaskTodo" parameterType="map">
         delete
         from task_todo
-        where task_id = #{taskId}
+        where 1=1
+        <choose>
+            <when test="taskId!=null">
+                and task_id = #{taskId}
+            </when>
+        </choose>
+        <choose>
+            <when test="noteId!=null">
+                and note_id=#{noteId}
+            </when>
+        </choose>
+
     </delete>
 </mapper>

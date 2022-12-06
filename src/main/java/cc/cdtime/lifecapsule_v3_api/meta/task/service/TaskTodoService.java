@@ -46,7 +46,7 @@ public class TaskTodoService implements ITaskTodoService {
     }
 
     @Override
-    public void deleteTaskTodo(String taskId) {
-        taskTodoDao.deleteTaskTodo(taskId);
+    public void deleteTaskTodo(Map qIn) throws Exception{
+        taskTodoDao.deleteTaskTodo(qIn);
     }
 }

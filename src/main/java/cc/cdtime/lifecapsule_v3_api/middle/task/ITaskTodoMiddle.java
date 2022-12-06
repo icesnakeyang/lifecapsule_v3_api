@@ -18,6 +18,7 @@ public interface ITaskTodoMiddle {
      * 查询待办任务列表
      *
      * @param qIn userId
+     *            noteId
      *            complete
      *            size
      *            offset
@@ -52,5 +53,5 @@ public interface ITaskTodoMiddle {
      */
     TaskView getTaskTodo(String taskId, Boolean returnNull, String userId) throws Exception;
 
-    void deleteTaskTodo(String taskId) throws Exception;
+    void deleteTaskTodo(Map qIn) throws Exception;
 }

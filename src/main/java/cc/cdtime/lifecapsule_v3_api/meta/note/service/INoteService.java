@@ -30,6 +30,7 @@ public interface INoteService {
      *            keyword
      *            tagList
      *            tagName
+     *            noteType
      *            offset
      *            size
      * @return

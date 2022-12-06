@@ -20,6 +20,7 @@ public interface TaskTodoDao {
      * 读取todo任务列表
      *
      * @param qIn userId
+     *            noteId
      *            complete
      *            size
      *            offset
@@ -55,7 +56,8 @@ public interface TaskTodoDao {
     /**
      * 物理删除一个todo任务
      *
-     * @param taskId
+     * @param qIn taskId
+     *            noteId
      */
-    void deleteTaskTodo(String taskId);
+    void deleteTaskTodo(Map qIn);
 }

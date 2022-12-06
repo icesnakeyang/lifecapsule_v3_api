@@ -19,4 +19,5 @@ public class TaskTodo {
     private Boolean complete;
     private String userEncodeKey;
     private String noteId;
+    private String taskType;
 }
