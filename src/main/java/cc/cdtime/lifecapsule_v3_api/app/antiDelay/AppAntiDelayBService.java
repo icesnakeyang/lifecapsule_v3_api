@@ -40,4 +40,10 @@ public class AppAntiDelayBService implements IAppAntiDelayBService {
     public void deleteMyAntiDelayNote(Map in) throws Exception {
         iAntiDelayBService.deleteAntiDelayNote(in);
     }
+
+    @Override
+    public Map loadLastMyAntiDelayNote(Map in) throws Exception {
+        Map out = iAntiDelayBService.loadLastMyAntiDelayNote(in);
+        return out;
+    }
 }

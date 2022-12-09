@@ -4,6 +4,7 @@ import cc.cdtime.lifecapsule_v3_api.framework.constant.ESTags;
 import cc.cdtime.lifecapsule_v3_api.framework.tools.GogoTools;
 import cc.cdtime.lifecapsule_v3_api.meta.antiDelay.entity.AntiDelayNote;
 import cc.cdtime.lifecapsule_v3_api.meta.antiDelay.entity.AntiDelayView;
+import cc.cdtime.lifecapsule_v3_api.meta.content.entity.Content;
 import cc.cdtime.lifecapsule_v3_api.meta.creativeNote.entity.CreativeNote;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteInfo;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
@@ -12,6 +13,7 @@ import cc.cdtime.lifecapsule_v3_api.meta.task.entity.TaskView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserEncodeKeyView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
 import cc.cdtime.lifecapsule_v3_api.middle.antiDelay.IAntiDelayMiddle;
+import cc.cdtime.lifecapsule_v3_api.middle.content.IContentMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.note.INoteMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.security.ISecurityMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.task.ITaskTodoMiddle;
@@ -21,10 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class AntiDelayBService implements IAntiDelayBService {
@@ -34,19 +33,22 @@ public class AntiDelayBService implements IAntiDelayBService {
     private final INoteMiddle iNoteMiddle;
     private final ITaskTodoMiddle iTaskTodoMiddle;
     private final IUserEncodeKeyMiddle iUserEncodeKeyMiddle;
+    private final IContentMiddle iContentMiddle;
 
     public AntiDelayBService(IUserMiddle iUserMiddle,
                              IAntiDelayMiddle iAntiDelayMiddle,
                              ISecurityMiddle iSecurityMiddle,
                              INoteMiddle iNoteMiddle,
                              ITaskTodoMiddle iTaskTodoMiddle,
-                             IUserEncodeKeyMiddle iUserEncodeKeyMiddle) {
+                             IUserEncodeKeyMiddle iUserEncodeKeyMiddle,
+                             IContentMiddle iContentMiddle) {
         this.iUserMiddle = iUserMiddle;
         this.iAntiDelayMiddle = iAntiDelayMiddle;
         this.iSecurityMiddle = iSecurityMiddle;
         this.iNoteMiddle = iNoteMiddle;
         this.iTaskTodoMiddle = iTaskTodoMiddle;
         this.iUserEncodeKeyMiddle = iUserEncodeKeyMiddle;
+        this.iContentMiddle = iContentMiddle;
     }
 
     @Override
@@ -362,6 +364,62 @@ public class AntiDelayBService implements IAntiDelayBService {
 
         iAntiDelayMiddle.deleteAntiDelayNote(noteView.getNoteId());
         iNoteMiddle.deleteNote(noteId);
+    }
+
+    @Override
+    public Map loadLastMyAntiDelayNote(Map in) throws Exception {
+        String token = in.get("token").toString();
+
+        String encryptKey = (String) in.get("encryptKey");
+        String keyToken = (String) in.get("keyToken");
+
+        /**
+         * 获取用户临时上传的加密笔记AES秘钥的AES秘钥
+         */
+        String strAESKey = null;
+        if (keyToken != null) {
+            strAESKey = iSecurityMiddle.takeNoteAES(keyToken, encryptKey);
+        }
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        UserView userView = iUserMiddle.getUser(qIn, false, true);
+
+        qIn = new HashMap();
+        qIn.put("userId", userView.getUserId());
+        qIn.put("noteType", ESTags.ANTI_DELAY_NOTE);
+        qIn.put("size", 1);
+        qIn.put("offset", 0);
+        ArrayList<NoteView> noteViews = iNoteMiddle.listNote(qIn);
+
+        Map out = new HashMap();
+        if (noteViews.size() == 1) {
+
+            String noteId = noteViews.get(0).getNoteId();
+            qIn = new HashMap();
+            qIn.put("noteId", noteId);
+            ArrayList<AntiDelayView> antiDelayViews = iAntiDelayMiddle.listAntiDelayNote(qIn);
+            ArrayList list = new ArrayList();
+            for (int i = 0; i < antiDelayViews.size(); i++) {
+                String type = antiDelayViews.get(i).getAntiDelayType();
+                Content content = iContentMiddle.getContent(antiDelayViews.get(i).getAntiDelayId());
+                String c = content.getContent();
+                Map map = new HashMap();
+                map.put("type", type);
+                map.put("content", c);
+                list.add(map);
+            }
+            out.put("subList", list);
+            out.put("noteId", noteId);
+            UserEncodeKeyView userEncodeKeyView = iUserEncodeKeyMiddle.getUserEncodeKey(noteId);
+            if (userEncodeKeyView != null) {
+                String data = userEncodeKeyView.getEncodeKey();
+                //用AES秘钥加密笔记内容的AES秘钥
+                String outCode = GogoTools.encryptAESKey(data, strAESKey);
+                out.put("userEncodeKey", outCode);
+            }
+        }
+        return out;
     }
 
     private void createNew10SecTasks(ArrayList<Map> tasksMap, String userId, String noteId) throws Exception {

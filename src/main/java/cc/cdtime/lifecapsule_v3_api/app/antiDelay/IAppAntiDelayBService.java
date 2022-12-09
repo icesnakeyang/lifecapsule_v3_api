@@ -1,5 +1,6 @@
 package cc.cdtime.lifecapsule_v3_api.app.antiDelay;
 
+
 import java.util.Map;
 
 public interface IAppAntiDelayBService {
@@ -33,4 +34,13 @@ public interface IAppAntiDelayBService {
     void updateMyAntiDelayNote(Map in) throws Exception;
 
     void deleteMyAntiDelayNote(Map in) throws Exception;
+
+    /**
+     * app端用户读取上一次防拖延笔记的内容作为预设内容
+     *
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    Map loadLastMyAntiDelayNote(Map in) throws Exception;
 }

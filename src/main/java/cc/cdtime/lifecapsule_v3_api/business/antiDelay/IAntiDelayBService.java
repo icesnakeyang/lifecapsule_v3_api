@@ -19,4 +19,6 @@ public interface IAntiDelayBService {
     Map getMyAntiDelayNote(Map in) throws Exception;
 
     void deleteAntiDelayNote(Map in) throws Exception;
+
+    Map loadLastMyAntiDelayNote(Map in) throws Exception;
 }

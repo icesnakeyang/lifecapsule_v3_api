@@ -31,4 +31,13 @@ public interface IAntiDelayNoteService {
      * @param noteId
      */
     void deleteAntiDelayNote(String noteId) throws Exception;
+
+    /**
+     * 读取一个方拖延笔记的详细内容
+     *
+     * @param qIn userId
+     *            antiDelayType
+     * @return
+     */
+    AntiDelayView loadAntiDelayNote(Map qIn) throws Exception;
 }

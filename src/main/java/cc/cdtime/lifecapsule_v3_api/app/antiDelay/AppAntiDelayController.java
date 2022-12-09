@@ -276,4 +276,35 @@ public class AppAntiDelayController {
         }
         return response;
     }
+
+    /**
+     * app端用户读取上一次防拖延笔记的内容作为预设内容
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/loadLastMyAntiDelayNote")
+    public Response loadLastMyAntiDelayNote(@RequestBody AntiDelayRequest request,
+                                            HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("encryptKey", request.getEncryptKey());
+            in.put("keyToken", request.getKeyToken());
+
+            Map out = iAppAntiDelayBService.loadLastMyAntiDelayNote(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("App user loadLastMyAntiDelayNote error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
 }

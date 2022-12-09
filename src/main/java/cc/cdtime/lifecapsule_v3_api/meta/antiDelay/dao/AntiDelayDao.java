@@ -30,8 +30,18 @@ public interface AntiDelayDao {
     /**
      * 物理删除防拖延笔记
      * 按照noteId，删除所有的子内容
+     *
      * @param noteId
      */
     void deleteAntiDelayNote(String noteId);
+
+    /**
+     * 读取一个方拖延笔记的详细内容
+     *
+     * @param qIn userId
+     *            antiDelayType
+     * @return
+     */
+    AntiDelayView loadAntiDelayNote(Map qIn);
 
 }

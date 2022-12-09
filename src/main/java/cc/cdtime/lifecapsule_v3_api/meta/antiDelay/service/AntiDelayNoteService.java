@@ -37,4 +37,10 @@ public class AntiDelayNoteService implements IAntiDelayNoteService {
     public void deleteAntiDelayNote(String noteId) throws Exception {
         antiDelayDao.deleteAntiDelayNote(noteId);
     }
+
+    @Override
+    public AntiDelayView loadAntiDelayNote(Map qIn) throws Exception {
+        AntiDelayView antiDelayView = antiDelayDao.loadAntiDelayNote(qIn);
+        return antiDelayView;
+    }
 }

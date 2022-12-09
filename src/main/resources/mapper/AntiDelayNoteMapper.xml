@@ -52,4 +52,23 @@
         where note_id = #{noteId}
     </delete>
 
+    <!--读取一个方拖延笔记的详细内容-->
+    <select id="loadAntiDelayNote" parameterType="map" resultMap="antiDelayMap">
+        select * from anti_delay_note adn
+        left join note_info ni on adn.note_id=ni.note_id
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+        <choose>
+            <when test="antiDelayType!=null">
+                and anti_delay_type=#{antiDelayType}
+            </when>
+        </choose>
+        order by create_time desc
+        limit 1
+    </select>
+
 </mapper>
