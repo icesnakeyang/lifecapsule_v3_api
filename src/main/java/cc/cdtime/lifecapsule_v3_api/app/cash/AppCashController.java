@@ -209,6 +209,8 @@ public class AppCashController {
             in.put("token", token);
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
+            in.put("startTime", request.getStartTime());
+            in.put("endTime", request.getEndTime());
 
             logMap.put("UserActType", ESTags.USER_LIST_CASH_LEDGER);
             logMap.put("token", token);
@@ -362,6 +364,7 @@ public class AppCashController {
             in.put("amountOut", request.getAmountOut());
             in.put("cashCategoryId", request.getCashCategoryId());
             in.put("remark", request.getRemark());
+            in.put("transactionTime", request.getTransactionTime());
 
             logMap.put("UserActType", ESTags.UPDATE_CASH_LEDGER);
             logMap.put("token", token);
@@ -385,6 +388,50 @@ public class AppCashController {
             iCommonService.createUserActLog(logMap);
         } catch (Exception ex3) {
             log.error("App updateMyCashLedger user act error:" + ex3.getMessage());
+        }
+        return response;
+    }
+
+
+    /**
+     * app用户查询自己每月的现金账户汇总额
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/statisticCashLedgerMonth")
+    public Response statisticCashLedgerMonth(@RequestBody CashRequest request,
+                                             HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        Map logMap = new HashMap();
+        Map memoMap = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+
+            logMap.put("UserActType", ESTags.CASH_LEDGER_STATISTIC);
+            logMap.put("token", token);
+
+            Map out = iAppCashBService.statisticCashLedgerMonth(in);
+            response.setData(out);
+            logMap.put("result", ESTags.SUCCESS);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("App statisticCashLedgerMonth error:" + ex.getMessage());
+            }
+            logMap.put("result", ESTags.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonService.createUserActLog(logMap);
+        } catch (Exception ex3) {
+            log.error("App statisticCashLedgerMonth user act error:" + ex3.getMessage());
         }
         return response;
     }

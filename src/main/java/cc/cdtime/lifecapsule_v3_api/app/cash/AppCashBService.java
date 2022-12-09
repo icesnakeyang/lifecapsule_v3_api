@@ -69,4 +69,10 @@ public class AppCashBService implements IAppCashBService {
     public void updateMyCashLedger(Map in) throws Exception {
         iCashBService.updateMyCashLedger(in);
     }
+
+    @Override
+    public Map statisticCashLedgerMonth(Map in) throws Exception {
+        Map out = iCashBService.statisticCashLedgerMonth(in);
+        return out;
+    }
 }

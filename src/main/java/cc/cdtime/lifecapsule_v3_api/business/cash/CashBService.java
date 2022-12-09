@@ -179,6 +179,8 @@ public class CashBService implements ICashBService {
         String token = in.get("token").toString();
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
+        Date startTime = (Date) in.get("startTime");
+        Date endTime = (Date) in.get("endTime");
 
         Map qIn = new HashMap();
         qIn.put("token", token);
@@ -188,6 +190,8 @@ public class CashBService implements ICashBService {
         qIn.put("offset", offset);
         qIn.put("size", pageSize);
         qIn.put("userId", userView.getUserId());
+        qIn.put("startTime", startTime);
+        qIn.put("endTime", endTime);
         ArrayList<CashView> cashViews = iCashMiddle.listCashLedger(qIn);
         Integer total = iCashMiddle.totalCashLedger(qIn);
 
@@ -293,6 +297,7 @@ public class CashBService implements ICashBService {
         Double amountOut = (Double) in.get("amountOut");
         String cashCategoryId = in.get("cashCategoryId").toString();
         String remark = (String) in.get("remark");
+        Date transactionTime = (Date) in.get("transactionTime");
 
         Map qIn = new HashMap();
         qIn.put("token", token);
@@ -312,12 +317,38 @@ public class CashBService implements ICashBService {
         qIn.put("amountOut", amountOut);
         qIn.put("remark", remark);
         qIn.put("cashLedgerId", cashLedgerId);
+        qIn.put("transactionTime", transactionTime);
         iCashMiddle.updateCashLedger(qIn);
 
         /**
          * 刷新account 余额
          */
         refreshAccount(userView.getUserId());
+    }
+
+    /**
+     * 用户查询自己每月的现金账户汇总额
+     *
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Map statisticCashLedgerMonth(Map in) throws Exception {
+        String token = in.get("token").toString();
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        UserView userView = iUserMiddle.getUser(qIn, false, true);
+
+        qIn = new HashMap();
+        qIn.put("userId", userView.getUserId());
+        ArrayList<Map> cashMaps = iCashMiddle.statisticByMonth(qIn);
+
+        Map out = new HashMap();
+        out.put("cashList", cashMaps);
+
+        return out;
     }
 
     private void refreshAccount(String userId) throws Exception {

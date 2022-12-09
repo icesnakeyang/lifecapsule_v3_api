@@ -28,4 +28,6 @@ public interface IAppCashBService {
     Map getMyCashLedger(Map in) throws Exception;
 
     void updateMyCashLedger(Map in) throws Exception;
+
+    Map statisticCashLedgerMonth(Map in)throws Exception;
 }

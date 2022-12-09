@@ -169,4 +169,10 @@ public class CashMiddle implements ICashMiddle {
 
         return cashView;
     }
+
+    @Override
+    public ArrayList<Map> statisticByMonth(Map qIn) throws Exception {
+        ArrayList<Map> out = iCashService.statisticByMonth(qIn);
+        return out;
+    }
 }

@@ -164,6 +164,20 @@
                 and cl.cash_category_id=#{cashCategoryId}
             </when>
         </choose>
+        <choose>
+            <when test="startTime!=null">
+                <![CDATA[
+                    and create_time >= #{startTime}
+                ]]>
+            </when>
+        </choose>
+        <choose>
+            <when test="endTime!=null">
+                <![CDATA[
+                and create_time<#{endTime}
+                ]]>
+            </when>
+        </choose>
         order by create_time desc
         limit #{size} offset #{offset}
     </select>
@@ -213,10 +227,26 @@
             <if test="cashCategoryId!=null">
                 cash_category_id=#{cashCategoryId},
             </if>
+            <if test="transactionTime!=null">
+                create_time=#{transactionTime},
+            </if>
             <if test="remark!=null">
                 remark=#{remark}
             </if>
         </set>
         where cash_ledger_id=#{cashLedgerId}
     </update>
+
+    <!--统计每月的现金账汇总-->
+    <select id="statisticByMonth" parameterType="map" resultType="map">
+        select max(ids)                        as ids,
+               to_char(create_time, 'YYYY-MM') as d,
+               count(ids)                      as total,
+               sum(amount_in)                  as total_in,
+               sum(amount_out)                 as total_out
+        from cash_ledger
+        where user_id = #{userId}
+        group by d
+        order by d desc
+    </select>
 </mapper>

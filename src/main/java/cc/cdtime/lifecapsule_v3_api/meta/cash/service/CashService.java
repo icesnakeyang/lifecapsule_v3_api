@@ -102,4 +102,10 @@ public class CashService implements ICashService {
     public void updateCashLedger(Map qIn) throws Exception {
         cashDao.updateCashLedger(qIn);
     }
+
+    @Override
+    public ArrayList<Map> statisticByMonth(Map qIn) throws Exception {
+        ArrayList<Map> list = cashDao.statisticByMonth(qIn);
+        return list;
+    }
 }

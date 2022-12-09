@@ -97,6 +97,8 @@ public interface ICashMiddle {
      *
      * @param qIn userId
      *            cashCategoryId
+     *            startTime
+     *            endTime
      *            offset
      *            size
      * @return
@@ -126,4 +128,12 @@ public interface ICashMiddle {
     void updateCashLedger(Map qIn) throws Exception;
 
     CashView initCashAccount(String userId) throws Exception;
+
+    /**
+     * 统计每月的现金账汇总
+     *
+     * @param qIn userId
+     * @return
+     */
+    ArrayList<Map> statisticByMonth(Map qIn) throws Exception;
 }

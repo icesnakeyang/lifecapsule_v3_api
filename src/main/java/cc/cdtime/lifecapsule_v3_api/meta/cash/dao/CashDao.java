@@ -99,6 +99,8 @@ public interface CashDao {
      *
      * @param qIn userId
      *            cashCategoryId
+     *            startTime
+     *            endTime
      *            offset
      *            size
      * @return
@@ -126,5 +128,13 @@ public interface CashDao {
      *            cashLedgerId
      */
     void updateCashLedger(Map qIn);
+
+    /**
+     * 统计每月的现金账汇总
+     *
+     * @param qIn userId
+     * @return
+     */
+    ArrayList<Map> statisticByMonth(Map qIn);
 
 }
