@@ -398,6 +398,7 @@ public class TriggerBService implements ITriggerBService {
 
         qIn = new HashMap();
         qIn.put("email", toEmail);
+        qIn.put("userId", userView.getUserId());
         ContactView contactView = iContactMiddle.getContact(qIn, true, null);
         if (contactView == null) {
             /**
@@ -419,13 +420,17 @@ public class TriggerBService implements ITriggerBService {
          * 4、创建一个UserEncodeKey，indexId=triggerId
          */
         /**
+         * 如果用户没有设置密码，就保存私钥，如果设置了密码，则不保存私钥
          * 根据keyToken读取私钥
          * 用私钥解开用户用公钥加密的用户AES私钥
          */
         String strAESKey = null;
-        String privateKey = iSecurityMiddle.getRSAKey(keyToken);
-        strAESKey = GogoTools.decryptRSAByPrivateKey(encryptKey, privateKey);
-        iSecurityMiddle.deleteRSAKey(keyToken);
+        if(encryptKey!=null) {
+            strAESKey = null;
+            String privateKey = iSecurityMiddle.getRSAKey(keyToken);
+            strAESKey = GogoTools.decryptRSAByPrivateKey(encryptKey, privateKey);
+            iSecurityMiddle.deleteRSAKey(keyToken);
+        }
 
         NoteTrigger noteTrigger = new NoteTrigger();
         noteTrigger.setTriggerId(GogoTools.UUID32());
@@ -489,6 +494,7 @@ public class TriggerBService implements ITriggerBService {
             contact.setContactId(GogoTools.UUID32());
             contact.setEmail(toEmail);
             contact.setUserId(userView.getUserId());
+            contact.setContactName(toName);
             iContactMiddle.createContact(contact);
         }
 
@@ -518,6 +524,7 @@ public class TriggerBService implements ITriggerBService {
         iTriggerMiddle.createTrigger(noteTrigger);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void createNoteTriggerPrimary(Map in) throws Exception {
         String token = in.get("token").toString();
@@ -535,6 +542,7 @@ public class TriggerBService implements ITriggerBService {
 
         qIn = new HashMap();
         qIn.put("email", toEmail);
+        qIn.put("userId", userView.getUserId());
         ContactView contactView = iContactMiddle.getContact(qIn, true, null);
         if (contactView == null) {
             /**
@@ -544,6 +552,7 @@ public class TriggerBService implements ITriggerBService {
             contact.setContactId(GogoTools.UUID32());
             contact.setEmail(toEmail);
             contact.setUserId(userView.getUserId());
+            contact.setContactName(toName);
             iContactMiddle.createContact(contact);
         }
 

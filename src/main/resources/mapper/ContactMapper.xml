@@ -74,6 +74,11 @@
                 and email=#{email}
             </when>
         </choose>
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
     </select>
 
     <select id="getContactRemark" parameterType="map" resultMap="contactMap">

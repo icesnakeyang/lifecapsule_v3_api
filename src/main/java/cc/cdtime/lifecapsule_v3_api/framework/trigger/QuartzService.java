@@ -173,22 +173,12 @@ public class QuartzService {
                      * 还没发送email，先发送
                      * 调用email接口，发送email
                      */
-                    qIn.put("subject", triggerView.getTitle());
-                    qIn.put("userName", triggerView.getFromName());
-                    qIn.put("toName", triggerView.getToName());
-                    qIn.put("urlLink", "urllink");
-                    qIn.put("decode", "decode");
-                    qIn.put("mailType", ESTags.MAIL_TYPE_NOTE_SEND);
-                    iEmailToolService.sendMail(qIn);
-                    /**
-                     * 修改note_trigger.to_email_status=SEND_COMPLETE
-                     */
-                    qIn = new HashMap();
-                    qIn.put("toEmailStatus", ESTags.SEND_COMPLETE.toString());
-                    qIn.put("triggerId", triggerView.getTriggerId());
-                    iAdminTriggerMiddle.updateNoteTrigger(qIn);
-                    log.info("Send mail to " + triggerView.getToEmail());
-                }else {
+                    try {
+                        sendEmail(qIn, triggerView);
+                    } catch (Exception ex) {
+                        log.error("Send mail to " + triggerView.getToEmail() + " failed!");
+                    }
+                } else {
                     /**
                      * 已发送
                      */
@@ -200,29 +190,14 @@ public class QuartzService {
         }
         if (toUserId != null) {
             if (triggerView.getToUserStatus() == null) {
-                NoteSendLog noteSendLog = new NoteSendLog();
-                noteSendLog.setSendLogId(GogoTools.UUID32());
-                noteSendLog.setSendTime(new Date());
-                noteSendLog.setReceiveUserId(toUserId);
-                noteSendLog.setSendUserId(triggerView.getUserId());
-                noteSendLog.setTriggerType(triggerView.getTriggerType());
-                noteSendLog.setTriggerId(triggerView.getTriggerId());
-                noteSendLog.setToEmail(triggerView.getToEmail());
-                noteSendLog.setTitle(triggerView.getTitle());
-                noteSendLog.setFromName(triggerView.getFromName());
-                noteSendLog.setRefPid(triggerView.getRefPid());
-                noteSendLog.setToName(triggerView.getToName());
-                iNoteSendMiddle.createNoteSendLog(noteSendLog);
-
                 /**
-                 * 修改note_trigger.to_email_status=SEND_COMPLETE
+                 * 还没有发送站内消息，创建noteSendLog
                  */
-                Map qIn = new HashMap();
-                qIn.put("toUserStatus", ESTags.SEND_COMPLETE.toString());
-                qIn.put("triggerId", triggerView.getTriggerId());
-                iAdminTriggerMiddle.updateNoteTrigger(qIn);
-
-                log.info("Send message to user " + toUserId);
+                try {
+                    sendInnerMessage(triggerView, toUserId);
+                } catch (Exception ex) {
+                    log.error("Send message to user " + toUserId + " failed!");
+                }
             }
         }
 
@@ -244,5 +219,48 @@ public class QuartzService {
                 }
             }
         }
+    }
+
+    private void sendEmail(Map qIn, TriggerView triggerView) throws Exception {
+        qIn.put("subject", triggerView.getTitle());
+        qIn.put("userName", triggerView.getFromName());
+        qIn.put("toName", triggerView.getToName());
+        qIn.put("urlLink", "urllink");
+        qIn.put("decode", "decode");
+        qIn.put("mailType", ESTags.MAIL_TYPE_NOTE_SEND);
+        iEmailToolService.sendMail(qIn);
+        /**
+         * 修改note_trigger.to_email_status=SEND_COMPLETE
+         */
+        qIn = new HashMap();
+        qIn.put("toEmailStatus", ESTags.SEND_COMPLETE.toString());
+        qIn.put("triggerId", triggerView.getTriggerId());
+        iAdminTriggerMiddle.updateNoteTrigger(qIn);
+        log.info("Send message to user " + triggerView.getToEmail() + " success");
+    }
+
+    private void sendInnerMessage(TriggerView triggerView, String toUserId) throws Exception {
+        NoteSendLog noteSendLog = new NoteSendLog();
+        noteSendLog.setSendLogId(GogoTools.UUID32());
+        noteSendLog.setSendTime(new Date());
+        noteSendLog.setReceiveUserId(toUserId);
+        noteSendLog.setSendUserId(triggerView.getUserId());
+        noteSendLog.setTriggerType(triggerView.getTriggerType());
+        noteSendLog.setTriggerId(triggerView.getTriggerId());
+        noteSendLog.setToEmail(triggerView.getToEmail());
+        noteSendLog.setTitle(triggerView.getTitle());
+        noteSendLog.setFromName(triggerView.getFromName());
+        noteSendLog.setRefPid(triggerView.getRefPid());
+        noteSendLog.setToName(triggerView.getToName());
+        iNoteSendMiddle.createNoteSendLog(noteSendLog);
+
+        /**
+         * 修改note_trigger.to_email_status=SEND_COMPLETE
+         */
+        Map qIn = new HashMap();
+        qIn.put("toUserStatus", ESTags.SEND_COMPLETE.toString());
+        qIn.put("triggerId", triggerView.getTriggerId());
+        iAdminTriggerMiddle.updateNoteTrigger(qIn);
+        log.info("Send message to user " + toUserId + " success");
     }
 }

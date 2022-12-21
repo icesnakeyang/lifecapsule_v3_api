@@ -31,6 +31,7 @@ public interface IContactMiddle {
      * @param qIn contactId
      *            phone
      *            email
+     *            userId
      * @return
      */
     ContactView getContact(Map qIn, Boolean returnNull, String userId) throws Exception;

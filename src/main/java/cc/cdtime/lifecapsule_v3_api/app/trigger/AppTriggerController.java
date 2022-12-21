@@ -77,6 +77,8 @@ public class AppTriggerController {
             in.put("noteContent", request.getNoteContent());
             in.put("fromName", request.getFromName());
             in.put("toName", request.getToName());
+            in.put("encryptKey", request.getEncryptKey());
+            in.put("keyToken", request.getKeyToken());
 
             iAppTriggerBService.createTriggerInstant(in);
         } catch (Exception ex) {

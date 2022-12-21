@@ -31,6 +31,7 @@ public interface IContactService {
      * @param qIn contactId
      *            phone
      *            email
+     *            userId
      * @return
      */
     ContactView getContact(Map qIn) throws Exception;
