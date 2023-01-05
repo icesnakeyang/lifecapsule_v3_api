@@ -22,4 +22,8 @@ public class NoteView {
     private String pid;
     private String email;
     private ArrayList tagList;
+    /**
+     * 父笔记标题
+     */
+    private String pTitle;
 }

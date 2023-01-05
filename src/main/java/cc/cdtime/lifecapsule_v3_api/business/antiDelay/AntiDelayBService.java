@@ -19,7 +19,6 @@ import cc.cdtime.lifecapsule_v3_api.middle.security.ISecurityMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.task.ITaskTodoMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.user.IUserEncodeKeyMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.user.IUserMiddle;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -425,11 +424,15 @@ public class AntiDelayBService implements IAntiDelayBService {
     private void createNew10SecTasks(ArrayList<Map> tasksMap, String userId, String noteId) throws Exception {
         for (int j = 0; j < tasksMap.size(); j++) {
             String taskId = (String) tasksMap.get(j).get("taskId");
-            if (taskId != null) {
-                continue;
+            if (taskId == null) {
+                taskId=GogoTools.UUID32();
             }
             Map taskMap = tasksMap.get(j);
             String title = (String) taskMap.get("taskTitle");
+            Boolean complete = (Boolean) taskMap.get("complete");
+            if (complete == null) {
+                complete = false;
+            }
             if (title == null || title.equals("")) {
                 //任务标题不能为空
                 throw new Exception("10033");
@@ -437,11 +440,11 @@ public class AntiDelayBService implements IAntiDelayBService {
             TaskTodo taskTodo = new TaskTodo();
             taskTodo.setUserId(userId);
             taskTodo.setTaskTitle(title);
-            taskTodo.setComplete(false);
+            taskTodo.setComplete(complete);
             taskTodo.setPriority(1);
             taskTodo.setCreateTime(new Date());
             taskTodo.setNoteId(noteId);
-            taskTodo.setTaskId(GogoTools.UUID32());
+            taskTodo.setTaskId(taskId);
             taskTodo.setTaskType(ESTags.ACTION_10_SEC.toString());
             /**
              * 优先级默认为1，如果以后要增加优先级，就调大这个值，值越高，优先级越高

@@ -108,6 +108,16 @@ public class NoteBService implements INoteBService {
         }
 
         /**
+         * 如果有父笔记，就读取父笔记标题
+         */
+        if (noteView.getPid() != null) {
+            NoteView pNote = iNoteMiddle.getNoteTiny(noteView.getPid(), true, userView.getUserId());
+            if(pNote!=null){
+                noteView.setPTitle(pNote.getTitle());
+            }
+        }
+
+        /**
          * 读取笔记标签
          */
         qIn = new HashMap();

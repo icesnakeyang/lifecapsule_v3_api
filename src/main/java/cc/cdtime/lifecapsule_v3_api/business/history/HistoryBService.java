@@ -43,21 +43,26 @@ public class HistoryBService implements IHistoryBService {
         qIn.put("size", pageSize);
 
         /**
-         * 读取去年今天的笔记
+         * 读取过去10年的今天的笔记
          */
         Calendar c1 = Calendar.getInstance();
         c1.setTime(new Date());
         int year = c1.get(Calendar.YEAR);
         int month = c1.get(Calendar.MONTH);
         int day = c1.get(Calendar.DAY_OF_MONTH);
-        year = year - 1;
-        c1.set(year, month, day - 1);
-        Calendar c2 = Calendar.getInstance();
-        c2.set(year, month, day + 1);
-        qIn.put("createTimeStart", c1.getTime());
-        qIn.put("createTimeEnd", c2.getTime());
-        qIn.put("userId", userView.getUserId());
-        ArrayList<NoteView> noteViews = iNoteMiddle.listHistoryNote(qIn);
+        ArrayList<NoteView> noteViews = new ArrayList<>();
+
+        for (int i = 0; i < 10; i++) {
+            year = year - 1;
+            c1.set(year, month, day - 1);
+            Calendar c2 = Calendar.getInstance();
+            c2.set(year, month, day + 1);
+            qIn.put("createTimeStart", c1.getTime());
+            qIn.put("createTimeEnd", c2.getTime());
+            qIn.put("userId", userView.getUserId());
+            ArrayList<NoteView> list = iNoteMiddle.listHistoryNote(qIn);
+            noteViews.addAll(list);
+        }
 
         /**
          * 随机捞历史笔记
