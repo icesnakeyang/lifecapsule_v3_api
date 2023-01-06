@@ -302,6 +302,7 @@ public class AntiDelayBService implements IAntiDelayBService {
         //用AES秘钥加密笔记内容的AES秘钥
         String outCode = GogoTools.encryptAESKey(data, strAESKey);
         out.put("title", noteView.getTitle());
+        out.put("createTime", noteView.getCreateTime());
         out.put("noteId", noteId);
         out.put("userEncodeKey", outCode);
 
