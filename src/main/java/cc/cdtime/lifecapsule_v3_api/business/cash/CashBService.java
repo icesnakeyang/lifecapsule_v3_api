@@ -38,6 +38,7 @@ public class CashBService implements ICashBService {
         Double amountOut = (Double) in.get("amountOut");
         String cashCategoryId = (String) in.get("cashCategoryId");
         String remark = (String) in.get("remark");
+        Date transactionTime = (Date) in.get("transactionTime");
 
         Map qIn = new HashMap();
         qIn.put("token", token);
@@ -61,7 +62,10 @@ public class CashBService implements ICashBService {
          */
         CashLedger cashLedger = new CashLedger();
         cashLedger.setCashLedgerId(GogoTools.UUID32());
-        cashLedger.setCreateTime(new Date());
+        if (transactionTime == null) {
+            transactionTime = new Date();
+        }
+        cashLedger.setCreateTime(transactionTime);
         cashLedger.setAmountIn(amountIn);
         cashLedger.setAmountOut(amountOut);
         cashLedger.setRemark(remark);

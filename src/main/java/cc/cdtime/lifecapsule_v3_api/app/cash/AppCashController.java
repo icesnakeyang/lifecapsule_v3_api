@@ -48,6 +48,7 @@ public class AppCashController {
             in.put("ledgerType", request.getLedgerType());
             in.put("remark", request.getRemark());
             in.put("cashCategoryId", request.getCashCategoryId());
+            in.put("transactionTime", request.getTransactionTime());
 
             logMap.put("", ESTags.CASH_CREATE_LEDGER);
             logMap.put("token", token);

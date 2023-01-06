@@ -178,7 +178,7 @@
                 ]]>
             </when>
         </choose>
-        order by ids desc
+        order by create_time desc
         limit #{size} offset #{offset}
     </select>
 
