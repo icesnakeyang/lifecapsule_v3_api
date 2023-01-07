@@ -112,7 +112,7 @@ public class NoteBService implements INoteBService {
          */
         if (noteView.getPid() != null) {
             NoteView pNote = iNoteMiddle.getNoteTiny(noteView.getPid(), true, userView.getUserId());
-            if(pNote!=null){
+            if (pNote != null) {
                 noteView.setPTitle(pNote.getTitle());
             }
         }
@@ -443,7 +443,11 @@ public class NoteBService implements INoteBService {
              * 增加tagHot热度
              */
             Map qIn = new HashMap();
-            qIn.put("tagHot", tagView.getTagHot() + 1);
+            if (tagView.getTagHot() == null) {
+                qIn.put("tagHot", 1);
+            } else {
+                qIn.put("tagHot", tagView.getTagHot() + 1);
+            }
             qIn.put("tagId", tagView.getTagId());
             iTagMiddle.updateTagBase(qIn);
         }
