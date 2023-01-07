@@ -83,8 +83,10 @@ public class TaskTodoBService implements ITaskTodoBService {
 
         String data = taskTodoView.getUserEncodeKey();
         //用AES秘钥加密笔记内容的AES秘钥
-        String outCode = GogoTools.encryptAESKey(data, strAESKey);
-        taskTodoView.setUserEncodeKey(outCode);
+        if (data != null) {
+            String outCode = GogoTools.encryptAESKey(data, strAESKey);
+            taskTodoView.setUserEncodeKey(outCode);
+        }
 
         Map out = new HashMap();
         out.put("taskTodo", taskTodoView);
