@@ -32,7 +32,7 @@ public class EmailToolService implements IEmailToolService {
         String mailType = qIn.get("mailType").toString();
 
         String to = userEmail;
-        String from = "cdtime117@gmail.com";
+        String from = "support@tellmeafter.com";
         String username = "info@tellmeafter.com";
         String password = "+QWtSPX.]?Me";
         String host = "mail.tellmeafter.com";
