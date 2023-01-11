@@ -11,6 +11,12 @@
         <result property="tokenTime" column="token_time"/>
     </resultMap>
 
+    <resultMap id="userEmailMap" type="cc.cdtime.lifecapsule_v3_api.meta.email.entity.UserEmailView">
+        <result property="userId" column="user_id"/>
+        <result property="emailId" column="email_id"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
     <!--创建一个系统管理员-->
     <insert id="createAdminUser"
             useGeneratedKeys="true"
@@ -43,5 +49,17 @@
                 and token=#{token}
             </when>
         </choose>
+    </select>
+
+    <select id="listUserEmail" parameterType="map" resultMap="userEmailMap">
+        select * from user_email
+        where 1=1
+        <choose>
+            <when test="emailKey!=null">
+                and email like concat('%',#{emailKey}, '%')
+            </when>
+        </choose>
+        order by create_time desc
+        limit #{size} offset #{offset}
     </select>
 </mapper>

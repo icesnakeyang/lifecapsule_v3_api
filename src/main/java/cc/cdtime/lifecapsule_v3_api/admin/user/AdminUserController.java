@@ -45,6 +45,7 @@ public class AdminUserController {
             in.put("token", token);
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
+            in.put("searchKey", request.getSearchKey());
 
             Map out = iAdminUserBService.listUsers(in);
             response.setData(out);
@@ -182,4 +183,67 @@ public class AdminUserController {
         }
         return response;
     }
+
+    /**
+     * 查询一个用户的详细数据
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/loadUserData")
+    public Response loadUserData(@RequestBody AdminUserRequest request,
+                                 HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("userId", request.getUserId());
+
+            Map out = iAdminStatisticBService.loadUserData(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("Admin loadUserData error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
+     * 查询用户绑定的email列表
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/listUserBindEmail")
+    public Response listUserBindEmail(@RequestBody AdminUserRequest request,
+                                 HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("emailKey", request.getEmailKey());
+            in.put("pageIndex", request.getPageIndex());
+            in.put("pageSize", request.getPageSize());
+
+            Map out = iAdminStatisticBService.listUserBindEmail(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("Admin listUserBindEmail error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
 }

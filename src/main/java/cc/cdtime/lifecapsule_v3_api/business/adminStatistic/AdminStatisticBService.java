@@ -3,6 +3,7 @@ package cc.cdtime.lifecapsule_v3_api.business.adminStatistic;
 import cc.cdtime.lifecapsule_v3_api.framework.tools.GogoTools;
 import cc.cdtime.lifecapsule_v3_api.meta.admin.entity.AdminStatisticView;
 import cc.cdtime.lifecapsule_v3_api.meta.admin.entity.AdminUserView;
+import cc.cdtime.lifecapsule_v3_api.meta.email.entity.UserEmailView;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
 import cc.cdtime.lifecapsule_v3_api.meta.userAct.entity.UserActView;
@@ -132,6 +133,57 @@ public class AdminStatisticBService implements IAdminStatisticBService {
         out.put("totalUser", totalUser);
         out.put("totalNote", totalNote);
         out.put("totalDUA", totalDUA);
+
+        return out;
+    }
+
+    @Override
+    public Map loadUserData(Map in) throws Exception {
+        String token = in.get("token").toString();
+        String userId = in.get("userId").toString();
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        AdminUserView adminUserView = iAdminUserMiddle.getAdminUser(qIn, false);
+
+        qIn = new HashMap();
+        qIn.put("userId", userId);
+        UserView userView = iUserMiddle.getUser(qIn, false, false);
+
+        /**
+         * 读取用户最近的登录时间
+         */
+
+        /**
+         * 读取用户
+         */
+
+        Map out = new HashMap();
+        out.put("userData", userView);
+
+        return out;
+    }
+
+    @Override
+    public Map listUserBindEmail(Map in) throws Exception {
+        String token = in.get("token").toString();
+        String emailKey = in.get("emailKey").toString();
+        Integer pageIndex = (Integer) in.get("pageIndex");
+        Integer pageSize = (Integer) in.get("pageSize");
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        AdminUserView adminUserView = iAdminUserMiddle.getAdminUser(qIn, false);
+
+        qIn = new HashMap();
+        qIn.put("emailKey", emailKey);
+        Integer offset = (pageIndex - 1) * pageSize;
+        qIn.put("offset", offset);
+        qIn.put("size", pageSize);
+        ArrayList<UserEmailView> userEmailViews = iAdminUserMiddle.listUserEmail(qIn);
+
+        Map out = new HashMap();
+        out.put("userEmailList", userEmailViews);
 
         return out;
     }

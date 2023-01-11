@@ -209,6 +209,16 @@ public class UserMiddle implements IUserMiddle {
             userView.setEmail(userViewEmail.getEmail());
         }
         /**
+         * 获取用户最新登录时间
+         */
+        qIn = new HashMap();
+        qIn.put("userId", userView.getUserId());
+        UserView userView1 = iUserLoginService.getUserLogin(qIn);
+        if (userView1 != null) {
+            userView.setLoginTime(userView1.getTokenTime());
+        }
+
+        /**
          * 是否返回空值
          */
         if (userView == null) {

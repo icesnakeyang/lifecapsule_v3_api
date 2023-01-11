@@ -27,6 +27,7 @@ public class AdminNoteBService implements IAdminNoteBService {
         String token = in.get("token").toString();
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
+        String userId=(String)in.get("userId");
 
         Map qIn = new HashMap();
         qIn.put("token", token);
@@ -36,6 +37,9 @@ public class AdminNoteBService implements IAdminNoteBService {
         Integer offset = (pageIndex - 1) * pageSize;
         qIn.put("offset", offset);
         qIn.put("size", pageSize);
+        if(userId!=null && !userId.equals("")) {
+            qIn.put("userId", userId);
+        }
         ArrayList<NoteView> noteViews = iNoteMiddle.listNote(qIn);
         Integer totalNote = iNoteMiddle.totalNote(qIn);
 

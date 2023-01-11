@@ -2,7 +2,9 @@ package cc.cdtime.lifecapsule_v3_api.meta.admin.service;
 
 import cc.cdtime.lifecapsule_v3_api.meta.admin.entity.AdminUser;
 import cc.cdtime.lifecapsule_v3_api.meta.admin.entity.AdminUserView;
+import cc.cdtime.lifecapsule_v3_api.meta.email.entity.UserEmailView;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public interface IAdminUserService {
@@ -22,4 +24,6 @@ public interface IAdminUserService {
      * @return
      */
     AdminUserView getAdminUser(Map qIn) throws Exception;
+
+    ArrayList<UserEmailView> listUserEmail(Map qIn) throws Exception;
 }

@@ -13,4 +13,8 @@ public interface IAdminStatisticBService {
     Map listTopNote(Map in) throws Exception;
 
     Map loadUserStatistic(Map in) throws Exception;
+
+    Map loadUserData(Map in) throws Exception;
+
+    Map listUserBindEmail(Map in) throws Exception;
 }

@@ -3,9 +3,11 @@ package cc.cdtime.lifecapsule_v3_api.middle.admin;
 import cc.cdtime.lifecapsule_v3_api.meta.admin.entity.AdminUser;
 import cc.cdtime.lifecapsule_v3_api.meta.admin.entity.AdminUserView;
 import cc.cdtime.lifecapsule_v3_api.meta.admin.service.IAdminUserService;
+import cc.cdtime.lifecapsule_v3_api.meta.email.entity.UserEmailView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 @Service
@@ -32,5 +34,11 @@ public class AdminUserMiddle implements IAdminUserMiddle {
             throw new Exception("10027");
         }
         return adminUserView;
+    }
+
+    @Override
+    public ArrayList<UserEmailView> listUserEmail(Map qIn) throws Exception {
+        ArrayList<UserEmailView> userEmailViews = iAdminUserService.listUserEmail(qIn);
+        return userEmailViews;
     }
 }

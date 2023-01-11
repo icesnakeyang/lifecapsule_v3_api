@@ -2,8 +2,10 @@ package cc.cdtime.lifecapsule_v3_api.meta.admin.dao;
 
 import cc.cdtime.lifecapsule_v3_api.meta.admin.entity.AdminUser;
 import cc.cdtime.lifecapsule_v3_api.meta.admin.entity.AdminUserView;
+import cc.cdtime.lifecapsule_v3_api.meta.email.entity.UserEmailView;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 @Mapper
@@ -24,4 +26,6 @@ public interface AdminUserDao {
      * @return
      */
     AdminUserView getAdminUser(Map qIn);
+
+    ArrayList<UserEmailView> listUserEmail(Map qIn);
 }

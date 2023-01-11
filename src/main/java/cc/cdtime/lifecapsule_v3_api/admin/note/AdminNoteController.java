@@ -38,6 +38,7 @@ public class AdminNoteController {
             in.put("token", token);
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
+            in.put("userId", request.getUserId());
 
             Map out = iAdminNoteBService.listNote(in);
             response.setData(out);

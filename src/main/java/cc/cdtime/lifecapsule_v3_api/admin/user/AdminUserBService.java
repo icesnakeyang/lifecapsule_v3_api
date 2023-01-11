@@ -33,6 +33,7 @@ public class AdminUserBService implements IAdminUserBService {
         String token = in.get("token").toString();
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
+        String searchKey = (String) in.get("searchKey");
 
         Map qIn = new HashMap();
         qIn.put("token", token);
@@ -42,6 +43,9 @@ public class AdminUserBService implements IAdminUserBService {
         Integer offset = (pageIndex - 1) * pageSize;
         qIn.put("offset", offset);
         qIn.put("size", pageSize);
+        if(searchKey!=null && !searchKey.equals("")) {
+            qIn.put("email", searchKey);
+        }
         ArrayList<UserView> userViews = iUserMiddle.listUser(qIn);
         Integer totalUser = iUserMiddle.totalUser(qIn);
 
