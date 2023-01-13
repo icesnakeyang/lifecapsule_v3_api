@@ -18,4 +18,5 @@ public class UserAccountRequest extends Request {
     private String actType;
     private Date startTime;
     private Date endTime;
+    private String userId;
 }

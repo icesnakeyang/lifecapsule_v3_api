@@ -46,6 +46,7 @@ public class AdminUserController {
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
             in.put("searchKey", request.getSearchKey());
+            in.put("userId", request.getUserId());
 
             Map out = iAdminUserBService.listUsers(in);
             response.setData(out);
