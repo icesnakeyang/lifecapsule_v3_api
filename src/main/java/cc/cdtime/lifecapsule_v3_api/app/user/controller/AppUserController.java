@@ -455,4 +455,50 @@ public class AppUserController {
         }
         return response;
     }
+
+    /**
+     * app端用户设置登录名和密码
+     * 只适用未设置登录名的用户，如果修改账号，使用changePassword接口
+     *
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/setLoginNamePassword")
+    public Response setLoginNamePassword(@RequestBody UserAccountRequest request,
+                                         HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        Map logMap = new HashMap();
+        Map memoMap = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("loginName", request.getLoginName());
+            in.put("password", request.getPassword());
+
+            logMap.put("token", token);
+            logMap.put("UserActType", ESTags.USER_SET_LOGIN_NAME_PASSWORD);
+
+            iAppUserBService.setLoginNamePassword(in);
+
+            logMap.put("result", ESTags.SUCCESS);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("App user setLoginNamePassword error:" + ex.getMessage());
+            }
+            logMap.put("result", ESTags.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonService.createUserActLog(logMap);
+        } catch (Exception ex3) {
+            log.error("App user setLoginNamePassword user act error:" + ex3.getMessage());
+        }
+        return response;
+    }
 }

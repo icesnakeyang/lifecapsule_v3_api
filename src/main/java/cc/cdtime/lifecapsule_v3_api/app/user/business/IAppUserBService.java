@@ -77,4 +77,6 @@ public interface IAppUserBService {
     void saveNickname(Map in) throws Exception;
 
     Map signByLoginNamePassword(Map in) throws Exception;
+
+    void setLoginNamePassword(Map in) throws Exception;
 }

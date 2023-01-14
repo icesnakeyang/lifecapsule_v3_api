@@ -219,6 +219,11 @@ public class AppUserBService implements IAppUserBService {
         return out;
     }
 
+    @Override
+    public void setLoginNamePassword(Map in) throws Exception {
+        iUserAccountBService.setLoginNamePassword(in);
+    }
+
     private void verifyToken() throws Exception {
         /**
          * 校验token的有效期
