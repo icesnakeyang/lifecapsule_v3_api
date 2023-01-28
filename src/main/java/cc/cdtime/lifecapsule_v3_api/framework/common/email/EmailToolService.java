@@ -80,6 +80,7 @@ public class EmailToolService implements IEmailToolService {
         String toName = (String) qIn.get("toName");
         String urlLink = qIn.get("urlLink").toString();
         String decode = qIn.get("decode").toString();
+        String triggerId = qIn.get("triggerId").toString();
 
         String fileName = "MailTmp1.html";
         InputStream inputStream = ClassLoader.getSystemResourceAsStream(fileName);
@@ -109,6 +110,7 @@ public class EmailToolService implements IEmailToolService {
         } else {
             htmlText = htmlText.replaceAll("%from%", "LifeCapsule User");
         }
+        htmlText = htmlText.replaceAll("%triggerId%", triggerId);
         return htmlText;
     }
 

@@ -1,9 +1,7 @@
 package cc.cdtime.lifecapsule_v3_api.middle.trigger;
 
-import cc.cdtime.lifecapsule_v3_api.framework.tools.GogoTools;
 import cc.cdtime.lifecapsule_v3_api.meta.content.entity.Content;
 import cc.cdtime.lifecapsule_v3_api.meta.content.service.IContentService;
-import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
 import cc.cdtime.lifecapsule_v3_api.meta.note.service.INoteService;
 import cc.cdtime.lifecapsule_v3_api.meta.trigger.entity.NoteTrigger;
 import cc.cdtime.lifecapsule_v3_api.meta.trigger.entity.TriggerView;
@@ -15,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,8 +50,8 @@ public class TriggerMiddle implements ITriggerMiddle {
     }
 
     @Override
-    public TriggerView getTrigger(String triggerId, Boolean returnNull, String userId) throws Exception {
-        TriggerView triggerView = iTriggerService.getTrigger(triggerId);
+    public TriggerView getTrigger(Map qIn, Boolean returnNull, String userId) throws Exception {
+        TriggerView triggerView = iTriggerService.getTrigger(qIn);
         if (triggerView == null) {
             if (returnNull) {
                 return null;
@@ -70,7 +67,7 @@ public class TriggerMiddle implements ITriggerMiddle {
                 throw new Exception("10015");
             }
         }
-        TriggerView triggerView1 = loadContent(triggerId);
+        TriggerView triggerView1 = loadContent(triggerView.getTriggerId());
         if (triggerView1.getNoteContent() != null) {
             triggerView.setNoteContent(triggerView1.getNoteContent());
             if (triggerView1.getUserEncodeKey() != null) {
@@ -95,6 +92,27 @@ public class TriggerMiddle implements ITriggerMiddle {
     @Override
     public void updateNoteTrigger(Map qIn) throws Exception {
         iTriggerService.updateNoteTrigger(qIn);
+    }
+
+    @Override
+    public void updateNoteTrigger2(TriggerView triggerView) throws Exception {
+        iTriggerService.updateNoteTrigger2(triggerView);
+        Content content2 = new Content();
+        content2.setContent(triggerView.getNoteContent());
+        content2.setIndexId(triggerView.getTriggerId());
+        Map qIn=new HashMap();
+        qIn.put("indexId", triggerView.getTriggerId());
+        qIn.put("content", triggerView.getNoteContent());
+        iContentService.updateContent(qIn);
+        if (triggerView.getUserEncodeKey() != null) {
+            UserEncodeKey userEncodeKey = new UserEncodeKey();
+            userEncodeKey.setEncodeKey(triggerView.getUserEncodeKey());
+            userEncodeKey.setIndexId(triggerView.getTriggerId());
+            qIn=new HashMap();
+            qIn.put("encodeKey", triggerView.getUserEncodeKey());
+            qIn.put("indexId", triggerView.getTriggerId());
+            iUserEncodeKeyService.updateUserEncodeKey(qIn);
+        }
     }
 
     @Override

@@ -18,4 +18,6 @@ public interface IWebNoteSendBService {
     Map listMyNoteSendOutLog(Map in) throws Exception;
 
     Map getMyNoteSendOutLog(Map in) throws Exception;
+
+    Map getNoteSendLogFromMail(Map in)throws Exception;
 }

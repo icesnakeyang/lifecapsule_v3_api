@@ -94,7 +94,7 @@ public class NoteBService implements INoteBService {
         /**
          * 读取userEncodeKey
          */
-        if (noteView.getEncrypt() != null && noteView.getEncrypt() == 1) {
+        if (noteView.getUserEncodeKey()!=null) {
             if (strAESKey == null) {
                 //查询秘钥错误
                 throw new Exception("10037");

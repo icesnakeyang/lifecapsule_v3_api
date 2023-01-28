@@ -17,10 +17,13 @@ public interface ITriggerService {
     /**
      * 查询一个触发器
      *
-     * @param triggerId
+     * @param qIn triggerId
+     *            userId
+     *            noteId
+     *            toEmail
      * @return
      */
-    TriggerView getTrigger(String triggerId) throws Exception;
+    TriggerView getTrigger(Map qIn) throws Exception;
 
     /**
      * 查询触发器列表
@@ -42,13 +45,18 @@ public interface ITriggerService {
      *
      * @param qIn remark
      *            triggerTime
-     *            recipientId
-     *            actTimes
      *            triggerType
      *            status
+     *            title
+     *            toEmail
+     *            toName
+     *            fromName
+     *            actTimes
      *            triggerId
      */
     void updateNoteTrigger(Map qIn) throws Exception;
+
+    void updateNoteTrigger2(TriggerView triggerView) throws Exception;
 
     /**
      * 物理删除触发器

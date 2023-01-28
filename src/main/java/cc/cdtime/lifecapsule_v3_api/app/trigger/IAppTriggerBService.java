@@ -54,4 +54,6 @@ public interface IAppTriggerBService {
      * @throws Exception
      */
     void createTriggerPrimary(Map in) throws Exception;
+
+    Map getTriggerIdFromSendLog(Map in) throws Exception;
 }

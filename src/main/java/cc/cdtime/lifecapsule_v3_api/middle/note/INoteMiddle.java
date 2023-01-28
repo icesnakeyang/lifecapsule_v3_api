@@ -44,6 +44,7 @@ public interface INoteMiddle {
      * @param qIn userId
      *            keyword
      *            tagList
+     *            noteType
      * @return
      */
     Integer totalNote(Map qIn) throws Exception;

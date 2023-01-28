@@ -1,5 +1,6 @@
 package cc.cdtime.lifecapsule_v3_api.business.adminStatistic;
 
+import cc.cdtime.lifecapsule_v3_api.framework.constant.ESTags;
 import cc.cdtime.lifecapsule_v3_api.framework.tools.GogoTools;
 import cc.cdtime.lifecapsule_v3_api.meta.admin.entity.AdminStatisticView;
 import cc.cdtime.lifecapsule_v3_api.meta.admin.entity.AdminUserView;
@@ -116,6 +117,8 @@ public class AdminStatisticBService implements IAdminStatisticBService {
         Integer totalUserLogs = iUserMiddle.totalUserLoginLog(qIn);
         Integer totalUser = iUserMiddle.totalUser(qIn);
         Integer totalNote = iNoteMiddle.totalNote(qIn);
+        qIn.put("noteType", ESTags.ANTI_DELAY_NOTE);
+        Integer totalAntiDelayNote = iNoteMiddle.totalNote(qIn);
 
         /**
          * 今日日活
@@ -133,6 +136,7 @@ public class AdminStatisticBService implements IAdminStatisticBService {
         out.put("totalUser", totalUser);
         out.put("totalNote", totalNote);
         out.put("totalDUA", totalDUA);
+        out.put("totalAntiDelayNote", totalAntiDelayNote);
 
         return out;
     }

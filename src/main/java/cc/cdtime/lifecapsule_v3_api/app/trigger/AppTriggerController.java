@@ -159,6 +159,37 @@ public class AppTriggerController {
     }
 
     /**
+     * App用户根据接收到的笔记的note_send_log的ref_pid来获取自己发送的triggerId
+     *
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/getTriggerIdFromSendLog")
+    public Response getTriggerIdFromSendLog(@RequestBody TriggerRequest request,
+                                       HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("ref_pid", request.getRef_pid());
+
+            Map out = iAppTriggerBService.getTriggerIdFromSendLog(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("App getTriggerIdFromSendLog error:" + ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
      * 用户删除一个笔记的触发器
      *
      * @param request

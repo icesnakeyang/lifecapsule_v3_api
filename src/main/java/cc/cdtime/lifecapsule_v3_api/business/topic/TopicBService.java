@@ -230,7 +230,10 @@ public class TopicBService implements ITopicBService {
          */
         qIn = new HashMap();
         qIn.put("topicId", topicView.getTopicId());
-        int comments = topicView.getComments() + 1;
+        int comments=1;
+        if(topicView.getComments()!=null){
+            comments=topicView.getComments()+1;
+        }
         qIn.put("comments", comments);
         iTopicMiddle.updateTopic(qIn);
     }

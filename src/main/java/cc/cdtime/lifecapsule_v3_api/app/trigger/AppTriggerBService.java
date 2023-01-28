@@ -1,6 +1,8 @@
 package cc.cdtime.lifecapsule_v3_api.app.trigger;
 
+import cc.cdtime.lifecapsule_v3_api.business.noteSend.INoteSendBService;
 import cc.cdtime.lifecapsule_v3_api.business.trigger.ITriggerBService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -8,9 +10,12 @@ import java.util.Map;
 @Service
 public class AppTriggerBService implements IAppTriggerBService {
     private final ITriggerBService iTriggerBService;
+    private final INoteSendBService iNoteSendBService;
 
-    public AppTriggerBService(ITriggerBService iTriggerBService) {
+    public AppTriggerBService(ITriggerBService iTriggerBService,
+                              INoteSendBService iNoteSendBService) {
         this.iTriggerBService = iTriggerBService;
+        this.iNoteSendBService = iNoteSendBService;
     }
 
     @Override
@@ -43,5 +48,11 @@ public class AppTriggerBService implements IAppTriggerBService {
     @Override
     public void createTriggerPrimary(Map in) throws Exception {
         iTriggerBService.createNoteTriggerPrimary(in);
+    }
+
+    @Override
+    public Map getTriggerIdFromSendLog(Map in) throws Exception {
+        Map out = iNoteSendBService.getTriggerIdFromSendLog(in);
+        return out;
     }
 }

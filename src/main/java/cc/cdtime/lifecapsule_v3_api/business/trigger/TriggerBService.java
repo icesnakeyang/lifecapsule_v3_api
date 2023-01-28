@@ -328,7 +328,9 @@ public class TriggerBService implements ITriggerBService {
         qIn.put("token", token);
         UserView userView = iUserMiddle.getUser(qIn, false, true);
 
-        TriggerView triggerView = iTriggerMiddle.getTrigger(triggerId, false, userView.getUserId());
+        qIn = new HashMap();
+        qIn.put("triggerId", triggerId);
+        TriggerView triggerView = iTriggerMiddle.getTrigger(qIn, false, userView.getUserId());
 
         /**
          * 读取userEncodeKey
@@ -360,7 +362,9 @@ public class TriggerBService implements ITriggerBService {
         qIn.put("token", token);
         UserView userView = iUserMiddle.getUser(qIn, false, true);
 
-        TriggerView triggerView = iTriggerMiddle.getTrigger(triggerId, false, userView.getUserId());
+        qIn = new HashMap();
+        qIn.put("triggerId", triggerId);
+        TriggerView triggerView = iTriggerMiddle.getTrigger(qIn, false, userView.getUserId());
 
         if (!triggerView.getStatus().equals(ESTags.ACTIVE.toString())) {
             //只能删除未发送的触发器
@@ -425,7 +429,7 @@ public class TriggerBService implements ITriggerBService {
          * 用私钥解开用户用公钥加密的用户AES私钥
          */
         String strAESKey = null;
-        if(encryptKey!=null) {
+        if (encryptKey != null) {
             strAESKey = null;
             String privateKey = iSecurityMiddle.getRSAKey(keyToken);
             strAESKey = GogoTools.decryptRSAByPrivateKey(encryptKey, privateKey);
@@ -592,5 +596,26 @@ public class TriggerBService implements ITriggerBService {
         noteTrigger.setToName(toName);
         noteTrigger.setNoteId(noteView.getNoteId());
         iTriggerMiddle.createTrigger(noteTrigger);
+    }
+
+    @Override
+    public Map getNoteFromMail(Map in) throws Exception {
+        String triggerId = in.get("triggerId").toString();
+
+        Map qIn = new HashMap();
+        qIn.put("triggerId", triggerId);
+        TriggerView triggerView = iTriggerMiddle.getTrigger(qIn, false, null);
+
+        Map note = new HashMap();
+        note.put("title", triggerView.getTitle());
+        note.put("fromName", triggerView.getFromName());
+        note.put("toName", triggerView.getToName());
+        note.put("content", triggerView.getNoteContent());
+        note.put("userEncodeKey", triggerView.getUserEncodeKey());
+        note.put("createTime", triggerView.getCreateTime());
+        Map out = new HashMap();
+        out.put("note", note);
+
+        return out;
     }
 }

@@ -39,4 +39,6 @@ public interface ITriggerBService {
      * @throws Exception
      */
     void createNoteTriggerPrimary(Map in)throws Exception;
+
+    Map getNoteFromMail(Map in) throws Exception;
 }

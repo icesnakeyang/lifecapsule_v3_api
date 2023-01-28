@@ -2,6 +2,7 @@ package cc.cdtime.lifecapsule_v3_api.business.inbox.reply;
 
 import cc.cdtime.lifecapsule_v3_api.framework.constant.ESTags;
 import cc.cdtime.lifecapsule_v3_api.framework.tools.GogoTools;
+import cc.cdtime.lifecapsule_v3_api.meta.email.entity.UserEmailView;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteInfo;
 import cc.cdtime.lifecapsule_v3_api.meta.noteSendLog.entity.NoteSendLogView;
 import cc.cdtime.lifecapsule_v3_api.meta.trigger.entity.NoteTrigger;
@@ -78,6 +79,7 @@ public class ReplyNoteBService implements IReplyNoteBService {
         noteInfo.setContent(content);
         noteInfo.setUserEncodeKey(strAESKey);
         noteInfo.setUserId(userView.getUserId());
+        noteInfo.setPid(pid);
         iNoteMiddle.createNoteInfo(noteInfo);
 
         /**
@@ -92,7 +94,15 @@ public class ReplyNoteBService implements IReplyNoteBService {
         noteTrigger.setTitle(title);
         noteTrigger.setNoteId(noteInfo.getNoteId());
         noteTrigger.setFromName(noteSendLogView.getToName());
-//        noteTrigger.setToEmail(noteSendLogView.getToEmail());
+        /**
+         * 获取发送人的email
+         */
+        qIn = new HashMap();
+        qIn.put("userId", noteSendLogView.getSendUserId());
+        UserEmailView userEmailView = iUserMiddle.getUserEmail(qIn, true, null);
+        if (userEmailView != null) {
+            noteTrigger.setToEmail(userEmailView.getEmail());
+        }
         noteTrigger.setToUserId(noteSendLogView.getSendUserId());
         noteTrigger.setRefPid(pid);
         noteTrigger.setUserEncodeKey(strAESKey);

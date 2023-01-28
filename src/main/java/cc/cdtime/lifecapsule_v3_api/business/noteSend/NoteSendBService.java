@@ -367,4 +367,45 @@ public class NoteSendBService implements INoteSendBService {
 
         iNoteSendMiddle.deleteNoteSendLog(sendLogId);
     }
+
+    @Override
+    public Map getTriggerIdFromSendLog(Map in) throws Exception {
+        String token = in.get("token").toString();
+        String sendLogId = (String) in.get("ref_pid");
+
+        Map qIn = new HashMap();
+        qIn.put("token", token);
+        UserView userView = iUserMiddle.getUser(qIn, false, true);
+
+        NoteSendLogView noteSendLogView = iNoteSendMiddle.getNoteSendLog(sendLogId, true, null);
+        if (!noteSendLogView.getSendUserId().equals(userView.getUserId())) {
+            //当前用户不是笔记的发送方
+            throw new Exception("10079");
+        }
+        Map out = new HashMap();
+        out.put("triggerId", noteSendLogView.getTriggerId());
+
+        return out;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public Map getNoteSendLogFromMail(Map in) throws Exception {
+        String sendLogId = (String) in.get("sendLogId");
+
+        Map noteMap = new HashMap();
+
+        //我收到的笔记列表
+        NoteSendLogView noteSendLogView = iNoteSendMiddle.getNoteSendLog(sendLogId, false, null);
+
+        noteMap.put("sendLogId", noteSendLogView.getSendLogId());
+        noteMap.put("sendUserId", noteSendLogView.getSendUserId());
+        noteMap.put("sendTime", noteSendLogView.getSendTime());
+        noteMap.put("content", noteSendLogView.getContent());
+        noteMap.put("title", noteSendLogView.getTitle());
+        noteMap.put("triggerType", noteSendLogView.getTriggerType());
+        noteMap.put("readTime", noteSendLogView.getReadTime());
+        noteMap.put("userEncodeKey", noteSendLogView.getUserEncodeKey());
+        return noteMap;
+    }
 }

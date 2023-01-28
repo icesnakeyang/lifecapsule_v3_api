@@ -123,5 +123,38 @@ public enum ESTags {
     USER_UPDATE_ANTI_DELAY_NOTE,
     USER_GET_ANTI_DELAY_NOTE,
     USER_DELETE_ANTI_DELAY_NOTE,
-    CASH_LEDGER_STATISTIC
+    CASH_LEDGER_STATISTIC,
+    /**
+     * 遗言笔记
+     */
+    LAST_WORDS,
+    SAVE_LAST_WORDS,
+    LIST_LAST_WORDS,
+    GET_LAST_WORDS,
+    DELETE_LAST_WORDS,
+    /**
+     * 情书
+     */
+    LOVE_LETTER,
+    LIST_LOVE_LETTER,
+    GET_LOVE_LETTER,
+    DELETE_LOVE_LETTER,
+    SAVE_LOVE_LETTER,
+    /**
+     * 灵感
+     */
+    INSPIRATION,
+    LIST_INSPIRATION,
+    GET_INSPIRATION,
+    DELETE_INSPIRATION,
+    SAVE_INSPIRATION,
+    /**
+     * 给未来的信
+     */
+    FUTURE,
+    LIST_FUTURE,
+    GET_FUTURE,
+    SAVE_FUTURE,
+    DELETE_FUTURE,
+    GET_NOTE_FROM_MAIL
 }

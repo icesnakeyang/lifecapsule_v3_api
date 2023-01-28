@@ -33,10 +33,30 @@
     </insert>
 
     <!--查询一个触发器-->
-    <select id="getTrigger" parameterType="java.lang.String" resultMap="triggerMap">
+    <select id="getTrigger" parameterType="map" resultMap="triggerMap">
         select *
         from note_trigger
-        where trigger_id = #{triggerId}
+        where 1=1
+        <choose>
+            <when test="triggerId!=null">
+                and trigger_id = #{triggerId}
+            </when>
+        </choose>
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+        <choose>
+            <when test="noteId!=null">
+                and note_id=#{noteId}
+            </when>
+        </choose>
+        <choose>
+            <when test="toEmail!=null">
+                and to_email=#{toEmail}
+            </when>
+        </choose>
     </select>
 
     <!--查询触发器列表-->
@@ -115,6 +135,46 @@
             </if>
             <if test="toName!=null">
                 to_name=#{toName},
+            </if>
+            <if test="fromName!=null">
+                from_name=#{fromName},
+            </if>
+            <if test="actTimes!=null">
+                act_times=#{actTimes}
+            </if>
+        </set>
+        where trigger_id=#{triggerId}
+    </update>
+
+    <update id="updateNoteTrigger2" parameterType="cc.cdtime.lifecapsule_v3_api.meta.trigger.entity.TriggerView">
+        update note_trigger
+        <set>
+            <if test="remark!=null">
+                remark=#{remark},
+            </if>
+            <if test="triggerTime!=null">
+                trigger_time=#{triggerTime},
+            </if>
+            <if test="triggerType!=null">
+                trigger_type=#{triggerType},
+            </if>
+            <if test="status!=null">
+                status=#{status},
+            </if>
+            <if test="title!=null">
+                title=#{title},
+            </if>
+            <if test="toEmail!=null">
+                to_email=#{toEmail},
+            </if>
+            <if test="toName!=null">
+                to_name=#{toName},
+            </if>
+            <if test="fromName!=null">
+                from_name=#{fromName},
+            </if>
+            <if test="toUserId!=null">
+                to_user_id=#{toUserId},
             </if>
             <if test="actTimes!=null">
                 act_times=#{actTimes}

@@ -17,4 +17,5 @@ public class TriggerRequest extends Request{
     private String fromName;
     private String status;
     private String toName;
+    private String ref_pid;
 }

@@ -228,6 +228,7 @@ public class QuartzService {
         qIn.put("urlLink", "urllink");
         qIn.put("decode", "decode");
         qIn.put("mailType", ESTags.MAIL_TYPE_NOTE_SEND);
+        qIn.put("triggerId", triggerView.getTriggerId());
         iEmailToolService.sendMail(qIn);
         /**
          * 修改note_trigger.to_email_status=SEND_COMPLETE

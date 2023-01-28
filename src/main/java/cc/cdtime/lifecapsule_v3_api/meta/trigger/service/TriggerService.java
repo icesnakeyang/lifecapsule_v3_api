@@ -22,8 +22,8 @@ public class TriggerService implements ITriggerService {
     }
 
     @Override
-    public TriggerView getTrigger(String triggerId) throws Exception {
-        TriggerView triggerView = triggerDao.getTrigger(triggerId);
+    public TriggerView getTrigger(Map qIn) throws Exception {
+        TriggerView triggerView = triggerDao.getTrigger(qIn);
         return triggerView;
     }
 
@@ -42,6 +42,11 @@ public class TriggerService implements ITriggerService {
     @Override
     public void updateNoteTrigger(Map qIn) throws Exception {
         triggerDao.updateNoteTrigger(qIn);
+    }
+
+    @Override
+    public void updateNoteTrigger2(TriggerView triggerView) throws Exception {
+        triggerDao.updateNoteTrigger2(triggerView);
     }
 
     @Override

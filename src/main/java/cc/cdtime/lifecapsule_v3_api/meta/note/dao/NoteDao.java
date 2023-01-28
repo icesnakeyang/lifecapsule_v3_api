@@ -42,6 +42,7 @@ public interface NoteDao {
      *
      * @param qIn userId
      *            keyword
+     *            noteType
      * @return
      */
     Integer totalNoteInfo(Map qIn);
