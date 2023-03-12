@@ -81,6 +81,7 @@ public class AppTaskTodoController {
             in.put("content", request.getContent());
             in.put("keyToken", request.getKeyToken());
             in.put("encryptKey", request.getEncryptKey());
+            in.put("projectId", request.getProjectId());
 
             logMap.put("UserActType", ESTags.USER_CREATE_TASK_TODO);
             logMap.put("token", token);
