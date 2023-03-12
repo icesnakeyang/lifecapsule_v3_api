@@ -33,12 +33,4 @@ public interface INoteSendBService {
      * @throws Exception
      */
     Map getTriggerIdFromSendLog(Map in) throws Exception;
-
-    /**
-     * 用户从email邮箱收到的url链接跳转到web页面读取接收的笔记详情
-     * @param in
-     * @return
-     * @throws Exception
-     */
-    Map getNoteSendLogFromMail(Map in) throws Exception;
 }

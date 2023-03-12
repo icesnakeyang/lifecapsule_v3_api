@@ -122,6 +122,7 @@ public interface IUserMiddle {
      * 修改用户基本信息
      *
      * @param qIn nickname
+     *            language
      *            userId
      */
     void updateUserBase(Map qIn) throws Exception;

@@ -37,8 +37,8 @@ public class NoteSendService implements INoteSendService {
     }
 
     @Override
-    public NoteSendLogView getNoteSendLog(String sendLogId) throws Exception {
-        NoteSendLogView noteSendLogView = noteSendDao.getNoteSendLog(sendLogId);
+    public NoteSendLogView getNoteSendLog(Map qIn) throws Exception {
+        NoteSendLogView noteSendLogView = noteSendDao.getNoteSendLog(qIn);
         return noteSendLogView;
     }
 

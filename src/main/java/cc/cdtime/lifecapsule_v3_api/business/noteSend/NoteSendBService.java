@@ -181,7 +181,9 @@ public class NoteSendBService implements INoteSendBService {
                 if (views.get(i).getTriggerType().equals(ESTags.REPLY_SEND_LOG.toString())) {
                     //读取上级笔记信息
                     if (views.get(i).getRefPid() != null) {
-                        NoteSendLogView noteSendLogView = iNoteSendMiddle.getNoteSendLog(views.get(i).getRefPid(), false, null);
+                        Map qIn2 = new HashMap();
+                        qIn2.put("sendLogId", views.get(i).getRefPid());
+                        NoteSendLogView noteSendLogView = iNoteSendMiddle.getNoteSendLog(qIn2, false, null);
                         log.put("reTitle", noteSendLogView.getTitle());
                     }
                 }
@@ -259,7 +261,9 @@ public class NoteSendBService implements INoteSendBService {
         Map noteMap = new HashMap();
 
         //我收到的笔记列表
-        NoteSendLogView noteSendLogView = iNoteSendMiddle.getNoteSendLog(sendLogId, false, userView.getUserId());
+        Map qIn1 = new HashMap();
+        qIn1.put("sendLogId", sendLogId);
+        NoteSendLogView noteSendLogView = iNoteSendMiddle.getNoteSendLog(qIn1, false, userView.getUserId());
 
         noteMap.put("sendLogId", noteSendLogView.getSendLogId());
         noteMap.put("sendUserId", noteSendLogView.getSendUserId());
@@ -271,32 +275,12 @@ public class NoteSendBService implements INoteSendBService {
         /**
          * 把用户秘钥加密发送回前端
          */
-        if (noteSendLogView.getTriggerType() != null) {
-            if (noteSendLogView.getTriggerType().equals(ESTags.TIMER_TYPE_PRIMARY.toString()) ||
-                    noteSendLogView.getTriggerType().equals(ESTags.TIMER_TYPE_DATETIME.toString())) {
-                if (noteSendLogView.getUserEncodeKey() != null) {
-                    //用AES秘钥加密笔记内容的AES秘钥
-                    String outCode = GogoTools.encryptAESKey(noteSendLogView.getUserEncodeKey(), strAESKey);
-                    noteMap.put("userEncodeKey", outCode);
-                }
-            } else {
-                if (noteSendLogView.getTriggerType().equals(ESTags.INSTANT_MESSAGE.toString())) {
-                    /**
-                     * 即时发送信息
-                     */
-
-                }
-            }
+        if (noteSendLogView.getUserEncodeKey() != null) {
+            //用AES秘钥加密笔记内容的AES秘钥
+            String outCode = GogoTools.encryptAESKey(noteSendLogView.getUserEncodeKey(), strAESKey);
+            noteMap.put("userEncodeKey", outCode);
         }
-
-        /**
-         * 读取发送用户信息
-         */
-        qIn = new HashMap();
-        qIn.put("userId", noteSendLogView.getSendUserId());
-        UserView senderView = iUserMiddle.getUser(qIn, false, false);
-        noteMap.put("fromEmail", senderView.getEmail());
-        noteMap.put("sendUserNickname", senderView.getNickname());
+        noteMap.put("fromName",noteSendLogView.getFromName());
 
         return noteMap;
     }
@@ -323,7 +307,9 @@ public class NoteSendBService implements INoteSendBService {
 
         Map out = new HashMap();
 
-        NoteSendLogView noteSendLogView = iNoteSendMiddle.getNoteSendLog(sendLogId, false, userView.getUserId());
+        Map qIn1 = new HashMap();
+        qIn1.put("sendLogId", sendLogId);
+        NoteSendLogView noteSendLogView = iNoteSendMiddle.getNoteSendLog(qIn1, false, userView.getUserId());
         if (!noteSendLogView.getSendUserId().equals(userView.getUserId())) {
             //不是发送人，不能查看发送笔记
             throw new Exception("10049");
@@ -363,7 +349,9 @@ public class NoteSendBService implements INoteSendBService {
         qIn.put("token", token);
         UserView userView = iUserMiddle.getUser(qIn, false, true);
 
-        NoteSendLogView noteSendLogView = iNoteSendMiddle.getNoteSendLog(sendLogId, false, userView.getUserId());
+        qIn = new HashMap();
+        qIn.put("sendLogId", sendLogId);
+        NoteSendLogView noteSendLogView = iNoteSendMiddle.getNoteSendLog(qIn, false, userView.getUserId());
 
         iNoteSendMiddle.deleteNoteSendLog(sendLogId);
     }
@@ -377,7 +365,9 @@ public class NoteSendBService implements INoteSendBService {
         qIn.put("token", token);
         UserView userView = iUserMiddle.getUser(qIn, false, true);
 
-        NoteSendLogView noteSendLogView = iNoteSendMiddle.getNoteSendLog(sendLogId, true, null);
+        qIn = new HashMap();
+        qIn.put("sendLogId", sendLogId);
+        NoteSendLogView noteSendLogView = iNoteSendMiddle.getNoteSendLog(qIn, true, null);
         if (!noteSendLogView.getSendUserId().equals(userView.getUserId())) {
             //当前用户不是笔记的发送方
             throw new Exception("10079");
@@ -386,26 +376,5 @@ public class NoteSendBService implements INoteSendBService {
         out.put("triggerId", noteSendLogView.getTriggerId());
 
         return out;
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public Map getNoteSendLogFromMail(Map in) throws Exception {
-        String sendLogId = (String) in.get("sendLogId");
-
-        Map noteMap = new HashMap();
-
-        //我收到的笔记列表
-        NoteSendLogView noteSendLogView = iNoteSendMiddle.getNoteSendLog(sendLogId, false, null);
-
-        noteMap.put("sendLogId", noteSendLogView.getSendLogId());
-        noteMap.put("sendUserId", noteSendLogView.getSendUserId());
-        noteMap.put("sendTime", noteSendLogView.getSendTime());
-        noteMap.put("content", noteSendLogView.getContent());
-        noteMap.put("title", noteSendLogView.getTitle());
-        noteMap.put("triggerType", noteSendLogView.getTriggerType());
-        noteMap.put("readTime", noteSendLogView.getReadTime());
-        noteMap.put("userEncodeKey", noteSendLogView.getUserEncodeKey());
-        return noteMap;
     }
 }

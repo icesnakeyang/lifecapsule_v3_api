@@ -38,7 +38,14 @@ public interface NoteSendDao {
      */
     Integer totalNoteSendLog(Map qIn);
 
-    NoteSendLogView getNoteSendLog(String sendLogId);
+    /**
+     * 读取一个发送日志详情
+     *
+     * @param qIn sendLogId
+     *            triggerId
+     * @return
+     */
+    NoteSendLogView getNoteSendLog(Map qIn);
 
     /**
      * 修改笔记发送日志

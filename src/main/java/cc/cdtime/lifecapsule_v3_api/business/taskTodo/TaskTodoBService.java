@@ -35,6 +35,7 @@ public class TaskTodoBService implements ITaskTodoBService {
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
         Boolean hideComplete = (Boolean) in.get("hideComplete");
+        String projectId = (String) in.get("projectId");
 
         Map qIn = new HashMap();
         qIn.put("token", token);
@@ -50,6 +51,7 @@ public class TaskTodoBService implements ITaskTodoBService {
                 qIn.put("complete", false);
             }
         }
+        qIn.put("projectId", projectId);
         ArrayList<TaskView> taskViews = iTaskTodoMiddle.listTaskTodo(qIn);
         Integer totalTaskTodo = iTaskTodoMiddle.totalTaskTodo(qIn);
 
@@ -180,6 +182,7 @@ public class TaskTodoBService implements ITaskTodoBService {
         String encryptKey = (String) in.get("encryptKey");
         String keyToken = (String) in.get("keyToken");
         Boolean complete = (Boolean) in.get("complete");
+        String projectId = (String) in.get("projectId");
 
         /**
          * 根据keyToken读取私钥
@@ -205,6 +208,7 @@ public class TaskTodoBService implements ITaskTodoBService {
         qIn.put("userEncodeKey", strAESKey);
         qIn.put("taskId", taskId);
         qIn.put("complete", complete);
+        qIn.put("projectId", projectId);
         iTaskTodoMiddle.updateTaskTodo(qIn);
     }
 }

@@ -16,4 +16,6 @@ public class TaskView {
     private String content;
     private String userEncodeKey;
     private String status;
+    private String projectId;
+    private String projectName;
 }

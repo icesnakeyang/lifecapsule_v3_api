@@ -67,7 +67,9 @@ public class ReceiveNoteBService implements IReceiveNoteBService {
         qIn.put("token", token);
         UserView userView = iUserMiddle.getUser(qIn, false, true);
 
-        NoteSendLogView noteSendLogView = iNoteSendMiddle.getNoteSendLog(sendLogId, false, userView.getUserId());
+        qIn=new HashMap();
+        qIn.put("sendLogId",sendLogId);
+        NoteSendLogView noteSendLogView = iNoteSendMiddle.getNoteSendLog(qIn, false, userView.getUserId());
 
         if (noteSendLogView.getUserEncodeKey() != null) {
             /**

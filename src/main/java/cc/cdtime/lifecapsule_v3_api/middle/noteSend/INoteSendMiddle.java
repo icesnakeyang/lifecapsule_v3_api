@@ -35,7 +35,14 @@ public interface INoteSendMiddle {
      */
     Integer totalNoteSendLog(Map qIn) throws Exception;
 
-    NoteSendLogView getNoteSendLog(String sendLogId, Boolean returnNull, String userId) throws Exception;
+    /**
+     * 读取一个发送日志详情
+     *
+     * @param qIn sendLogId
+     *            triggerId
+     * @return
+     */
+    NoteSendLogView getNoteSendLog(Map qIn, Boolean returnNull, String userId) throws Exception;
 
     /**
      * 修改笔记发送日志

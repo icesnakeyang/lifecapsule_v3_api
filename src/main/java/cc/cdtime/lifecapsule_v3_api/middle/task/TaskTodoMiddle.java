@@ -69,6 +69,9 @@ public class TaskTodoMiddle implements ITaskTodoMiddle {
         if (qIn.get("priority") != null) {
             cc++;
         }
+        if (qIn.get("projectId") != null) {
+            cc++;
+        }
         if (cc > 0) {
             iTaskTodoService.updateTaskTodo(qIn);
         }

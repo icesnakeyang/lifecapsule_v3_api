@@ -20,4 +20,5 @@ public class TaskTodo {
     private String userEncodeKey;
     private String noteId;
     private String taskType;
+    private String projectId;
 }

@@ -7,12 +7,14 @@ import cc.cdtime.lifecapsule_v3_api.meta.contact.entity.ContactView;
 import cc.cdtime.lifecapsule_v3_api.meta.email.entity.UserEmail;
 import cc.cdtime.lifecapsule_v3_api.meta.email.entity.UserEmailView;
 import cc.cdtime.lifecapsule_v3_api.meta.note.entity.NoteView;
+import cc.cdtime.lifecapsule_v3_api.meta.noteSendLog.entity.NoteSendLogView;
 import cc.cdtime.lifecapsule_v3_api.meta.recipient.entity.RecipientView;
 import cc.cdtime.lifecapsule_v3_api.meta.trigger.entity.NoteTrigger;
 import cc.cdtime.lifecapsule_v3_api.meta.trigger.entity.TriggerView;
 import cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserView;
 import cc.cdtime.lifecapsule_v3_api.middle.contact.IContactMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.note.INoteMiddle;
+import cc.cdtime.lifecapsule_v3_api.middle.noteSend.INoteSendMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.recipient.IRecipientMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.security.ISecurityMiddle;
 import cc.cdtime.lifecapsule_v3_api.middle.trigger.ITriggerMiddle;
@@ -34,19 +36,22 @@ public class TriggerBService implements ITriggerBService {
     private final IRecipientMiddle iRecipientMiddle;
     private final IContactMiddle iContactMiddle;
     private final ISecurityMiddle iSecurityMiddle;
+    private final INoteSendMiddle iNoteSendMiddle;
 
     public TriggerBService(IUserMiddle iUserMiddle,
                            ITriggerMiddle iTriggerMiddle,
                            INoteMiddle iNoteMiddle,
                            IRecipientMiddle iRecipientMiddle,
                            IContactMiddle iContactMiddle,
-                           ISecurityMiddle iSecurityMiddle) {
+                           ISecurityMiddle iSecurityMiddle,
+                           INoteSendMiddle iNoteSendMiddle) {
         this.iUserMiddle = iUserMiddle;
         this.iTriggerMiddle = iTriggerMiddle;
         this.iNoteMiddle = iNoteMiddle;
         this.iRecipientMiddle = iRecipientMiddle;
         this.iContactMiddle = iContactMiddle;
         this.iSecurityMiddle = iSecurityMiddle;
+        this.iNoteSendMiddle = iNoteSendMiddle;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -606,6 +611,21 @@ public class TriggerBService implements ITriggerBService {
         qIn.put("triggerId", triggerId);
         TriggerView triggerView = iTriggerMiddle.getTrigger(qIn, false, null);
 
+        /**
+         * 通过triggerId查询sendLog，如果sendLog发送已超过7天，就返回错误消息
+         */
+        NoteSendLogView noteSendLogView = iNoteSendMiddle.getNoteSendLog(qIn, false, null);
+        Long date1 = noteSendLogView.getSendTime().getTime();
+        Long date2 = new Date().getTime();
+        Long spanDays = (date2 - date1) / 1000 / 24 / 3600;
+
+        Map out = new HashMap();
+
+        if (spanDays > 7) {
+            //超过7天
+           throw new Exception("10080");
+        }
+
         Map note = new HashMap();
         note.put("title", triggerView.getTitle());
         note.put("fromName", triggerView.getFromName());
@@ -613,9 +633,7 @@ public class TriggerBService implements ITriggerBService {
         note.put("content", triggerView.getNoteContent());
         note.put("userEncodeKey", triggerView.getUserEncodeKey());
         note.put("createTime", triggerView.getCreateTime());
-        Map out = new HashMap();
         out.put("note", note);
-
         return out;
     }
 }

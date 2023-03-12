@@ -151,35 +151,4 @@ public class WebNoteSendController {
         }
         return response;
     }
-
-    /**
-     * Web端用户从email邮箱收到的url链接跳转到web页面读取接收的笔记详情
-     *
-     * @param request
-     * @param httpServletRequest
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/getNoteSendLogFromMail")
-    public Response getNoteSendLogFromMail(@RequestBody NoteSendRequest request,
-                                     HttpServletRequest httpServletRequest) {
-        Response response = new Response();
-        Map in = new HashMap();
-        try {
-            String token = httpServletRequest.getHeader("token");
-            in.put("token", token);
-            in.put("sendLogId", request.getSendLogId());
-
-            Map out=iWebNoteSendBService.getNoteSendLogFromMail(in);
-            response.setData(out);
-        } catch (Exception ex) {
-            try {
-                response.setCode(Integer.parseInt(ex.getMessage()));
-            } catch (Exception ex2) {
-                response.setCode(10001);
-                log.error("Web getNoteSendLogFromMail error:" + ex.getMessage());
-            }
-        }
-        return response;
-    }
 }

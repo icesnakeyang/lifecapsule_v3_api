@@ -54,8 +54,8 @@ public class NoteSendMiddle implements INoteSendMiddle {
     }
 
     @Override
-    public NoteSendLogView getNoteSendLog(String sendLogId, Boolean returnNull, String userId) throws Exception {
-        NoteSendLogView noteSendLogView = iNoteSendService.getNoteSendLog(sendLogId);
+    public NoteSendLogView getNoteSendLog(Map qIn, Boolean returnNull, String userId) throws Exception {
+        NoteSendLogView noteSendLogView = iNoteSendService.getNoteSendLog(qIn);
         if (noteSendLogView == null) {
             if (returnNull) {
                 return null;
@@ -82,8 +82,6 @@ public class NoteSendMiddle implements INoteSendMiddle {
         /**
          * 读取解密秘钥
          */
-        Map qIn = new HashMap();
-        qIn.put("indexId", noteSendLogView.getTriggerId());
         UserEncodeKeyView userEncodeKeyView = iUserEncodeKeyService.getUserEncodeKey(noteSendLogView.getTriggerId());
         if (userEncodeKeyView != null) {
             noteSendLogView.setUserEncodeKey(userEncodeKeyView.getEncodeKey());

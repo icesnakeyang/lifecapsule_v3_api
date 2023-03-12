@@ -7,15 +7,19 @@
         <result property="createTime" column="create_time"/>
         <result property="taskId" column="task_id"/>
         <result property="taskTitle" column="task_title"/>
+        <result property="projectId" column="project_id"/>
+        <result property="projectName" column="project_name"/>
     </resultMap>
 
     <!--创建一个todo任务-->
     <insert id="createTaskTodo" parameterType="cc.cdtime.lifecapsule_v3_api.meta.task.entity.TaskTodo">
         insert into task_todo
         (user_id, task_title, create_time, task_id,
-         priority, complete, task_type, note_id)
+         priority, complete, task_type, note_id,
+         project_id)
         values (#{userId}, #{taskTitle}, #{createTime}, #{taskId},
-                #{priority}, #{complete}, #{taskType}, #{noteId})
+                #{priority}, #{complete}, #{taskType}, #{noteId},
+                #{projectId})
     </insert>
 
     <!--读取todo任务列表-->
@@ -35,6 +39,11 @@
         <choose>
             <when test="noteId!=null">
                 and note_id=#{noteId}
+            </when>
+        </choose>
+        <choose>
+            <when test="projectId!=null">
+                and project_id=#{projectId}
             </when>
         </choose>
         order by complete, create_time desc
@@ -58,8 +67,19 @@
 
     <!--读取一个todo任务详情-->
     <select id="getTaskTodo" parameterType="java.lang.String" resultMap="taskTodoMap">
-        select *
-        from task_todo
+        select tt.ids,
+               tt.user_id,
+               task_title,
+               complete,
+               priority,
+               tt.create_time,
+               task_id,
+               task_type,
+               note_id,
+               tt.project_id,
+               project_name
+        from task_todo tt
+                 left join project p on tt.project_id = p.project_id
         where task_id = #{taskId}
     </select>
 
@@ -72,6 +92,9 @@
             </if>
             <if test="priority!=null">
                 priority=#{priority},
+            </if>
+            <if test="projectId!=null">
+                project_id=#{projectId},
             </if>
             <if test="complete!=null">
                 complete=#{complete}

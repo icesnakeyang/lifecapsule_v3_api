@@ -22,6 +22,7 @@ public interface TaskTodoDao {
      * @param qIn userId
      *            noteId
      *            complete
+     *            projectId
      *            size
      *            offset
      * @return
@@ -50,6 +51,7 @@ public interface TaskTodoDao {
      * @param qIn title
      *            priority
      *            complete
+     *            projectId
      */
     void updateTaskTodo(Map qIn);
 

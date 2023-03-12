@@ -16,9 +16,9 @@
             parameterType="cc.cdtime.lifecapsule_v3_api.meta.user.entity.UserBase">
         insert into user_base
         (user_id, create_time,
-         nickname)
+         nickname, language)
         values (#{userId}, #{createTime},
-                #{nickname})
+                #{nickname}, #{language})
     </insert>
 
     <!--查询用户基础信息-->
@@ -114,6 +114,9 @@
     <update id="updateUserBase" parameterType="map">
         update user_base
         <set>
+            <if test="language!=null">
+                language=#{language},
+            </if>
             <if test="nickname!=null">
                 nickname = #{nickname}
             </if>

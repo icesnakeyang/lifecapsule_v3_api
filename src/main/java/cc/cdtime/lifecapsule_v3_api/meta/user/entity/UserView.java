@@ -29,4 +29,5 @@ public class UserView {
     private String openPassword;
     private String userInfoLogId;
     private String status;
+    private String language;
 }

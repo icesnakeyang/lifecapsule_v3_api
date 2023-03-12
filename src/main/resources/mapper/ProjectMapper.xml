@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.project.dao.ProjectDao">
+    <!--配置表和对象的字段映射 -->
+    <resultMap id="projectMap" type="cc.cdtime.lifecapsule_v3_api.meta.project.entity.ProjectView">
+        <result property="projectId" column="project_id"/>
+        <result property="projectName" column="project_name"/>
+        <result property="userId" column="user_id"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <!--创建一个项目-->
+    <insert id="createProject"
+            useGeneratedKeys="true"
+            parameterType="cc.cdtime.lifecapsule_v3_api.meta.project.entity.Project">
+        insert into project
+        (project_id, user_id, project_name,
+         create_time, remark)
+        values (#{projectId}, #{userId}, #{projectName},
+                #{createTime}, #{remark})
+    </insert>
+
+    <select id="listProject" parameterType="map" resultMap="projectMap">
+        select * from project
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+    </select>
+
+    <select id="getProject" parameterType="map" resultMap="projectMap">
+        select * from project
+        where 1=1
+        <choose>
+            <when test="projectName!=null">
+                and project_name=#{projectName}
+            </when>
+        </choose>
+        <choose>
+            <when test="projectId!=null">
+                and project_id=#{projectId}
+            </when>
+        </choose>
+        and user_id=#{userId}
+    </select>
+
+    <update id="updateProject" parameterType="map">
+        update project
+        <set>
+            <if test="projectName!=null">
+                project_name=#{projectName}
+            </if>
+        </set>
+        where project_id=#{projectId}
+    </update>
+</mapper>

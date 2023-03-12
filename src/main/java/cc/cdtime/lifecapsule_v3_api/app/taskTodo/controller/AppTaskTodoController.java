@@ -44,6 +44,7 @@ public class AppTaskTodoController {
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
             in.put("hideComplete", request.getHideComplete());
+            in.put("projectId", request.getProjectId());
 
             Map out = iAppTaskTodoBService.listMyTaskTodo(in);
             response.setData(out);
@@ -131,6 +132,7 @@ public class AppTaskTodoController {
             in.put("keyToken", request.getKeyToken());
             in.put("encryptKey", request.getEncryptKey());
             in.put("complete", request.getComplete());
+            in.put("projectId", request.getProjectId());
 
             logMap.put("UserActType", ESTags.USER_UPDATE_TASK_TODO);
             logMap.put("token", token);

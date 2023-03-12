@@ -185,6 +185,7 @@ public class UserMiddle implements IUserMiddle {
         UserView userViewBase = iUserBaseService.getUserBase(userView.getUserId());
         userView.setCreateTime(userViewBase.getCreateTime());
         userView.setNickname(userViewBase.getNickname());
+        userView.setLanguage(userViewBase.getLanguage());
         qIn = new HashMap();
         qIn.put("userId", userView.getUserId());
         qIn.put("type", ESTags.TIMER_TYPE_PRIMARY.toString());

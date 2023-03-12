@@ -89,7 +89,9 @@ public class UserAccountBService implements IUserAccountBService {
         }
         if (userView.getNickname() != null) {
             user.put("nickname", userView.getNickname());
-
+        }
+        if (userView.getLanguage() != null) {
+            user.put("language", userView.getLanguage());
         }
 
         /**

@@ -66,7 +66,9 @@ public class ReplyNoteBService implements IReplyNoteBService {
         /**
          * 读取要回复的父笔记，note_send_log
          */
-        NoteSendLogView noteSendLogView = iNoteSendMiddle.getNoteSendLog(pid, false, userView.getUserId());
+        qIn=new HashMap();
+        qIn.put("sendLogId", pid);
+        NoteSendLogView noteSendLogView = iNoteSendMiddle.getNoteSendLog(qIn, false, userView.getUserId());
 
         /**
          * 回复内容也是一篇笔记，先创建回复笔记

@@ -81,10 +81,20 @@
         </choose>
     </select>
 
-    <select id="getNoteSendLog" parameterType="java.lang.String" resultMap="noteSendMap">
+    <select id="getNoteSendLog" parameterType="map" resultMap="noteSendMap">
         select *
         from note_send_log
-        where send_log_id = #{sendLogId}
+        where 1=1
+        <choose>
+            <when test="sendLogId!=null">
+                and send_log_id = #{sendLogId}
+            </when>
+        </choose>
+        <choose>
+            <when test="triggerId!=null">
+                and trigger_id=#{triggerId}
+            </when>
+        </choose>
     </select>
 
     <update id="updateNoteSendLog" parameterType="map">

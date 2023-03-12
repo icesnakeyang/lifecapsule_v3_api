@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cdtime.lifecapsule_v3_api.meta.notePublic.NotePublicDao">
+    <!--配置表和对象的字段映射 -->
+    <resultMap id="notePublicMap" type="cc.cdtime.lifecapsule_v3_api.meta.notePublic.NotePublicView">
+        <result property="noteId" column="note_id"/>
+        <result property="userId" column="user_Id"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <!--创建一个公共笔记-->
+    <insert id="createNotePublic"
+            useGeneratedKeys="true"
+            parameterType="cc.cdtime.lifecapsule_v3_api.meta.notePublic.NotePublic">
+        insert into note_public
+        (note_id, title, create_time,
+         user_id, content)
+        values (#{noteId}, #{title}, #{createTime},
+                #{userId}, #{content})
+    </insert>
+
+    <select id="listNotePublic" parameterType="map" resultMap="notePublicMap">
+        select * from note_public
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+        order by create_time desc
+        limit #{size} offset #{offset}
+    </select>
+
+    <select id="getNotePublic" parameterType="java.lang.String" resultMap="notePublicMap">
+        select *
+        from note_public
+        where note_id = #{noteId}
+    </select>
+
+
+</mapper>

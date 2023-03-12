@@ -1,0 +1,17 @@
+package cc.cdtime.lifecapsule_v3_api.meta.notePublic;
+
+import lombok.Data;
+
+import java.util.Date;
+
+@Data
+public class NotePublic {
+    private Integer ids;
+    private String title;
+    private String content;
+    private String userId;
+    private Date createTime;
+    private String noteId;
+    private Integer views;
+    private Integer comments;
+}

@@ -15,4 +15,5 @@ public class TaskRequest extends Request {
     private Boolean complete;
     private String keyToken;
     private String encryptKey;
+    private String projectId;
 }
