@@ -28,6 +28,7 @@
                 and user_id=#{userId}
             </when>
         </choose>
+        order by ids desc
     </select>
 
     <select id="getProject" parameterType="map" resultMap="projectMap">

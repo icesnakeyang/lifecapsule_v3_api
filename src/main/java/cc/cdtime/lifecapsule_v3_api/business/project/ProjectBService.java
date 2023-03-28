@@ -53,10 +53,9 @@ public class ProjectBService implements IProjectBService {
         UserView userView = iUserMiddle.getUser(qIn, false, true);
 
         qIn = new HashMap();
-        if (projectName != null) {
-            qIn.put("userId", userView.getUserId());
-            qIn.put("projectName", projectName);
-        }
+        qIn.put("projectName", projectName);
+        qIn.put("projectId", projectId);
+        qIn.put("userId", userView.getUserId());
         ProjectView projectView = iProjectMiddle.getProject(qIn, true);
 
         Map out = new HashMap();

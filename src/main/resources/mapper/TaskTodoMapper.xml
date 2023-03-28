@@ -63,6 +63,11 @@
                 and note_id=#{noteId}
             </when>
         </choose>
+        <choose>
+            <when test="projectId!=null">
+                and project_id=#{projectId}
+            </when>
+        </choose>
     </select>
 
     <!--读取一个todo任务详情-->
@@ -93,9 +98,7 @@
             <if test="priority!=null">
                 priority=#{priority},
             </if>
-            <if test="projectId!=null">
-                project_id=#{projectId},
-            </if>
+            project_id=#{projectId},
             <if test="complete!=null">
                 complete=#{complete}
             </if>
