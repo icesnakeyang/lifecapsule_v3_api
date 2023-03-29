@@ -64,6 +64,11 @@
             </when>
         </choose>
         <choose>
+            <when test="complete!=null">
+                and complete is false
+            </when>
+        </choose>
+        <choose>
             <when test="projectId!=null">
                 and project_id=#{projectId}
             </when>

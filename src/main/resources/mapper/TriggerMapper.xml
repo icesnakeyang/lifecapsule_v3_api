@@ -88,6 +88,13 @@
                 and to_email=#{toEmail}
             </when>
         </choose>
+        <choose>
+            <when test="toUserStatus!=null">
+                and( to_user_status=#{toUserStatus}
+                or to_email_status=#{toEmailStatus}
+                )
+            </when>
+        </choose>
         order by create_time desc
         <choose>
             <when test="offset!=null">

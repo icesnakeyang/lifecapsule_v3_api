@@ -118,6 +118,11 @@ public class NoteBService implements INoteBService {
         }
 
         /**
+         * 查询是否有回复的笔记
+         */
+
+
+        /**
          * 读取笔记标签
          */
         qIn = new HashMap();

@@ -291,7 +291,14 @@ public class TriggerBService implements ITriggerBService {
         Integer offset = (pageIndex - 1) * pageSize;
         qIn.put("offset", offset);
         qIn.put("size", pageSize);
-        qIn.put("status", status);
+        if (status.equals(ESTags.ACTIVE.toString())) {
+            qIn.put("status", status);
+        } else {
+            if (status.equals(ESTags.SEND_COMPLETE.toString())) {
+                qIn.put("toUserStatus", ESTags.SEND_COMPLETE);
+                qIn.put("toEmailStatus", ESTags.SEND_COMPLETE);
+            }
+        }
         ArrayList<TriggerView> triggerViews = iTriggerMiddle.listTrigger(qIn);
         Integer total = iTriggerMiddle.totalTrigger(qIn);
 
@@ -623,7 +630,7 @@ public class TriggerBService implements ITriggerBService {
 
         if (spanDays > 7) {
             //超过7天
-           throw new Exception("10080");
+            throw new Exception("10080");
         }
 
         Map note = new HashMap();
