@@ -8,4 +8,5 @@ public class PublicWebRequest extends Request {
     private String title;
     private String content;
     private String noteId;
+    private String authorName;
 }

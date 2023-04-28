@@ -19,6 +19,7 @@
         <result property="triggerType" column="trigger_type"/>
         <result property="recipientName" column="recipient_name"/>
         <result property="toName" column="to_name"/>
+        <result property="toEmail" column="to_email"/>
         <result property="recipientTitle" column="recipient_title"/>
         <result property="receiveUserName" column="receive_user_name"/>
         <result property="refPid" column="ref_pid"/>

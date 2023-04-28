@@ -6,6 +6,7 @@
         <result property="noteId" column="note_id"/>
         <result property="userId" column="user_Id"/>
         <result property="createTime" column="create_time"/>
+        <result property="authorName" column="author_name"/>
     </resultMap>
 
     <!--创建一个公共笔记-->
@@ -14,9 +15,9 @@
             parameterType="cc.cdtime.lifecapsule_v3_api.meta.notePublic.NotePublic">
         insert into note_public
         (note_id, title, create_time,
-         user_id, content)
+         user_id, content, author_name)
         values (#{noteId}, #{title}, #{createTime},
-                #{userId}, #{content})
+                #{userId}, #{content}, #{authorName})
     </insert>
 
     <select id="listNotePublic" parameterType="map" resultMap="notePublicMap">
@@ -37,5 +38,17 @@
         where note_id = #{noteId}
     </select>
 
+    <update id="updateNotePublic" parameterType="map">
+        update note_public
+        <set>
+            <if test="title!=null">
+                title=#{title},
+            </if>
+            <if test="content!=null">
+                content=#{content}
+            </if>
+        </set>
+        where note_id=#{noteId}
+    </update>
 
 </mapper>

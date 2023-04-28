@@ -23,4 +23,20 @@ public class WebTriggerBService implements IWebTriggerBService {
         Map out = iTriggerBService.listNoteTrigger(in);
         return out;
     }
+
+    @Override
+    public Map getMyTriggerDetail(Map in) throws Exception {
+        Map out = iTriggerBService.getTriggerDetail(in);
+        return out;
+    }
+
+    @Override
+    public void createTriggerDatetime(Map in) throws Exception {
+        iTriggerBService.createNoteTriggerByDatetime(in);
+    }
+
+    @Override
+    public void createTriggerPrimary(Map in) throws Exception {
+        iTriggerBService.createNoteTriggerPrimary(in);
+    }
 }

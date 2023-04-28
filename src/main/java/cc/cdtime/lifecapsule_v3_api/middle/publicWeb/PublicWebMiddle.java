@@ -32,4 +32,9 @@ public class PublicWebMiddle implements IPublicWebMiddle {
         NotePublicView notePublicView = iNotePublicService.getNotePublic(noteId);
         return notePublicView;
     }
+
+    @Override
+    public void updateNotePublic(Map qIn) throws Exception {
+        iNotePublicService.updateNotePublic(qIn);
+    }
 }

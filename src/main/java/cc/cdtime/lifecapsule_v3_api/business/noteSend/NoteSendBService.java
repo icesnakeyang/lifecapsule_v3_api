@@ -260,7 +260,6 @@ public class NoteSendBService implements INoteSendBService {
 
         Map noteMap = new HashMap();
 
-        //我收到的笔记列表
         Map qIn1 = new HashMap();
         qIn1.put("sendLogId", sendLogId);
         NoteSendLogView noteSendLogView = iNoteSendMiddle.getNoteSendLog(qIn1, false, userView.getUserId());

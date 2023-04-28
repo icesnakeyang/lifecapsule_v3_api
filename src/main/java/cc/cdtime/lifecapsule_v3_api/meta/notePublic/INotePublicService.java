@@ -9,4 +9,6 @@ public interface INotePublicService {
     ArrayList<NotePublicView> listNotePublic(Map qIn) throws Exception;
 
     NotePublicView getNotePublic(String noteId) throws Exception;
+
+    void updateNotePublic(Map qIn) throws Exception;
 }

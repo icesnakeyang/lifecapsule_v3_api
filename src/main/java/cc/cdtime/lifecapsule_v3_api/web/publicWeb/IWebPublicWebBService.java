@@ -21,4 +21,8 @@ public interface IWebPublicWebBService {
     Map listMyPublicNote(Map in) throws Exception;
 
     Map getMyPublicNote(Map in) throws Exception;
+
+    Map getArticle(Map in) throws Exception;
+
+    void updateMyPublicNote(Map in) throws Exception;
 }

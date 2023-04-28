@@ -94,7 +94,7 @@ public class NoteBService implements INoteBService {
         /**
          * 读取userEncodeKey
          */
-        if (noteView.getUserEncodeKey()!=null) {
+        if (noteView.getUserEncodeKey() != null) {
             if (strAESKey == null) {
                 //查询秘钥错误
                 throw new Exception("10037");
@@ -144,6 +144,7 @@ public class NoteBService implements INoteBService {
         String title = (String) in.get("title");
         String content = (String) in.get("content");
         String encryptKey = (String) in.get("encryptKey");
+        Boolean encrypt = (Boolean) in.get("encrypt");
         String keyToken = (String) in.get("keyToken");
         ArrayList tagList = (ArrayList) in.get("tagList");
 
@@ -152,9 +153,11 @@ public class NoteBService implements INoteBService {
          * 用私钥解开用户用公钥加密的用户AES私钥
          */
         String strAESKey = null;
-        String privateKey = iSecurityMiddle.getRSAKey(keyToken);
-        strAESKey = GogoTools.decryptRSAByPrivateKey(encryptKey, privateKey);
-        iSecurityMiddle.deleteRSAKey(keyToken);
+        if (encrypt) {
+            String privateKey = iSecurityMiddle.getRSAKey(keyToken);
+            strAESKey = GogoTools.decryptRSAByPrivateKey(encryptKey, privateKey);
+            iSecurityMiddle.deleteRSAKey(keyToken);
+        }
 
         /**
          * 首先读取用户信息
@@ -349,12 +352,16 @@ public class NoteBService implements INoteBService {
         String userId = in.get("userId").toString();
         String strAESKey = (String) in.get("strAESKey");
         String title = (String) in.get("title");
+        Boolean encrypt = (Boolean) in.get("encrypt");
 
         NoteInfo noteInfo = new NoteInfo();
         noteInfo.setNoteId(GogoTools.UUID32());
         noteInfo.setContent(content);
-
-        noteInfo.setEncrypt(1);
+        if (encrypt != null && !encrypt) {
+            noteInfo.setEncrypt(0);
+        } else {
+            noteInfo.setEncrypt(1);
+        }
         noteInfo.setUserEncodeKey(strAESKey);
         noteInfo.setCreateTime(new Date());
         noteInfo.setStatus(ESTags.ACTIVE.toString());

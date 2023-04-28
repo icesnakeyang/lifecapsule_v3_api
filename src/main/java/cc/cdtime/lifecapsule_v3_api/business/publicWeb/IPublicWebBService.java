@@ -8,4 +8,8 @@ public interface IPublicWebBService {
     Map listPublicNote(Map in) throws Exception;
 
     Map getMyPublicNote(Map in) throws Exception;
+
+    Map getArticle(Map in) throws Exception;
+
+    void updateNotePublic(Map in) throws Exception;
 }

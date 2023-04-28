@@ -15,7 +15,7 @@ public class NoteRequest extends Request {
     private String encryptKey;
     private String title;
     private String content;
-    private Integer encrypt;
+    private Boolean encrypt;
     private String triggerId;
     private String triggerType;
     private Date triggerTime;

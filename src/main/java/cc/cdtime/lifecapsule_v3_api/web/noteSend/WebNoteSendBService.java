@@ -33,14 +33,11 @@ public class WebNoteSendBService implements IWebNoteSendBService {
         /**
          * 设置阅读时间
          */
-        NoteSendLogView noteSendLogView = (NoteSendLogView) out.get("noteSendLog");
-        if (noteSendLogView != null) {
-            if (noteSendLogView.getReadTime() == null) {
-                Map qIn = new HashMap();
-                qIn.put("sendLogId", noteSendLogView.getSendLogId());
-                qIn.put("readTime", new Date());
-                iNoteSendMiddle.updateNoteSendLog(qIn);
-            }
+        if (out.get("readTime") == null) {
+            Map qIn = new HashMap();
+            qIn.put("sendLogId", out.get("sendLogId"));
+            qIn.put("readTime", new Date());
+            iNoteSendMiddle.updateNoteSendLog(qIn);
         }
         return out;
     }

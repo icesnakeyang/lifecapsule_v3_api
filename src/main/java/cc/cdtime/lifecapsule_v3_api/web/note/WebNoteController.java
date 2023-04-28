@@ -106,6 +106,7 @@ public class WebNoteController {
             in.put("noteId", request.getNoteId());
             in.put("keyToken", request.getKeyToken());
             in.put("encryptKey", request.getEncryptKey());
+            in.put("encrypt", request.getEncrypt());
             in.put("title", request.getTitle());
             in.put("content", request.getContent());
             in.put("tagList", request.getTagList());

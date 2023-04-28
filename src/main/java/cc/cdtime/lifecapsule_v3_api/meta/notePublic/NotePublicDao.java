@@ -13,4 +13,6 @@ public interface NotePublicDao {
 
     NotePublicView getNotePublic(String noteId);
 
+    void updateNotePublic(Map qIn);
+
 }

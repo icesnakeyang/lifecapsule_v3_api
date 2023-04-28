@@ -1,6 +1,5 @@
 package cc.cdtime.lifecapsule_v3_api.meta.notePublic;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,5 +28,10 @@ public class NotePublicService implements INotePublicService {
     public NotePublicView getNotePublic(String noteId) throws Exception {
         NotePublicView notePublicView = notePublicDao.getNotePublic(noteId);
         return notePublicView;
+    }
+
+    @Override
+    public void updateNotePublic(Map qIn) throws Exception {
+        notePublicDao.updateNotePublic(qIn);
     }
 }

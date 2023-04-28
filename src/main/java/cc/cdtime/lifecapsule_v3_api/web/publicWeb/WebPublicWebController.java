@@ -44,6 +44,7 @@ public class WebPublicWebController {
             String token = httpServletRequest.getHeader("token");
             in.put("token", token);
             in.put("title", request.getTitle());
+            in.put("authorName", request.getAuthorName());
             in.put("content", request.getContent());
 
             logMap.put("UserActType", ESTags.PUBLISH_NOTE_PUBLIC_WEB);
@@ -130,7 +131,7 @@ public class WebPublicWebController {
     @ResponseBody
     @PostMapping("/getMyPublicNote")
     public Response getMyPublicNote(@RequestBody PublicWebRequest request,
-                                     HttpServletRequest httpServletRequest) {
+                                    HttpServletRequest httpServletRequest) {
         Response response = new Response();
         Map in = new HashMap();
         Map logMap = new HashMap();
@@ -163,6 +164,94 @@ public class WebPublicWebController {
             iCommonService.createUserActLog(logMap);
         } catch (Exception ex3) {
             log.error("Web getMyPublicNote user act error:" + ex3.getMessage());
+        }
+        return response;
+    }
+
+    /**
+     * Web端用户修改我的公开笔记详情
+     *
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/updateMyPublicNote")
+    public Response updateMyPublicNote(@RequestBody PublicWebRequest request,
+                                       HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        Map logMap = new HashMap();
+        Map memoMap = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("noteId", request.getNoteId());
+            in.put("title", request.getTitle());
+            in.put("content", request.getContent());
+
+            logMap.put("UserActType", ESTags.UPDATE_PUBLISH_NOTE);
+            logMap.put("token", token);
+            memoMap.put("noteId", request.getNoteId());
+            memoMap.put("title", request.getTitle());
+
+            iWebPublicWebBService.updateMyPublicNote(in);
+
+            logMap.put("result", ESTags.SUCCESS);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("Web updateMyPublicNote error:" + ex.getMessage());
+            }
+            logMap.put("result", ESTags.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonService.createUserActLog(logMap);
+        } catch (Exception ex3) {
+            log.error("Web updateMyPublicNote user act error:" + ex3.getMessage());
+        }
+        return response;
+    }
+
+    /**
+     * 互联网公共用户查看笔记详情
+     */
+    @ResponseBody
+    @GetMapping("/getArticle/{articleId}")
+    public Response getPublicNote(@PathVariable("articleId") String articleId) {
+        Response response = new Response();
+        Map in = new HashMap();
+        Map logMap = new HashMap();
+        Map memoMap = new HashMap();
+        try {
+            in.put("noteId", articleId);
+
+            logMap.put("UserActType", ESTags.VIEW_PUBLIC_ARTICLE);
+            memoMap.put("noteId", articleId);
+
+            Map out = iWebPublicWebBService.getArticle(in);
+            response.setData(out);
+
+            logMap.put("result", ESTags.SUCCESS);
+        } catch (Exception ex) {
+            try {
+                response.setCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setCode(10001);
+                log.error("Web getArticle error:" + ex.getMessage());
+            }
+            logMap.put("result", ESTags.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonService.createUserActLog(logMap);
+        } catch (Exception ex3) {
+            log.error("Web getArticle user act error:" + ex3.getMessage());
         }
         return response;
     }

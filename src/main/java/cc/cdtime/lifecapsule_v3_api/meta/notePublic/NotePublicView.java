@@ -14,4 +14,5 @@ public class NotePublicView {
     private String noteId;
     private Integer views;
     private Integer comments;
+    private String authorName;
 }
