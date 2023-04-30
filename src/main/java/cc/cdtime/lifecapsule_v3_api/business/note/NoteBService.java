@@ -380,6 +380,7 @@ public class NoteBService implements INoteBService {
         String keyToken = (String) in.get("keyToken");
         String userId = in.get("userId").toString();
         String strAESKey = (String) in.get("strAESKey");
+        Boolean encrypt = (Boolean) in.get("encrypt");
 
         /**
          * 读取笔记信息，检查笔记是否存在，是否是用户本人的笔记
@@ -390,22 +391,23 @@ public class NoteBService implements INoteBService {
          * 检查有没有要修改的属性
          */
         Map qInEdit = new HashMap();
-        int cc = 0;
         if (noteView.getTitle() != null) {
             if (title != null) {
                 if (!noteView.getTitle().equals(title)) {
                     qInEdit.put("title", title);
-                    cc++;
                 }
             }
         } else {
             if (title != null) {
                 qInEdit.put("title", title);
-                cc++;
             }
         }
-
         qInEdit.put("encodeKey", strAESKey);
+        if (encrypt) {
+            qInEdit.put("encrypt", 1);
+        } else {
+            qInEdit.put("encrypt", 0);
+        }
 
         if (noteView.getContent() != null) {
             /**
@@ -414,7 +416,6 @@ public class NoteBService implements INoteBService {
              */
             if (!noteView.getContent().equals(content)) {
                 qInEdit.put("content", content);
-                cc++;
             }
         } else {
             /**
@@ -422,6 +423,7 @@ public class NoteBService implements INoteBService {
              */
             qInEdit.put("content", content);
         }
+
         qInEdit.put("noteId", noteId);
         iNoteMiddle.updateNoteInfo(qInEdit);
     }

@@ -146,7 +146,20 @@ public class NoteMiddle implements INoteMiddle {
             Map keyMap = new HashMap();
             keyMap.put("encodeKey", encodeKey);
             keyMap.put("indexId", indexId);
-            iUserEncodeKeyService.updateUserEncodeKey(keyMap);
+            UserEncodeKeyView userEncodeKeyView = iUserEncodeKeyService.getUserEncodeKey(indexId);
+            if (userEncodeKeyView == null) {
+                UserEncodeKey userEncodeKey = new UserEncodeKey();
+                userEncodeKey.setEncodeKey(encodeKey);
+                userEncodeKey.setIndexId(indexId);
+                iUserEncodeKeyService.createUserEncodeKey(userEncodeKey);
+            } else {
+                iUserEncodeKeyService.updateUserEncodeKey(keyMap);
+            }
+        } else {
+            /**
+             * 如果没有设置userEncodeKey，就删除
+             */
+            iUserEncodeKeyService.deleteUserEncodeKey(indexId);
         }
     }
 

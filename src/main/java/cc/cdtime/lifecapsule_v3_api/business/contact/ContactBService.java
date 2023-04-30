@@ -28,7 +28,6 @@ public class ContactBService implements IContactBService {
     public void saveContact(Map in) throws Exception {
         String token = in.get("token").toString();
         String contactName = in.get("contactName").toString();
-        String phone = in.get("phone").toString();
         String email = in.get("email").toString();
         String contactId = (String) in.get("contactId");
         String remark = (String) in.get("remark");
@@ -45,7 +44,6 @@ public class ContactBService implements IContactBService {
             contact.setContactId(GogoTools.UUID32());
             contact.setContactName(contactName);
             contact.setEmail(email);
-            contact.setPhone(phone);
             contact.setUserId(userView.getUserId());
             contact.setRemark(remark);
             iContactMiddle.createContact(contact);
@@ -57,21 +55,31 @@ public class ContactBService implements IContactBService {
             qIn.put("contactId", contactId);
             ContactView contactView = iContactMiddle.getContact(qIn, false, userView.getUserId());
             int cc = 0;
-            if (!contactView.getContactName().equals(contactName)) {
-                qIn.put("contactName", contactName);
-                cc++;
-            }
-            if (!contactView.getPhone().equals(phone)) {
-                qIn.put("phone", phone);
-                cc++;
+            if (contactName != null) {
+                if (contactView.getContactName() != null) {
+                    if (!contactView.getContactName().equals(contactName)) {
+                        qIn.put("contactName", contactName);
+                        cc++;
+                    }
+                }else{
+                    qIn.put("contactName", contactName);
+                    cc++;
+                }
             }
             if (!contactView.getEmail().equals(email)) {
                 qIn.put("email", email);
                 cc++;
             }
-            if (!contactView.getRemark().equals(remark)) {
-                qIn.put("remark", remark);
-                cc++;
+            if(remark!=null){
+                if(contactView.getRemark()!=null){
+                    if (!contactView.getRemark().equals(remark)) {
+                        qIn.put("remark", remark);
+                        cc++;
+                    }
+                }else{
+                    qIn.put("remark", remark);
+                    cc++;
+                }
             }
             if (cc > 0) {
                 qIn.put("contactId", contactId);
@@ -92,7 +100,7 @@ public class ContactBService implements IContactBService {
 
         qIn = new HashMap();
         qIn.put("userId", userView.getUserId());
-        if(pageIndex!=null) {
+        if (pageIndex != null) {
             Integer offset = (pageIndex - 1) * pageSize;
             qIn.put("offset", offset);
             qIn.put("size", pageSize);
